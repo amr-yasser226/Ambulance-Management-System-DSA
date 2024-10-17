@@ -174,6 +174,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 ### Team Members
-- **Team Leader**: Nour Eldien Ashraf Atta
-- **Teammates**: [Add teammates' names here]
+- **Team Leader**: Amr Yasser 
+- **Teammates**: Omar Hazem, Amr Mahmoud, and Momen Sanad
 ```
