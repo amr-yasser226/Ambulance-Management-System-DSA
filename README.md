@@ -175,5 +175,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Team Members
 - **Team Leader**: Amr Yasser 
-- **Teammates**: Omar Hazem, Amr Mahmoud, and Momen Sanad
+- **Teammates**: Omar Hazem, Amr Abdelfattah, and Momen Sanad
 ```
