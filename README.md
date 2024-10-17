@@ -50,7 +50,7 @@ Ambulance-Management-System/
 ├── scripts/             # Optional scripts for automation (e.g., test generation)
 │   └── generate_tests.py# Script to auto-generate input/output test cases
 └── README.md            # Project overview and instructions (this file)
-
+```
 
 ### How It Works
 1. **Input File**: The input file defines the number of hospitals, car speeds, the distance matrix between hospitals, and a list of patient requests sorted by request time.
