@@ -1,4 +1,3 @@
-```markdown
 # Ambulance Management System
 
 ### Overview
