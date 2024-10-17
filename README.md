@@ -27,11 +27,31 @@ The main objectives are:
 - **Statistical Output**: The system provides metrics such as average waiting times, average car utilization, and total patient processing time.
 
 ### **Project Structure**
-- `src/`: Contains the source code, including the implementation of data structures and algorithms used for managing patients, hospitals, and ambulance cars.
-- `docs/`: Documentation related to the project, including reports, planning documents, and other references.
-- `tests/`: Contains unit and integration tests to validate different aspects of the system.
-- `data/`: Stores the input files (hospital data, patient requests, etc.) and output files generated during the simulation.
-- `scripts/`: Optional scripts for automation, such as generating test cases or formatting input/output files.
+Ambulance-Management-System/
+│
+├── src/                 # Source code files implementing core functionalities
+│   ├── hospital.cpp     # Manages hospital-related operations and assignments
+│   ├── car.cpp          # Handles ambulance car logic (ready, assigned, loaded)
+│   ├── patient.cpp      # Manages patient data, requests, and priority queues
+│   └── main.cpp         # Main simulation file to bring everything together
+│
+├── data/                # Input/output files for simulation
+│   ├── input/           # Folder for input files (hospital data, requests, etc.)
+│   └── output/          # Folder for output files (simulation results)
+│
+├── docs/                # Documentation and project reports
+│   ├── report.md        # Detailed project report and design decisions
+│   └── planning.md      # Project planning and scheduling information
+│
+├── tests/               # Test cases for different system components
+│   ├── test_hospital.cpp# Unit tests for hospital functionality
+│   ├── test_car.cpp     # Unit tests for car logic
+│   └── test_patient.cpp # Unit tests for patient request handling
+│
+├── scripts/             # Optional scripts for automation (e.g., test generation)
+│   └── generate_tests.py# Script to auto-generate input/output test cases
+│
+└── README.md            # Project overview and instructions (this file)
 
 ### **How It Works**
 1. **Input File**: The input file defines the number of hospitals, car speeds, the distance matrix between hospitals, and a list of patient requests sorted by request time.
