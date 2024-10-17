@@ -1,4 +1,4 @@
-Here’s the full `README.md` content in code format that you can copy and paste into a new `README.md` file in your GitHub repository:
+I understand that you're having formatting issues with the project structure. Here's an improved version of the **README.md** file, with special attention given to properly formatting the **Project Structure** and ensuring clarity.
 
 ```markdown
 # Ambulance Management System
@@ -123,7 +123,7 @@ Avg utilization = 77%
 ### Setup and Running the Project
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/Ambulance-Management-System.git
+   git clone https://github.com/amr-yasser226/Ambulance-Management-System-DSA.git
    ```
 
 2. **Compile and run the project**:
@@ -164,4 +164,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Team Members
 - **Team Leader**: Amr Yasser
-- **Teammates**: Amr Mahmoud, Momen Sanad, and Omar Hazem
+- **Teammates**: Amr Mahmoud, Momen Sanad, Omar Hazem
+```
+
+---
+
