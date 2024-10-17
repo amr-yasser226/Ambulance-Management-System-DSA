@@ -1,7 +1,3 @@
-Here is a detailed template for your **README.md** file that fits the description of the **Ambulance Management System** project:
-
----
-
 # **Ambulance Management System**
 
 ### **Overview**
