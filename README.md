@@ -1,7 +1,3 @@
-Thank you for clarifying that this is a full **C++ project** and does not contain Python files. Based on the images and the project structure you've shared, I’ll rewrite the **README.md** structure to properly reflect a C++ project, focusing on the project’s functionality.
-
-Here’s the **corrected README.md** for your C++ **Ambulance Management System** project:
-
 ```markdown
 # Ambulance Management System
 
