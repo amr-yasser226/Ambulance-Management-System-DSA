@@ -1,3 +1,8 @@
+Thank you for clarifying that this is a full **C++ project** and does not contain Python files. Based on the images and the project structure you've shared, I’ll rewrite the **README.md** structure to properly reflect a C++ project, focusing on the project’s functionality.
+
+Here’s the **corrected README.md** for your C++ **Ambulance Management System** project:
+
+```markdown
 # Ambulance Management System
 
 ### Overview
@@ -8,7 +13,7 @@ The project applies advanced data structures to handle patients, hospitals, and 
 ---
 
 ### Project Requirements
-The system simulates ambulance service operations, and based on patient requests, assigns ambulances to handle those requests while considering various factors such as patient severity, car types, and distances between hospitals.
+The system simulates ambulance service operations and, based on patient requests, assigns ambulances to handle those requests while considering various factors such as patient severity, car types, and distances between hospitals.
 
 The main objectives are:
 - Efficiently assign ambulance cars to patients.
@@ -53,9 +58,8 @@ Ambulance-Management-System/
 │   ├── test_hospital.cpp# Unit tests for hospital functionality
 │   ├── test_car.cpp     # Unit tests for car logic
 │   └── test_patient.cpp # Unit tests for patient request handling
-├── scripts/             # Optional scripts for automation (e.g., test generation)
-│   └── generate_tests.py# Script to auto-generate input/output test cases
 └── README.md            # Project overview and instructions (this file)
+```
 
 ---
 
@@ -133,7 +137,7 @@ Avg utilization = 77%
    ```
 
 2. **Compile and run the project**:
-   Depending on the language you're using (e.g., Python, C++), the steps to compile and run will differ. Include specific instructions based on your team's implementation.
+   Depending on the language you're using (e.g., C++), the steps to compile and run will differ. Include specific instructions based on your team's implementation.
 
    Example for C++:
    ```bash
@@ -176,12 +180,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Team Members
 - **Team Leader**: Nour Eldien Ashraf Atta
-- **Teammates**: [Add teammates' names]
+- **Teammates**: [Add teammates' names here]
 ```
-
-### Instructions for Using This README:
-1. **Copy the content** above.
-2. **Paste** it into the `README.md` file in your project directory.
-3. **Commit and push** the updated `README.md` to your GitHub repository.
-
-This version keeps all of the original content, properly formats the project structure, and follows the instructions you requested. Let me know if everything looks good now or if there’s anything else you'd like to change!
