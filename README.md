@@ -26,7 +26,13 @@ The main objectives are:
 - **Priority-Based Assignment**: EP patients are given the highest priority, followed by SP and NP, with assignments optimized based on availability and distance.
 - **Statistical Output**: The system provides metrics such as average waiting times, average car utilization, and total patient processing time.
 
-### **Project Structure**
+The issue you’re encountering is due to Markdown not interpreting the structure properly because of missing line breaks and spaces in the code block. To fix this, we need to wrap the structure in a **Markdown code block** with triple backticks (```) and also ensure proper indentation and line breaks.
+
+Here’s the corrected version for your **Project Structure** section:
+
+```markdown
+### Project Structure
+```
 Ambulance-Management-System/
 │
 ├── src/                 # Source code files implementing core functionalities
@@ -52,6 +58,8 @@ Ambulance-Management-System/
 │   └── generate_tests.py# Script to auto-generate input/output test cases
 │
 └── README.md            # Project overview and instructions (this file)
+```
+```
 
 ### **How It Works**
 1. **Input File**: The input file defines the number of hospitals, car speeds, the distance matrix between hospitals, and a list of patient requests sorted by request time.
