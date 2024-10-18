@@ -56,7 +56,6 @@ The main objectives are:
 
 ### Project Structure
 ```markdown
-<!-- ```plaintext -->
 Ambulance-Management-System/
 ├── src/                 # Source code files implementing core functionalities
 │   ├── hospital.cpp     # Manages hospital-related operations and assignments
