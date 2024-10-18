@@ -1,3 +1,48 @@
+Based on the additional document you've provided, here are the important points that need to be reflected in the **README.md** file for the **Ambulance Management System** project:
+
+### Updates for the README.md File:
+
+#### 1. **Data Structures Requirement**
+   The project requires specific data structures such as:
+   - **Stack**
+   - **Queue**
+   - **Priority Queue**
+   - **No Global Variables**, **no use of friendship**, and **no C++ STL** usage are allowed.
+
+   These points should be added to clarify the project's constraints in terms of data structures.
+
+#### 2. **Phase-Based Implementation**
+   The project is divided into phases:
+   - **Phase 1.1**: Choosing appropriate data structures for the lists.
+   - **Phase 1.2**: Implementing and testing the data structures.
+   - **Phase 2**: Extending the code to implement full logic, simulation, and output file generation.
+
+   These phases can be briefly mentioned in the README for clarity about the development approach.
+
+#### 3. **Class Structure**
+   Specific classes need to be implemented:
+   - **Patient Class**: Manages patient details and operations.
+   - **Car Class**: Linked to patients, handles pickup/drop-off functionality.
+   - **Hospital Class**: Responsible for patient-car assignments.
+   - **Organizer Class**: The main class that manages the system operations, loads data, and handles the entire flow.
+   - **UI Class**: Responsible for reading inputs and printing outputs, managing user interactions.
+
+   This detailed class structure should be reflected in the **How It Works** or **Project Structure** section of the README.
+
+#### 4. **Deliverables**
+   The project deliverables include:
+   - Code files (without executables).
+   - A report on the chosen data structures.
+   - Sample input and output files.
+   - Video demo for phase 1.
+
+   These can be added in a "Deliverables" section at the end of the README file to clarify what's expected during each phase of the project.
+
+---
+
+Here’s an **updated version** of the README.md reflecting these points:
+
+```markdown
 # Ambulance Management System
 
 ### Overview
@@ -8,7 +53,16 @@ The project applies advanced data structures to handle patients, hospitals, and 
 ---
 
 ### Project Requirements
+
 The system simulates ambulance service operations and, based on patient requests, assigns ambulances to handle those requests while considering various factors such as patient severity, car types, and distances between hospitals.
+
+The project strictly follows these data structure rules:
+- **Data Structures Allowed**: Stack, Queue, Priority Queue (and any derived class).
+- **Prohibitions**:
+  - No **global variables**.
+  - No use of **C++ STL**.
+  - No **friendship** usage.
+  - No copying of objects between lists, use **pointers** to avoid duplicate memory allocation.
 
 The main objectives are:
 - Efficiently assign ambulance cars to patients.
@@ -19,9 +73,20 @@ The main objectives are:
 ---
 
 ### Project Phases
-1. **Phase 1.1 (10%)** - Basic setup: Input/output file handling, hospital distance matrix, and initial car management.
-2. **Phase 1.2 (30%)** - Implementation of patient queue management with priority and car assignment based on requests.
-3. **Phase 2 (60%)** - Full system simulation, finalizing algorithms, testing, and output generation.
+
+1. **Phase 1.1 (10%)**: 
+   - Selecting the appropriate data structures to manage the project lists (patients, cars, etc.).
+   - Deliverable: A report explaining the chosen data structures (Stack, Queue, Priority Queue).
+
+2. **Phase 1.2 (30%)**: 
+   - Implementing and testing the chosen data structures.
+   - Creating a simple simulator to verify that data structure operations work correctly.
+   - No patient-car assignment or final output generation required in this phase.
+   - Deliverables: Code, sample input file, and a demo video.
+
+3. **Phase 2 (60%)**: 
+   - Extending the code to implement the full system logic and output generation.
+   - Deliverables: Full code, six sample input files, output files, and a workload distribution document.
 
 ---
 
@@ -42,6 +107,8 @@ Ambulance-Management-System/
 │   ├── hospital.cpp     # Manages hospital-related operations and assignments
 │   ├── car.cpp          # Handles ambulance car logic (ready, assigned, loaded)
 │   ├── patient.cpp      # Manages patient data, requests, and priority queues
+│   ├── organizer.cpp    # Main organizer class to manage the system
+│   ├── ui.cpp           # Handles input/output for the user interface
 │   └── main.cpp         # Main simulation file to bring everything together
 ├── data/                # Input/output files for simulation
 │   ├── input/           # Folder for input files (hospital data, requests, etc.)
@@ -55,6 +122,16 @@ Ambulance-Management-System/
 │   └── test_patient.cpp # Unit tests for patient request handling
 └── README.md            # Project overview and instructions (this file)
 ```
+
+---
+
+### Class Structure
+
+- **Patient Class**: Handles patient data and requests.
+- **Car Class**: Linked to patients, manages car movements and patient pick-up/drop-off.
+- **Hospital Class**: Manages patients and cars, responsible for assignments.
+- **Organizer Class**: Main class to manage the overall system operations.
+- **UI Class**: Handles user input/output, managing program interaction and printing system status.
 
 ---
 
@@ -125,55 +202,28 @@ Avg utilization = 77%
 
 ---
 
-### Setup and Running the Project
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/amr-yasser226/Ambulance-Management-System-DSA.git
-   ```
+### Deliverables
 
-2. **Compile and run the project**:
-   Depending on the language you're using (e.g., C++), the steps to compile and run will differ. Include specific instructions based on your team's implementation.
+1. **Phase 1.2 Deliverables**:
+   - Code for Phase 1.2.
+   - A report on the chosen data structures.
+   - A sample input file with non-trivial scheduling requirements.
+   - A demo video showing phase 1.2 functionality.
 
-   Example for C++:
-   ```bash
-   g++ -o ambulance_system src/*.cpp
-   ./ambulance_system data/input.txt
-   ```
-
-3. **Run Tests**:
-   Ensure that the system runs correctly by executing test cases.
-   ```bash
-   ./run_tests.sh
-   ```
-
----
-
-### How to Contribute
-1. **Create a feature branch**:
-   ```bash
-   git checkout -b feature/<feature-name>
-   ```
-
-2. **Commit your changes**:
-   ```bash
-   git commit -m "Add feature or fix"
-   ```
-
-3. **Push your changes**:
-   ```bash
-   git push origin feature/<feature-name>
-   ```
-
-4. **Submit a pull request** for code review before merging into the `main` branch.
-
----
-
-### License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+2. **Phase 2 Deliverables**:
+   - Final project code (excluding executables).
+   - Six comprehensive test cases covering simple to complex scenarios.
+   - A workload distribution document.
 
 ---
 
 ### Team Members
 - **Team Leader**: Amr Yasser 
 - **Teammates**: Omar Hazem, Amr Mahmoud, and Momen Sanad
+
+---
+
+### License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ```
