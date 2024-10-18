@@ -173,7 +173,7 @@ Avg utilization = 77%
 
 ### Team Members
 - **Team Leader**: Amr Yasser 
-- **Teammates**: Omar Hazem, Amr Mahmoud, and Momen Sanad
+- **Teammates**: Omar Hazem, Amr Abdelfattah, and Momen Sanad
 
 ---
 
