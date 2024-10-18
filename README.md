@@ -1,4 +1,3 @@
-```markdown
 # Ambulance Management System
 
 ### Overview
@@ -56,7 +55,7 @@ The main objectives are:
 ---
 
 ### Project Structure
-
+```markdown
 ```plaintext
 Ambulance-Management-System/
 ├── src/                 # Source code files implementing core functionalities
