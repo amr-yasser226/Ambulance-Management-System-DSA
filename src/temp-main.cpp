@@ -1,6 +1,7 @@
 #include <iostream>
 
-int main() {
+int main()
+{
     string data = "non";
     InputHandler(data);
     return 0;
