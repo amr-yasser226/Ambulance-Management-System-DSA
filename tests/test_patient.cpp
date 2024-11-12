@@ -1,37 +1,32 @@
 #include <iostream>
-#include "../src/Patient/patient.h" // Include the Patient header
+#include "../src/Patient/patient.h"
 
-// Function to check if two strings are equal (since we can't use std::string here, we'll use character arrays)
-void expectEqual(const std::string &actual, const std::string &expected, const char *testName)
-{
-    if (actual == expected)
-    {
-        std::cout << "PASS: " << testName << std::endl;
-    }
-    else
-    {
-        std::cout << "FAIL: " << testName << " - Expected " << expected << ", but got " << actual << std::endl;
-    }
-}
-
-// Function to run a basic test on the Patient class
+// Function to test the Patient class
 void testPatientClass()
 {
-    Patient patient; // Create a Patient object
+    // Create an instance of the Patient class
+    Patient patient;
 
-    // Simulate collecting patient information (you may want to mock or automate input in a real scenario)
-    std::cout << "Please enter test data for the Patient class...\n";
-    patient.collectAndDisplayPatientInfo(); // This will call the input methods and print details
+    // Set patient information
+    patient.setFirstName("John");
+    patient.setMiddleName("H.");
+    patient.setLastName("Doe");
 
-    // Example test: check if the collected names match expected values
-    // (This requires you to manually check the output for now)
-    // In real automated testing, you would mock inputs and compare expected outputs
+    // Print patient details to verify correctness
+    std::cout << "Testing Patient Class...\n";
+    std::cout << "First Name: " << patient.getFirstName() << "\n";
+    std::cout << "Middle Name: " << patient.getMiddleName() << "\n";
+    std::cout << "Last Name: " << patient.getLastName() << "\n";
+
+    // Additional checks (if needed) for request time, severity, etc.
+    std::cout << "Request Time: " << patient.getRequestTime() << "\n";
+    std::cout << "Severity: " << patient.getSeverity() << "\n";
+    std::cout << "Nearest Hospital ID: " << patient.getNearestHospitalID() << "\n";
 }
 
-// Main function to run all tests
 int main()
 {
-    std::cout << "Running Tests for Patient Class..." << std::endl;
+    std::cout << "Running Tests for Patient Class...\n";
     testPatientClass();
     return 0;
 }

@@ -22,18 +22,21 @@ private:
 public:
     Patient();
 
-    void collectAndDisplayPatientInfo();
+    // Removed methods related to user input
+    void setFirstName(const std::string &name);
+    void setMiddleName(const std::string &name);
+    void setLastName(const std::string &name);
 
-private:
-    void getFirstName();
-    void getMiddleName();
-    void getLastName();
+    const std::string &getFirstName() const;
+    const std::string &getMiddleName() const;
+    const std::string &getLastName() const;
+
+    int getRequestTime() const;
+    int getSeverity() const;
+    PatientType getType() const;
+    int getNearestHospitalID() const;
 
     void printDetails() const;
-
-    bool isEnglishLetter(char c);
-    bool isValidName(const std::string &name);
-    void getNameInput(std::string &name, const std::string &prompt);
 };
 
 #endif // PATIENT_H

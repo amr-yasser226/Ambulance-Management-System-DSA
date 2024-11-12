@@ -1,17 +1,16 @@
 # Compiler settings
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -mconsole
+CXXFLAGS = -std=c++11 -Wall
 
 # Directories
-SRC_DIR = .
+SRC_DIR = ../src
 OBJ_DIR = obj
 BIN_DIR = bin
 TARGET = $(BIN_DIR)/test_patient
 
 # Source files with corrected paths
 PATIENT_SRC = $(SRC_DIR)/Patient/patient.cpp
-TEST_SRC = ../tests/test_patient.cpp  # Adjusted path to go up one level and into tests
-SRC_FILES = $(PATIENT_SRC) $(TEST_SRC)
+TEST_SRC = ../tests/test_patient.cpp  # Adjust this path as needed
 
 # Object files with full paths
 OBJ_FILES = $(OBJ_DIR)/patient.o $(OBJ_DIR)/test_patient.o
