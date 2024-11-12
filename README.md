@@ -57,24 +57,25 @@ The main objectives are:
 ### Project Structure
 ```markdown
 Ambulance-Management-System/
-├── src/                 # Source code files implementing core functionalities
-│   ├── hospital.cpp     # Manages hospital-related operations and assignments
-│   ├── car.cpp          # Handles ambulance car logic (ready, assigned, loaded)
-│   ├── patient.cpp      # Manages patient data, requests, and priority queues
-│   ├── organizer.cpp    # Main organizer class to manage the system
-│   ├── ui.cpp           # Handles input/output for the user interface
-│   └── main.cpp         # Main simulation file to bring everything together
-├── data/                # Input/output files for simulation
-│   ├── input/           # Folder for input files (hospital data, requests, etc.)
-│   └── output/          # Folder for output files (simulation results)
-├── docs/                # Documentation and project reports
-│   ├── report.md        # Detailed project report and design decisions
-│   └── planning.md      # Project planning and scheduling information
-├── tests/               # Test cases for different system components
-│   ├── test_hospital.cpp# Unit tests for hospital functionality
-│   ├── test_car.cpp     # Unit tests for car logic
-│   └── test_patient.cpp # Unit tests for patient request handling
-└── README.md            # Project overview and instructions (this file)
+├── src/                   # Source code files implementing core functionalities
+│   ├── hospital.cpp       # Manages hospital-related operations and assignments
+│   ├── car.cpp            # Handles ambulance car logic (ready, assigned, loaded)
+│   ├── patient.cpp        # Manages patient data, requests, and priority queues
+│   ├── organizer.cpp      # Main organizer class to manage the system
+│   ├── ui.cpp             # Handles input/output for the user interface
+│   └── main.cpp           # Main simulation file to bring everything together
+├── data/                  # Input/output files for simulation
+│   ├── input/             # Folder for input files (hospital data, requests, etc.)
+│   └── output/            # Folder for output files (simulation results)
+├── docs/                  # Documentation and project reports
+│   ├── report.md          # Detailed project report and design decisions
+│   └── planning.md        # Project planning and scheduling information
+├── tests/                 # Test cases for different system components
+│   ├── test_hospital.cpp  # Unit tests for hospital functionality
+│   ├── test_car.cpp       # Unit tests for car logic
+│   ├── test_patient.cpp   # Unit tests for patient request handling
+│   └── test_organizer.cpp # Unit tests for the organizer logic
+└── README.md              # Project overview and instructions (this file)
 ```
 
 ---
