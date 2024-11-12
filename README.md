@@ -57,25 +57,35 @@ The main objectives are:
 ### Project Structure
 ```markdown
 Ambulance-Management-System/
-├── src/                   # Source code files implementing core functionalities
-│   ├── hospital.cpp       # Manages hospital-related operations and assignments
-│   ├── car.cpp            # Handles ambulance car logic (ready, assigned, loaded)
-│   ├── patient.cpp        # Manages patient data, requests, and priority queues
-│   ├── organizer.cpp      # Main organizer class to manage the system
-│   ├── ui.cpp             # Handles input/output for the user interface
-│   └── main.cpp           # Main simulation file to bring everything together
-├── data/                  # Input/output files for simulation
-│   ├── input/             # Folder for input files (hospital data, requests, etc.)
-│   └── output/            # Folder for output files (simulation results)
-├── docs/                  # Documentation and project reports
-│   ├── report.md          # Detailed project report and design decisions
-│   └── planning.md        # Project planning and scheduling information
-├── tests/                 # Test cases for different system components
-│   ├── test_hospital.cpp  # Unit tests for hospital functionality
-│   ├── test_car.cpp       # Unit tests for car logic
-│   ├── test_patient.cpp   # Unit tests for patient request handling
-│   └── test_organizer.cpp # Unit tests for the organizer logic
-└── README.md              # Project overview and instructions (this file)
+├── src/                 # Source code files implementing core functionalities
+│   ├── Hospital/        # Folder for the Hospital Class
+│   │   ├── hospital.h   # Header file for the Hospital Class
+│   │   └── hospital.cpp # Implementation file for the Hospital Class
+│   ├── Car/             # Folder for the Car Class
+│   │   ├── car.h        # Header file for the Car Class
+│   │   └── car.cpp      # Implementation file for the Car Class
+│   ├── Patient/         # Folder for the Patient Class
+│   │   ├── patient.h    # Header file for the Patient Class
+│   │   └── patient.cpp  # Implementation file for the Patient Class
+│   ├── Organizer/       # Folder for the Organizer Class
+│   │   ├── organizer.h  # Header file for the Organizer Class
+│   │   └── organizer.cpp# Implementation file for the Organizer Class
+│   ├── UI/              # Folder for the UI Class
+│   │   ├── ui.h         # Header file for the UI Class
+│   │   └── ui.cpp       # Implementation file for the UI Class
+│   └── main.cpp         # Main simulation file that brings everything together
+├── data/                # Input/output files for simulation
+│   ├── input/           # Folder for input files (hospital data, requests, etc.)
+│   └── output/          # Folder for output files (simulation results)
+├── docs/                # Documentation and project reports
+│   ├── report.md        # Detailed project report and design decisions
+│   └── planning.md      # Project planning and scheduling information
+├── tests/               # Test cases for different system components
+│   ├── test_hospital.cpp# Unit tests for the Hospital Class
+│   ├── test_car.cpp     # Unit tests for the Car Class
+│   ├── test_patient.cpp # Unit tests for the Patient Class
+│   └── test_organizer.cpp # Unit tests for the Organizer Class
+└── README.md            # Project overview and instructions (this file)
 ```
 
 ---
