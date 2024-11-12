@@ -67,7 +67,7 @@ void Patient::printDetails() const
               << "Last Name: " << lastName << "\n";
 }
 
-// Method to perform all input and output actions in one call
+// Method to perform all input and output actions in one call 
 void Patient::collectAndDisplayPatientInfo()
 {
     getFirstName();
