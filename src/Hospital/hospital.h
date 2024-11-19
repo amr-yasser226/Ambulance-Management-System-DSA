@@ -2,8 +2,8 @@
 #define HOSPITAL_H
 
 #include <iostream>
-#include "patient.h"
-#include "car.h"
+#include "../Patient/patient.h"
+#include "../Car/car.h"
 
 // Simplified Node Class
 template <class T>

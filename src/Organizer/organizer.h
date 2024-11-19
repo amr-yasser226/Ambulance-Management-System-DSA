@@ -1,7 +1,7 @@
 #ifndef ORGANIZER_H
 #define ORGANIZER_H
 
-#include "hospital.h"
+#include "../Hospital/hospital.h"
 
 class Organizer
 {

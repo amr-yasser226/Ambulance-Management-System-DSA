@@ -1,5 +1,11 @@
 #include "organizer.h"
+#include "../Hospital/hospital.cpp"
+#include "../Patient/patient.cpp"
+
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 Organizer::Organizer() : hospitalCount(0), currentTime(0)
 {
@@ -20,8 +26,17 @@ Organizer::~Organizer()
 
 void Organizer::loadInputData()
 {
-    // Placeholder for loading input data
-    // Initialize hospitals and load data
+    std::ifstream file("../input.txt");
+
+    if (!file.is_open()) {
+        std::cerr << "Error opening file (organizer.cpp)" << std::endl;
+        return 1;
+    }
+
+    int matrix[150][6];
+    int row_count = 0;
+    std::string line, line_type;
+    
 }
 
 void Organizer::simulate()
