@@ -11,7 +11,6 @@ Organizer::Organizer() : hospitalCount(0), currentTime(0)
 
 Organizer::~Organizer()
 {
-
     for (int i = 0; i < hospitalCount; i++)
     {
         delete hospitals[i];
@@ -27,7 +26,7 @@ void Organizer::loadInputData()
 void Organizer::simulate()
 {
     while (currentTime < 1000)
-    { // Arbitrary simulation limit, adjust as needed
+    {
         for (int i = 0; i < hospitalCount; i++)
         {
             hospitals[i]->assignCarToPatient();

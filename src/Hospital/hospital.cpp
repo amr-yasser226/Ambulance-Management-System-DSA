@@ -35,6 +35,6 @@ void Hospital::addCar(Car carInstance)
 
 bool Hospital::assignCarToPatient()
 {
-    // Implement logic for assigning cars to patients here
+    // Implement the logic to assign a car to a patient based on their speed and priority
     return false;
 }

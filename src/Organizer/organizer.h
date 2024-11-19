@@ -6,7 +6,7 @@
 class Organizer
 {
 private:
-    Hospital *hospitals[10]; // Fixed-size array of pointers to Hospital objects (adjust size as needed)
+    Hospital *hospitals[10];
     int hospitalCount;
     int currentTime;
 

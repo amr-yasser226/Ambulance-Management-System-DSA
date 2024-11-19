@@ -5,7 +5,6 @@
 #include "patient.h"
 #include "car.h"
 
-// Simplified Node Class
 template <class T>
 class Node
 {
@@ -38,4 +37,4 @@ public:
     bool assignCarToPatient();
 };
 
-#endif // HOSPITAL_H
+#endif
