@@ -80,6 +80,8 @@ void Organizer::loadInputData()
     // create x number of hospitals based on hospitalCount
     // for each hospital set its required/given data
     // from the input file
+
+    file.close();
 }
 
 void Organizer::simulate()
