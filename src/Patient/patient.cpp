@@ -58,3 +58,8 @@ void Patient::printDetails() const
               << "Middle Name: " << middleName << "\n"
               << "Last Name: " << lastName << "\n";
 }
+
+void Patient::setNearestHospitalID(int ID)
+{
+    nearestHospitalID = ID;
+}

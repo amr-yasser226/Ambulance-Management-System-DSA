@@ -24,7 +24,6 @@
 //     }
 // }
 
-int Organizer::
 
 int Organizer::getValueByMap(int index)
 {
@@ -75,33 +74,12 @@ void Organizer::loadInputData()
     file >> SCars >> NCars;
 
     // Reading the hospitals distance matrix
-    int matrixHospitalDistances[hospitalCount][hospitalCount];
-    for (int y = 0; y < hospitalCount; y++)
-    {
-        for (int x = 0; x < hospitalCount; x++)
-        {
-            file >> matrixHospitalDistances[y][x];
-        }
-    }
 
-    for (int y = 0; y < hospitalCount; y++)
-    {
-        for (int x = 0; x < hospitalCount; x++)
-        {
-            std::cout << matrixHospitalDistances[y][x] << " ";
-        }
-        std::cout << std::endl;
-    }
-
-    // Reading amount of cars in each hospital
-    int matrixCarsAmount[hospitalCount][2];
-    for (int y = 0; y < hospitalCount; y++)
-    {
-        file >> matrixCarsAmount[y][0];
-        file >> matrixCarsAmount[y][1];
-    }
-
-    file.close();
+    // to be continued..
+    //
+    // create x number of hospitals based on hospitalCount
+    // for each hospital set its required/given data
+    // from the input file
 }
 
 void Organizer::simulate()

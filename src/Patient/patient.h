@@ -26,6 +26,7 @@ public:
     void setFirstName(const std::string &name);
     void setMiddleName(const std::string &name);
     void setLastName(const std::string &name);
+    void setNearestHospitalID(int ID);
 
     const std::string &getFirstName() const;
     const std::string &getMiddleName() const;
