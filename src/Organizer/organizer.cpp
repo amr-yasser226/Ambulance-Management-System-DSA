@@ -19,7 +19,7 @@ Organizer::~Organizer()
 
 int Organizer::getValueByMap(int index)
 {
-    if (index % 11 == 0) return 0; // Means the index is in
+    if (index % 11 == 0) return 0; // The index corresponds to a diagonal element in the symmetric matrix
 
     int spam, targetValue = 99, value = -1;
 
@@ -177,9 +177,10 @@ void Organizer::simulate()
         }
     }
 
+    // for test - delete later
     int test;
     file >> test;
-    std::cout << "\n\n" << test << std::endl;
+    std::cout << "\n\n" << test << std::endl << std::endl;
 
     file.close();
 }
