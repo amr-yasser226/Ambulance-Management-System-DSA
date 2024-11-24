@@ -1,11 +1,14 @@
 #include "hospital.h"
+#include "../Car/car.h"
 
-Hospital::Hospital(int hospitalID, int Cars, int SCars, int NCars) : hospitalID(hospitalID), Cars(Cars), SCars(SCars), NCars(NCars), patients(0), headPatient(nullptr), headCar(nullptr) {}
+Hospital::Hospital(int hospitalID, int Cars, int SCars, int NCars) : hospitalID(hospitalID), Cars(Cars), SCars(SCars), NCars(NCars), patients(0), headPatient(nullptr), headCars(nullptr) {}
 
 int Hospital::getHospitalID() { return hospitalID; }
 int Hospital::getTotalCars() { return Cars; }
 int Hospital::getSpecialCars() { return SCars; }
 int Hospital::getNormalCars() { return NCars; }
+
+Node<Car>* Hospital::getCars() { return headCars; }
 
 int Hospital::getNumberOfPatients(int patientType)
 {
@@ -33,12 +36,15 @@ void Hospital::addPatient(Patient patientInstance)
     patients++;
 }
 
-void Hospital::addCar(Car carInstance)
+void Hospital::addCars(Car::CarType type, int speed, int amount)
 {
-    Node<Car> *newCar = new Node<Car>(carInstance);
-    newCar->setNext(headCar);
-    headCar = newCar;
-    Cars++;
+    for (int i = 0; i < amount; i++)
+    {
+        Car carInstance(type, speed);
+        Node<Car> *newCar = new Node<Car>(carInstance);
+        newCar->setNext(headCars);
+        headCars = newCar;
+    }
 }
 
 bool Hospital::assignCarToPatient()

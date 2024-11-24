@@ -12,10 +12,11 @@ TARGET = $(BIN_DIR)/simulate_test1
 ORGANIZER_SRC = $(SRC_DIR)/Organizer/organizer.cpp
 HOSPITAL_SRC = $(SRC_DIR)/Hospital/hospital.cpp
 PATIENT_SRC = $(SRC_DIR)/Patient/patient.cpp
+CAR_SRC = $(SRC_DIR)/Car/car.cpp
 TEST_SRC = ../tests/simulate_test1.cpp
 
 # Object files
-OBJ_FILES = $(OBJ_DIR)/organizer.o $(OBJ_DIR)/hospital.o $(OBJ_DIR)/patient.o $(OBJ_DIR)/simulate_test1.o
+OBJ_FILES = $(OBJ_DIR)/organizer.o $(OBJ_DIR)/hospital.o $(OBJ_DIR)/patient.o $(OBJ_DIR)/car.o $(OBJ_DIR)/simulate_test1.o
 
 # Default target
 all: $(TARGET)
@@ -37,6 +38,11 @@ $(OBJ_DIR)/hospital.o: $(HOSPITAL_SRC)
 
 # Rule to compile patient.cpp
 $(OBJ_DIR)/patient.o: $(PATIENT_SRC)
+	@mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Rule to compile car.cpp
+$(OBJ_DIR)/car.o: $(CAR_SRC)
 	@mkdir -p $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 

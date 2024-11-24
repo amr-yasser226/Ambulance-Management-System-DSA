@@ -1,5 +1,5 @@
 #include "car.h"
-#include "patient.h"
+#include "../Patient/patient.h"
 
 Car::Car(CarType type, int speed) : type(type), status(READY), speed(speed), currentPatient(nullptr) {}
 

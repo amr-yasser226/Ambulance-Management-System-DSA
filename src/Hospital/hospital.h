@@ -13,19 +13,21 @@ private:
     int Cars, SCars, NCars;
     int patients;
     Node<Patient> *headPatient;
-    Node<Car> *headCar;
+    Node<Car> *headCars; // This includes all cars together | we differentiate between each by car type
 
 public:
     Hospital(int hospitalID, int Cars, int SCars, int NCars);
     int getNumberOfPatients(int patientType);
     void addPatient(Patient patientInstance);
-    void addCar(Car carInstance);
+    void addCars(Car::CarType type, int speed, int amount);
     bool assignCarToPatient();
 
     int getHospitalID();
     int getTotalCars();
     int getSpecialCars();
     int getNormalCars();
+
+    Node<Car>* getCars();
 };
 
 #endif // HOSPITAL_H

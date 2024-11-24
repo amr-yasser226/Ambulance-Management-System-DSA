@@ -13,8 +13,8 @@ class Organizer
 private:
     Node<Hospital>* hospitals;
     int hospitalCount = 0;
-    int SCars = 0, NCars = 0;
-    int currentTime = 0;
+    int specialCarSpeed = 0, normalCarSpeed = 0;
+    int currentTime = 1;
 
 
 public:
@@ -28,7 +28,7 @@ public:
     void addHospital(Hospital* hospitalInstance);
 
     void loadInputData();
-    // void simulate();
+    void simulate();
     void generateOutput();
 };
 

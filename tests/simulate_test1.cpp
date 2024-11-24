@@ -7,7 +7,7 @@
 int main() {
     Organizer organizer;
     organizer.loadInputData();
-    // organizer.simulate();
+    organizer.simulate();
     organizer.generateOutput();
     return 0;
 }

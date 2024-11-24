@@ -1,6 +1,6 @@
 #include "organizer.h"
 
-Organizer::Organizer() : hospitals(nullptr), hospitalCount(0), SCars(0), NCars(0), currentTime(0) {}
+Organizer::Organizer() : hospitals(nullptr), hospitalCount(0), specialCarSpeed(0), normalCarSpeed(0), currentTime(1) {}
 
 Organizer::~Organizer()
 {
@@ -81,7 +81,7 @@ void Organizer::loadInputData()
 
     // Read first 2 lines
     file >> hospitalCount;
-    file >> SCars >> NCars;
+    file >> specialCarSpeed >> normalCarSpeed;
 
     // Skip the hospitals distance matrix
     int spam;
@@ -96,34 +96,93 @@ void Organizer::loadInputData()
     {
         file >> SP >> NP;
         Hospital* newHospital = new Hospital(y, SP+NP, SP, NP);
+        newHospital->addCars(Car::NC, normalCarSpeed, NP);
+        newHospital->addCars(Car::SC, specialCarSpeed, SP);
         addHospital(newHospital);
     }
+
+    // Node<Hospital>* temp = hospitals; // DEBUGGING
+    // while (temp != nullptr)
+    // {
+    //     std::cout << "Hospital ID #" << temp->getData().getHospitalID() << std::endl;
+    //     std::cout << " - Total Cars: " << temp->getData().getTotalCars() << std::endl;
+    //     std::cout << " -  Special |  " << temp->getData().getSpecialCars() << std::endl;
+    //     std::cout << " -  Normal  |  " << temp->getData().getNormalCars() << std::endl;
+    //     std::cout << "---------------------" << std::endl;
+    //     temp = temp->getNext();
+    // }
 
     Node<Hospital>* temp = hospitals; // DEBUGGING
     while (temp != nullptr)
     {
-        std::cout << temp->getData().getHospitalID() << std::endl;
-        std::cout << temp->getData().getTotalCars() << std::endl;
-        std::cout << temp->getData().getSpecialCars() << std::endl;
-        std::cout << temp->getData().getNormalCars() << std::endl;
-        std::cout << "---------------------" << std::endl;
+        Node<Car>* tempCars = temp->getData().getCars();
+        while (tempCars != nullptr)
+        {
+            std::cout << tempCars->getData().getType() << " ";
+            tempCars = tempCars->getNext();
+        }
+        std::cout << std::endl;
         temp = temp->getNext();
     }
 
     file.close();
 }
 
-// void Organizer::simulate()
-// {
-//     while (currentTime < 1000)
-//     { // Arbitrary simulation limit, adjust as needed
-//         for (int i = 0; i < hospitalCount; i++)
-//         {
-//             hospitals[i]->assignCarToPatient();
-//         }
-//         currentTime++;
-//     }
-// }
+void Organizer::simulate()
+{
+    std::ifstream file("../data/input/input_1_2.txt");
+
+    if (!file.is_open())
+    {
+        std::cerr << "Error opening file (organizer.cpp / simulate [1])" << std::endl;
+        return;
+    }
+
+    int calculateSpam = 3 + (hospitalCount * hospitalCount) + (hospitalCount * 2);
+    for (int spam, i = 0; i < calculateSpam; i++) {
+        file >> spam;
+        std::cout << "skipping.." << std::endl;
+    }
+
+    int requests;
+    file >> requests;
+
+    // i is the pid
+    for (int i = 1; i <= requests; i++)
+    {
+        // Read the following:
+        // type - timestep - pid - nearest hospital - distance of nearest hospital - severity
+        std::string inputType; // this should be of type 'PatientType' (todo later)
+        int timestep;
+        int pid;
+        int nearesHospital;
+        int nearesHospitalDistance;
+        int severity;
+
+        if (file >> inputType >> timestep >> pid >> nearesHospital >> nearesHospitalDistance >> severity)
+        {
+            currentTime = timestep;
+            std::cout << "current timestep: " << currentTime << std::endl;
+            std::cout << "current i: " << i << std::endl;
+
+            // Logic of assigning each patient a car
+            // then returning him to the hospital
+            //
+            //->assignCarToPatient();
+        }
+        else
+        {
+            std::cerr << "Error reading request (organizer.cpp / simulate [2])" << std::endl;
+            break;
+        }
+    }
+
+    int test;
+    file >> test;
+    std::cout << "\n\n" << test << std::endl;
+
+    file.close();
+}
 
 void Organizer::generateOutput()
 {
