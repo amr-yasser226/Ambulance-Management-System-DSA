@@ -3,14 +3,17 @@
 # Change to the directory of the current script
 cd "$(dirname "$0")"
 
-# Go up one directory 
+# Clean previous build
 cd ../src
+make -f Makefile2 clean
 
-# Run make with Makefile2
+# Build
 make -f Makefile2
 
-# Change to bin directory
-cd ../src/bin
-
-# Run the simulation test
-./simulate_test1
+# Run if build was successful
+if [ $? -eq 0 ]; then
+    cd bin
+    ./simulate_test1
+else
+    echo "Build failed"
+fi

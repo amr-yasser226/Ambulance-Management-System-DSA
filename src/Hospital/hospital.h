@@ -4,38 +4,28 @@
 #include <iostream>
 #include "../Patient/patient.h"
 #include "../Car/car.h"
-
-// Simplified Node Class
-template <class T>
-class Node
-{
-private:
-    T data;
-    Node *next;
-
-public:
-    Node(T data) : data(data), next(nullptr) {}
-    void setData(T d) { data = d; }
-    void setNext(Node *n) { next = n; }
-    T getData() { return data; }
-    Node *getNext() { return next; }
-};
+#include "../Data Structures/Node.h"
 
 class Hospital
 {
 private:
     int hospitalID;
+    int Cars, SCars, NCars;
     int patients;
     Node<Patient> *headPatient;
-    int cars;
     Node<Car> *headCar;
 
 public:
-    Hospital(int hospitalID);
+    Hospital(int hospitalID, int Cars, int SCars, int NCars);
     int getNumberOfPatients(int patientType);
     void addPatient(Patient patientInstance);
     void addCar(Car carInstance);
     bool assignCarToPatient();
+
+    int getHospitalID();
+    int getTotalCars();
+    int getSpecialCars();
+    int getNormalCars();
 };
 
 #endif // HOSPITAL_H

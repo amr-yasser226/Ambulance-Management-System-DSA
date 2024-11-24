@@ -1,6 +1,14 @@
 #include "patient.h"
 
-Patient::Patient() : requestTime(0), severity(0), type(NP), nearestHospitalID(0) {}
+Patient::Patient() 
+    : firstName("")
+    , middleName("")
+    , lastName("")
+    , requestTime(0)
+    , severity(0)
+    , type(NP)
+    , nearestHospitalID(0) 
+{}
 
 void Patient::setFirstName(const std::string &name)
 {

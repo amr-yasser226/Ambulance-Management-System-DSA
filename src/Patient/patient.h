@@ -2,21 +2,25 @@
 #define PATIENT_H
 
 #include <iostream>
+#include <string>
 
 class Patient
 {
+public:
+    enum PatientType
+    {
+        NP,
+        SP,
+        EP
+    };
+
 private:
     std::string firstName;
     std::string middleName;
     std::string lastName;
     int requestTime;
     int severity;
-    enum PatientType
-    {
-        NP,
-        SP,
-        EP
-    } type;
+    PatientType type;
     int nearestHospitalID;
 
 public:
@@ -34,9 +38,10 @@ public:
 
     int getRequestTime() const;
     int getSeverity() const;
-    PatientType getType() const;
-    int getNearestHospitalID() const;
 
+    PatientType getType() const;
+
+    int getNearestHospitalID() const;
     void printDetails() const;
 };
 
