@@ -154,7 +154,7 @@ void Organizer::simulate()
     int calculateSpam = 3 + (hospitalCount * hospitalCount) + (hospitalCount * 2);
     for (int spam, i = 0; i < calculateSpam; i++) {
         file >> spam;
-        std::cout << "skipping.." << std::endl;
+        std::cout << "skipping.." << std::endl; // DEBUGGING
     }
 
     int requests;
@@ -165,7 +165,7 @@ void Organizer::simulate()
     {
         // Read the following:
         // type - timestep - pid - nearest hospital - distance of nearest hospital - severity
-        std::string inputType; // this should be of type 'PatientType' (todo later)
+        std::string inputType;
         int timestep;
         int pid;
         int nearestHospital;
@@ -190,6 +190,7 @@ void Organizer::simulate()
             Patient newPatient;
             newPatient.setPatientType(inputType);
             newPatient.setNearestHospitalID(nearestHospital);
+
             Request newRequest(
                 newPatient,             // patient
                 Car::CarType::NC,       // type
@@ -221,7 +222,7 @@ void Organizer::simulate()
         }
     }
 
-    // for test - delete later
+    // for test - delete later // DEBUGGING
     int test;
     file >> test;
     std::cout << "\n\n" << test << std::endl << std::endl;
