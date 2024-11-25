@@ -1,19 +1,32 @@
 #include "organizer.h"
 
-Organizer::Organizer() : hospitals(nullptr), hospitalCount(0), specialCarSpeed(0), normalCarSpeed(0), currentTime(1) {}
+Organizer::Organizer() : 
+    hospitals(nullptr), 
+    requests(new priQueue<Request>()),
+    hospitalCount(0), 
+    specialCarSpeed(0), 
+    normalCarSpeed(0), 
+    currentTime(1) 
+{}
 
 Organizer::~Organizer()
 {
-    Node<Hospital>* current = hospitals;
-
-    while (current != nullptr)
+    // Clean up hospitals list
+    Node<Hospital>* currentHospital = hospitals;
+    while (currentHospital != nullptr)
     {
-        Node<Hospital>* next = current->getNext();
-        delete current;
-        current = next;
+        Node<Hospital>* nextHospital = currentHospital->getNext();
+        delete currentHospital;
+        currentHospital = nextHospital;
     }
-
     hospitals = nullptr;
+
+    // Clean up requests list
+    if (requests != nullptr)
+    {
+        delete requests;
+        requests = nullptr;
+    }
 }
 
 
@@ -112,18 +125,18 @@ void Organizer::loadInputData()
     //     temp = temp->getNext();
     // }
 
-    Node<Hospital>* temp = hospitals; // DEBUGGING
-    while (temp != nullptr)
-    {
-        Node<Car>* tempCars = temp->getData().getCars();
-        while (tempCars != nullptr)
-        {
-            std::cout << tempCars->getData().getType() << " ";
-            tempCars = tempCars->getNext();
-        }
-        std::cout << std::endl;
-        temp = temp->getNext();
-    }
+    // Node<Hospital>* temp = hospitals; // DEBUGGING
+    // while (temp != nullptr)
+    // {
+    //     Node<Car>* tempCars = temp->getData().getCars();
+    //     while (tempCars != nullptr)
+    //     {
+    //         std::cout << tempCars->getData().getType() << " ";
+    //         tempCars = tempCars->getNext();
+    //     }
+    //     std::cout << std::endl;
+    //     temp = temp->getNext();
+    // }
 
     file.close();
 }
@@ -155,20 +168,51 @@ void Organizer::simulate()
         std::string inputType; // this should be of type 'PatientType' (todo later)
         int timestep;
         int pid;
-        int nearesHospital;
-        int nearesHospitalDistance;
+        int nearestHospital;
+        int nearestHospitalDistance;
         int severity;
 
-        if (file >> inputType >> timestep >> pid >> nearesHospital >> nearesHospitalDistance >> severity)
+        if (file >> inputType >> timestep >> pid >> nearestHospital >> nearestHospitalDistance >> severity)
         {
             currentTime = timestep;
-            std::cout << "current timestep: " << currentTime << std::endl;
-            std::cout << "current i: " << i << std::endl;
+            std::cout << "debugging | current timestep: " << currentTime << std::endl;
 
             // Logic of assigning each patient a car
             // then returning him to the hospital
             //
-            //->assignCarToPatient();
+            // ---------------- BELOW ----------------
+
+            // Check OUT list here first
+
+            // Check BACK list here second
+
+            // Create a patient request based on read data
+            Patient newPatient;
+            newPatient.setPatientType(inputType);
+            newPatient.setNearestHospitalID(nearestHospital);
+            Request newRequest(
+                newPatient,             // patient
+                Car::CarType::NC,       // type
+                Car::CarStatus::READY,  // status
+                nearestHospitalDistance,// nearestHospitalDistance
+                currentTime,            // QT (Queuing Time)
+                0,                      // PT (Pickup Time)
+                0,                      // WT (Waiting Time)
+                0,                      // FT (Finish Time)
+                0                       // carBusyTime
+            );
+
+            // LOOP: if: for each patient in the priority queue,
+            //       their car type exist in their hospital (the amount if > 0)
+            //          then ->assignCarToPatient();
+            //       else:
+            //          do nothing
+
+            // LOOP: if: the current patient (the one we just created above)
+            //       their car type exist in their hospital
+            //          then ->assignCarToPatient();
+            //       else:
+            //          enqueue the request to the priority queue
         }
         else
         {

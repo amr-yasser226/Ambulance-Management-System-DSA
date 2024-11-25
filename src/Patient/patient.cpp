@@ -55,6 +55,26 @@ Patient::PatientType Patient::getType() const
     return type;
 }
 
+void Patient::setPatientType(std::string type)
+{
+    if (type == "NP")
+    {
+        this->type = NP;
+    }
+    else if (type == "SP")
+    {
+        this->type = SP;
+    }
+    else if (type == "EP")
+    {
+        this->type = EP;
+    }
+    else
+    {
+        std::cerr << "Error: Invalid patient type provided." << std::endl;
+    }
+}
+
 int Patient::getNearestHospitalID() const
 {
     return nearestHospitalID;

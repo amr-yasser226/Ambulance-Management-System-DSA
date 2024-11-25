@@ -18,7 +18,7 @@ private:
     std::string firstName;
     std::string middleName;
     std::string lastName;
-    int requestTime;
+    int requestTime; // most likely will be removed
     int severity;
     PatientType type;
     int nearestHospitalID;
@@ -40,6 +40,7 @@ public:
     int getSeverity() const;
 
     PatientType getType() const;
+    void setPatientType(std::string type);
 
     int getNearestHospitalID() const;
     void printDetails() const;
