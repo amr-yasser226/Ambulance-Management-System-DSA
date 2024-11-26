@@ -29,6 +29,54 @@ Organizer::~Organizer()
     }
 }
 
+bool Organizer::assignCarToPatient(Request request)
+{
+    // update the request information:
+    // - CarStatus becomes ASSIGNED
+    // - QT = stays the same
+    // - AT = currentTime
+    // - PT = AT + ( request.nearestHospitalDistance / depending on car type set the speed )
+    // - WT = PT - QT
+    // - FT = PT + ( request.nearestHospitalDistance / depending on car type set the speed )
+    // Create the same type of car
+    // dequeue the car from hospital cars list
+    // decrement amount of cars and car's type in the hospital
+    // enqueue the car to OUT list
+
+    double speed = (request.type == Car::CarType::SC) ? (specialCarSpeed) : (normalCarSpeed);
+
+    request.status = Car::CarStatus::ASSIGNED;
+    request.AT = currentTime;
+    request.PT = request.AT + (request.nearestHospitalDistance/(speed));
+    request.WT = request.PT - request.QT;
+    request.FT = request.PT + (request.nearestHospitalDistance/(speed));
+
+    Car carInstance(request.type, speed);
+
+    // stop here
+
+    return true;
+}
+
+int Organizer::fetchCarsInHospital(int hospitalID, Car::CarType type)
+{
+    int carsCount = 0;
+
+    Node<Hospital>* temp = hospitals;
+
+    while (temp != nullptr)
+    {
+        if (temp->getData().getHospitalID() == hospitalID)
+        {
+            carsCount = (type == Car::CarType::SC) ? (temp->getData().getSpecialCars()) : (temp->getData().getNormalCars());
+            break;
+        }
+
+        temp = temp->getNext();
+    }
+
+    return carsCount;
+}
 
 int Organizer::getValueByMap(int index)
 {
@@ -159,6 +207,7 @@ void Organizer::simulate()
 
     int requests;
     file >> requests;
+    std::cout << "REQUESTS || " << requests << std::endl;
 
     // i is the pid
     for (int i = 1; i <= requests; i++)
@@ -177,6 +226,44 @@ void Organizer::simulate()
             currentTime = timestep;
             std::cout << "debugging | current timestep: " << currentTime << std::endl;
 
+            Car::CarType carType;
+            if (inputType == "NP")
+            {
+                carType = Car::CarType::NC;
+            }
+            else if (inputType == "SP")
+            {
+                carType = Car::CarType::SC;
+            }
+            else if (inputType == "EP")
+            {
+                carType = Car::CarType::NC;
+            }
+            else
+            {
+                std::cerr << "Unknown patient type: " << inputType << " (organizer.cpp / simulate [3])" << std::endl;
+                carType = Car::CarType::NC;
+            }
+
+            Patient::PatientType patientType;
+            if (inputType == "NP")
+            {
+                patientType = Patient::PatientType::NP;
+            }
+            else if (inputType == "SP")
+            {
+                patientType = Patient::PatientType::SP;
+            }
+            else if (inputType == "EP")
+            {
+                patientType = Patient::PatientType::EP;
+            }
+            else
+            {
+                std::cerr << "Unknown patient type: " << inputType << " (organizer.cpp / simulate [3])" << std::endl;
+                carType = Car::CarType::NC;
+            }
+
             // Logic of assigning each patient a car
             // then returning him to the hospital
             //
@@ -188,19 +275,20 @@ void Organizer::simulate()
 
             // Create a patient request based on read data
             Patient newPatient;
-            newPatient.setPatientType(inputType);
+            newPatient.setPatientType(patientType);
             newPatient.setNearestHospitalID(nearestHospital);
 
             Request newRequest(
-                newPatient,             // patient
-                Car::CarType::NC,       // type
-                Car::CarStatus::READY,  // status
-                nearestHospitalDistance,// nearestHospitalDistance
-                currentTime,            // QT (Queuing Time)
-                0,                      // PT (Pickup Time)
-                0,                      // WT (Waiting Time)
-                0,                      // FT (Finish Time)
-                0                       // carBusyTime
+                newPatient,                   // patient
+                carType,                      // type
+                Car::CarStatus::READY,        // status
+                nearestHospitalDistance,      // nearestHospitalDistance
+                currentTime,                  // QT (Queuing Time)
+                0.0,                          // AT (Assignment Time)
+                0.0,                          // PT (Pickup Time)
+                0.0,                          // WT (Waiting Time)
+                0.0,                          // FT (Finish Time)
+                0.0                           // carBusyTime
             );
 
             // LOOP: if: for each patient in the priority queue,
@@ -208,12 +296,37 @@ void Organizer::simulate()
             //          then ->assignCarToPatient();
             //       else:
             //          do nothing
+            priNode<Request>* temp = Organizer::requests->getHead();
+            while (temp != nullptr)
+            {
+                int tempPriority;
+                Request tempRequest = temp->getItem(tempPriority);
+                int tempHospitalID = tempRequest.patient.getNearestHospitalID();
 
-            // LOOP: if: the current patient (the one we just created above)
+                Car::CarType tempCarType = tempRequest.type;
+
+                if (fetchCarsInHospital(tempHospitalID, tempCarType) > 0)
+                {
+                    // assign the patient's request a car and do the assigning protocol in paper draft
+                    std::cout << "Did it work? " << assignCarToPatient(tempRequest) << std::endl;
+                }
+
+                temp = temp->getNext();
+            }
+
+            //       if: the current patient (the one we just created above)
             //       their car type exist in their hospital
             //          then ->assignCarToPatient();
             //       else:
             //          enqueue the request to the priority queue
+            if (fetchCarsInHospital(nearestHospital, carType) > 0)
+            {
+                // assign the patient's request a car and do the assigning protocol in paper draft
+            }
+            else
+            {
+                Organizer::requests->enqueue(newRequest, severity);
+            }
         }
         else
         {

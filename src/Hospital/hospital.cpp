@@ -47,8 +47,38 @@ void Hospital::addCars(Car::CarType type, int speed, int amount)
     }
 }
 
-bool Hospital::assignCarToPatient()
+void Hospital::dequeueCar(Car::CarType type, int amount)
 {
-    // Implement logic for assigning cars to patients here
-    return false;
+    if (amount <= 0 || headCars == nullptr) 
+        return;
+
+    Node<Car>* current = headCars;
+    Node<Car>* prev = nullptr;
+    int removedCount = 0;
+
+    while (current != nullptr && removedCount < amount) 
+    {
+        if (current->getData().getType() == type) 
+        {
+            if (prev == nullptr) 
+            {
+                headCars = current->getNext();
+                delete current;
+                current = headCars;
+            }
+            else 
+            {
+                prev->setNext(current->getNext());
+                delete current;
+                current = prev->getNext();
+            }
+            
+            removedCount++;
+        }
+        else 
+        {
+            prev = current;
+            current = current->getNext();
+        }
+    }
 }

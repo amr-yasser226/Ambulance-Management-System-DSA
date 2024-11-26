@@ -30,6 +30,8 @@ public:
     //                                                      if return is -1, then index not found
     //                                                      if return is -2, then error opening input file
     void addHospital(Hospital* hospitalInstance);
+    int fetchCarsInHospital(int hospitalID, Car::CarType type);
+    bool assignCarToPatient(Request request);
 
     void loadInputData();
     void simulate();

@@ -66,6 +66,11 @@ public:
             ;
     }
 
+    priNode<T>* getHead() const
+    {
+        return head;
+    }
+
     void enqueue(const T &data, int priority)
     {
         priNode<T> *newNode = new priNode<T>(data, priority);

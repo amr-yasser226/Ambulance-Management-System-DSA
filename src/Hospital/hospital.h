@@ -20,7 +20,7 @@ public:
     int getNumberOfPatients(int patientType);
     void addPatient(Patient patientInstance);
     void addCars(Car::CarType type, int speed, int amount);
-    bool assignCarToPatient();
+    void dequeueCar(Car::CarType type, int amount);
 
     int getHospitalID();
     int getTotalCars();

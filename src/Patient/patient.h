@@ -40,7 +40,7 @@ public:
     int getSeverity() const;
 
     PatientType getType() const;
-    void setPatientType(std::string type);
+    void setPatientType(PatientType type);
 
     int getNearestHospitalID() const;
     void printDetails() const;
