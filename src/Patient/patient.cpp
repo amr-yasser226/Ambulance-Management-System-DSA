@@ -10,6 +10,16 @@ Patient::Patient()
     , nearestHospitalID(0) 
 {}
 
+void Patient::setPID(int pid)
+{
+    this->pid = pid;
+}
+
+int Patient::getPID()
+{
+    return pid;
+}
+
 void Patient::setFirstName(const std::string &name)
 {
     firstName = name;
@@ -48,6 +58,11 @@ int Patient::getRequestTime() const
 int Patient::getSeverity() const
 {
     return severity;
+}
+
+void Patient::setSeverity(int severity) const
+{
+    this->severity = severity;
 }
 
 Patient::PatientType Patient::getType() const

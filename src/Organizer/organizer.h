@@ -16,6 +16,9 @@ class Organizer
 private:
     Node<Hospital>* hospitals;
     priQueue<Request>* requests;
+    LinkedList<Request>* OUT;
+    LinkedList<Request>* BACK;
+    LinkedList<Request>* FINIS  H;
     int hospitalCount = 0;
     int specialCarSpeed = 0, normalCarSpeed = 0;
     int currentTime = 1;

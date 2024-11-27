@@ -38,7 +38,6 @@ bool Organizer::assignCarToPatient(Request request)
     // - PT = AT + ( request.nearestHospitalDistance / depending on car type set the speed )
     // - WT = PT - QT
     // - FT = PT + ( request.nearestHospitalDistance / depending on car type set the speed )
-    // Create the same type of car
     // dequeue the car from hospital cars list
     // decrement amount of cars and car's type in the hospital
     // enqueue the car to OUT list
@@ -51,9 +50,8 @@ bool Organizer::assignCarToPatient(Request request)
     request.WT = request.PT - request.QT;
     request.FT = request.PT + (request.nearestHospitalDistance/(speed));
 
-    Car carInstance(request.type, speed);
-
     // stop here
+    OUT.push(request)
 
     return true;
 }
@@ -146,7 +144,7 @@ void Organizer::loadInputData()
 
     // Skip the hospitals distance matrix
     int spam;
-    for (int y = 0; y < hospitalCount; y++) { for (int x = 0; x < hospitalCount; x++) { file >> spam; } }
+    for (int y = 0; y < hospitalCount * hospitalCount; y++) { file >> spam; }
     // Skipped to the beginning of each hospital's cars amount
 
     // create x number of hospitals based on hospitalCount
@@ -270,15 +268,18 @@ void Organizer::simulate()
             // ---------------- BELOW ----------------
 
             // Check OUT list here first
-
+            
             // Check BACK list here second
 
             // Create a patient request based on read data
             Patient newPatient;
+            newPatient.setPID(pid);
+            newPatient.setSeverity(severity);
             newPatient.setPatientType(patientType);
             newPatient.setNearestHospitalID(nearestHospital);
 
-            Request newRequest(
+            Request newRequest
+            (
                 newPatient,                   // patient
                 carType,                      // type
                 Car::CarStatus::READY,        // status

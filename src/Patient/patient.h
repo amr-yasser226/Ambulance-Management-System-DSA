@@ -9,15 +9,16 @@ class Patient
 public:
     enum PatientType
     {
-        NP,
-        SP,
-        EP
+        NP, // 0
+        SP, // 1
+        EP  // 2
     };
 
 private:
     std::string firstName;
     std::string middleName;
     std::string lastName;
+    int pid;
     int requestTime; // most likely will be removed
     int severity;
     PatientType type;
@@ -25,6 +26,9 @@ private:
 
 public:
     Patient();
+
+    void setPID(int pid);
+    int getPID();
 
     // Removed methods related to user input
     void setFirstName(const std::string &name);
@@ -44,6 +48,8 @@ public:
 
     int getNearestHospitalID() const;
     void printDetails() const;
+
+    void setSeverity(int severity);
 };
 
 #endif // PATIENT_H
