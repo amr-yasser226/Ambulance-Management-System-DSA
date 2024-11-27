@@ -1,32 +1,34 @@
 #include <iostream>
 #include "../src/Patient/patient.h"
 
-// Function to test the Patient class
-void testPatientClass()
+int main()
 {
-    // Create an instance of the Patient class
+    // Test Case 1: Default constructor
     Patient patient;
+    std::cout << "Default Patient Details:\n";
+    patient.printDetails();
+    std::cout << "Default Patient Type: " << patient.getType() << "\n";
+    std::cout << "Nearest Hospital ID: " << patient.getNearestHospitalID() << "\n";
 
-    // Set patient information
+    // Test Case 2: Setting patient details
+    Patient::PatientType patientType = Patient::PatientType::SP;
     patient.setFirstName("John");
-    patient.setMiddleName("H.");
+    patient.setMiddleName("Michael");
     patient.setLastName("Doe");
+    patient.setNearestHospitalID(101);
+    patient.setPatientType(patientType);
 
-    // Print patient details to verify correctness
-    std::cout << "Testing Patient Class...\n";
+    // Verify the changes
+    std::cout << "\nUpdated Patient Details:\n";
     std::cout << "First Name: " << patient.getFirstName() << "\n";
     std::cout << "Middle Name: " << patient.getMiddleName() << "\n";
     std::cout << "Last Name: " << patient.getLastName() << "\n";
-
-    // Additional checks (if needed) for request time, severity, etc.
-    std::cout << "Request Time: " << patient.getRequestTime() << "\n";
-    std::cout << "Severity: " << patient.getSeverity() << "\n";
+    std::cout << "Patient Type: " << patient.getType() << "\n";
     std::cout << "Nearest Hospital ID: " << patient.getNearestHospitalID() << "\n";
-}
 
-int main()
-{
-    std::cout << "Running Tests for Patient Class...\n";
-    testPatientClass();
+    // Test Case 3: Printing details
+    std::cout << "\nPrinting Patient Details:\n";
+    patient.printDetails();
+
     return 0;
 }

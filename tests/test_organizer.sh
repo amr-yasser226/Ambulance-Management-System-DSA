@@ -5,15 +5,15 @@ cd "$(dirname "$0")"
 
 # Clean previous build
 cd ../src
-make -f Makefile2 clean
+make -f organizer-Makefile clean
 
 # Build
-make -f Makefile2
+make -f organizer-Makefile
 
 # Run if build was successful
 if [ $? -eq 0 ]; then
     cd bin
-    ./simulate_test1
+    ./test_organizer
 else
     echo "Build failed"
 fi

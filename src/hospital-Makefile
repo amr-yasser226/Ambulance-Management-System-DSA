@@ -1,0 +1,55 @@
+# Compiler settings
+CXX = g++
+CXXFLAGS = -std=c++11 -Wall
+
+# Directories
+SRC_DIR = ../src
+HOSPITAL_DIR = $(SRC_DIR)/Hospital
+CAR_DIR = $(SRC_DIR)/Car
+PATIENT_DIR = $(SRC_DIR)/Patient
+TEST_DIR = ../tests
+OBJ_DIR = obj
+BIN_DIR = bin
+TARGET = $(BIN_DIR)/test_hospital
+
+# Source files
+HOSPITAL_SRC = $(HOSPITAL_DIR)/hospital.cpp
+CAR_SRC = $(CAR_DIR)/car.cpp
+PATIENT_SRC = $(PATIENT_DIR)/patient.cpp
+TEST_SRC = $(TEST_DIR)/test_hospital.cpp
+
+# Object files
+OBJ_FILES = $(OBJ_DIR)/hospital.o $(OBJ_DIR)/car.o $(OBJ_DIR)/patient.o $(OBJ_DIR)/test_hospital.o
+
+# Default target
+all: $(TARGET)
+
+# Rule to build the target executable
+$(TARGET): $(OBJ_FILES)
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(OBJ_FILES) -o $(TARGET)
+
+# Rule to compile hospital.cpp
+$(OBJ_DIR)/hospital.o: $(HOSPITAL_SRC)
+	@mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Rule to compile car.cpp
+$(OBJ_DIR)/car.o: $(CAR_SRC)
+	@mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Rule to compile patient.cpp
+$(OBJ_DIR)/patient.o: $(PATIENT_SRC)
+	@mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Rule to compile test_hospital.cpp
+$(OBJ_DIR)/test_hospital.o: $(TEST_SRC)
+	@mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Clean up generated files
+clean:
+	@echo "Cleaning up..."
+	rm -rf $(BIN_DIR) $(OBJ_DIR)
