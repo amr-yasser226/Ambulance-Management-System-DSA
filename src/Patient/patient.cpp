@@ -60,7 +60,7 @@ int Patient::getSeverity() const
     return severity;
 }
 
-void Patient::setSeverity(int severity) const
+void Patient::setSeverity(int severity)
 {
     this->severity = severity;
 }
