@@ -62,7 +62,6 @@ bool Organizer::assignCarToPatient(Request request)
     request.FT = request.PT + (request.nearestHospitalDistance/(speed));
 
     // stop here
-    //OUT.push(request)
 
     return true;
 }
