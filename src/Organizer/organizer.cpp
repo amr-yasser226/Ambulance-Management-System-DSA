@@ -2,7 +2,10 @@
 
 Organizer::Organizer() : 
     hospitals(nullptr), 
-    requests(new priQueue<Request>()),
+    requests(new priQueue<Request>()),  // Ensure this is a pointer initialization
+    OUT(nullptr),
+    BACK(nullptr),
+    FINISH(new Stack<Request>()),
     hospitalCount(0), 
     specialCarSpeed(0), 
     normalCarSpeed(0), 
@@ -21,12 +24,52 @@ Organizer::~Organizer()
     }
     hospitals = nullptr;
 
-    // Clean up requests list
+    // Clean up requests priority queue
     if (requests != nullptr)
     {
         delete requests;
         requests = nullptr;
     }
+
+    // Clean up OUT list
+    Node<Request>* currentOut = OUT;
+    while (currentOut != nullptr)
+    {
+        Node<Request>* nextOut = currentOut->getNext();
+        delete currentOut;
+        currentOut = nextOut;
+    }
+    OUT = nullptr;
+
+    // Clean up BACK list
+    Node<Request>* currentBack = BACK;
+    while (currentBack != nullptr)
+    {
+        Node<Request>* nextBack = currentBack->getNext();
+        delete currentBack;
+        currentBack = nextBack;
+    }
+    BACK = nullptr;
+
+    // Clean up FINISH stack
+    if (FINISH != nullptr)
+    {
+        delete FINISH;
+        FINISH = nullptr;
+    }
+}
+
+int Organizer::generateRandomNum(int min, int max)
+{
+    int num = 0;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(min, max);
+
+    num = dist(gen);
+
+    return num;
 }
 
 bool Organizer::assignCarToPatient(Request request)
@@ -42,18 +85,7 @@ bool Organizer::assignCarToPatient(Request request)
     // decrement amount of cars and car's type in the hospital
     // enqueue the car to OUT list
 
-    double speed = 0;
-    
-    if (request.type == Car::CarType::SC)
-    { 
-        speed = specialCarSpeed;
-    }
-    else
-    {
-        speed = normalCarSpeed;
-    }
-    //     double speed = (request.type == Car::CarType::SC) ? (specialCarSpeed) : (normalCarSpeed);
-
+    double speed = (request.type == Car::CarType::SC) ? (specialCarSpeed) : (normalCarSpeed);
 
     request.status = Car::CarStatus::ASSIGNED;
     request.AT = currentTime;
@@ -140,7 +172,7 @@ void Organizer::addHospital(Hospital* hospitalInstance)
 
 void Organizer::loadInputData()
 {
-    std::ifstream file("../data/input/input_1_2.txt");
+    std::ifstream file("../data/input/input_1_1.txt");
 
     if (!file.is_open())
     {
@@ -181,41 +213,8 @@ void Organizer::loadInputData()
     //     temp = temp->getNext();
     // }
 
-    // Node<Hospital>* temp = hospitals; // DEBUGGING
-    // while (temp != nullptr)
-    // {
-    //     Node<Car>* tempCars = temp->getData().getCars();
-    //     while (tempCars != nullptr)
-    //     {
-    //         std::cout << tempCars->getData().getType() << " ";
-    //         tempCars = tempCars->getNext();
-    //     }
-    //     std::cout << std::endl;
-    //     temp = temp->getNext();
-    // }
-
-    file.close();
-}
-
-void Organizer::simulate()
-{
-    std::ifstream file("../data/input/input_1_2.txt");
-
-    if (!file.is_open())
-    {
-        std::cerr << "Error opening file (organizer.cpp / simulate [1])" << std::endl;
-        return;
-    }
-
-    int calculateSpam = 3 + (hospitalCount * hospitalCount) + (hospitalCount * 2);
-    for (int spam, i = 0; i < calculateSpam; i++) {
-        file >> spam;
-        std::cout << "skipping.." << std::endl; // DEBUGGING
-    }
-
     int requests;
     file >> requests;
-    std::cout << "REQUESTS || " << requests << std::endl;
 
     // i is the pid
     for (int i = 1; i <= requests; i++)
@@ -302,54 +301,83 @@ void Organizer::simulate()
                 0.0                           // carBusyTime
             );
 
-            // LOOP: if: for each patient in the priority queue,
-            //       their car type exist in their hospital (the amount if > 0)
-            //          then ->assignCarToPatient();
-            //       else:
-            //          do nothing
-            priNode<Request>* temp = Organizer::requests->getHead();
-            while (temp != nullptr)
-            {
-                int tempPriority;
-                Request tempRequest = temp->getItem(tempPriority);
-                int tempHospitalID = tempRequest.patient.getNearestHospitalID();
-
-                Car::CarType tempCarType = tempRequest.type;
-
-                if (fetchCarsInHospital(tempHospitalID, tempCarType) > 0)
-                {
-                    // assign the patient's request a car and do the assigning protocol in paper draft
-                    std::cout << "Did it work? " << assignCarToPatient(tempRequest) << std::endl;
-                }
-
-                temp = temp->getNext();
-            }
-
-            //       if: the current patient (the one we just created above)
-            //       their car type exist in their hospital
-            //          then ->assignCarToPatient();
-            //       else:
-            //          enqueue the request to the priority queue
-            if (fetchCarsInHospital(nearestHospital, carType) > 0)
-            {
-                // assign the patient's request a car and do the assigning protocol in paper draft
-            }
-            else
-            {
-                Organizer::requests->enqueue(newRequest, severity);
-            }
-        }
-        else
-        {
-            std::cerr << "Error reading request (organizer.cpp / simulate [2])" << std::endl;
-            break;
+            Organizer::requests->enqueue(newRequest, severity);
         }
     }
 
-    // for test - delete later // DEBUGGING
-    int test;
-    file >> test;
-    std::cout << "\n\n" << test << std::endl << std::endl;
+    file.close();
+}
+
+void Organizer::simulate()
+{
+    std::ifstream file("../data/input/input_1_1.txt");
+
+    if (!file.is_open())
+    {
+        std::cerr << "Error opening file (organizer.cpp / simulate [1])" << std::endl;
+        return;
+    }
+
+    int calculateSpam = 3 + (hospitalCount * hospitalCount) + (hospitalCount * 2);
+    for (int spam, i = 0; i < calculateSpam; i++) { file >> spam; }
+
+    int requests;
+    file >> requests;
+    std::cout << "REQUESTS || " << requests << std::endl;
+
+    int randomNumber = generateRandomNum(1, 100);
+
+    for (int i = 1; i <= requests; i++)
+    {
+        if (10 <= randomNumber && randomNumber < 20)
+        {
+            int priority = 1;
+            Request requestInstance;
+
+            std::cout << "R: " << randomNumber << std::endl;
+            Organizer::requests->dequeue(requestInstance, priority);
+            Organizer::FINISH->push(requestInstance);
+        }
+        else if (20 <= randomNumber && randomNumber < 25)
+        {
+            int priority = 2;
+            Request requestInstance;
+
+            std::cout << "R: " << randomNumber << std::endl;
+            Organizer::requests->dequeue(requestInstance, priority);
+            Organizer::FINISH->push(requestInstance);
+        }
+        else if (30 <= randomNumber && randomNumber < 40)
+        {
+            int priority = 0;
+            Request requestInstance;
+
+            std::cout << "R: " << randomNumber << std::endl;
+            Organizer::requests->dequeue(requestInstance, priority);
+            Organizer::FINISH->push(requestInstance);
+        }
+        else if (40 <= randomNumber && randomNumber < 45)
+        {
+            int priority = 0;
+            Request requestInstance;
+
+            std::cout << "R: " << randomNumber << std::endl;
+            Organizer::requests->dequeue(requestInstance, priority);
+            Organizer::FINISH->push(requestInstance);
+        }
+        else if (70 <= randomNumber && randomNumber < 75)
+        {
+            // Move one Ncar from free to out list
+        }
+        else if (80 <= randomNumber && randomNumber < 90)
+        {
+            // Move one car from out to back list
+        }
+        else if (91 <= randomNumber && randomNumber < 95)
+        {
+            // Move one car from back to "Free" list of its hospital
+        }
+    }
 
     file.close();
 }

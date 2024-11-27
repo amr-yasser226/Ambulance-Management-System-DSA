@@ -5,17 +5,26 @@
 #include "../Data Structures/Node.h"
 #include "../Data Structures/Request.h"
 #include "../Data Structures/PriorityQueue.h"
+#include "../Data Structures/Stack.h"
 #include "../Patient/patient.h"
 
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <random>
 
 class Organizer
 {
 private:
-    Node<Hospital>* hospitals;
-    priQueue<Request>* requests;
+    //                            Loading input data:
+    Node<Hospital>* hospitals;    // Linkedlist
+    priQueue<Request>* requests;  // Priority Queue
+
+    //                            Simulation:
+    Node<Request>* OUT;           // LinkedList
+    Node<Request>* BACK;          // LinkedList
+    Stack<Request>* FINISH;       // Stack
+
     int hospitalCount = 0;
     int specialCarSpeed = 0, normalCarSpeed = 0;
     int currentTime = 1;
@@ -32,6 +41,7 @@ public:
     void addHospital(Hospital* hospitalInstance);
     int fetchCarsInHospital(int hospitalID, Car::CarType type);
     bool assignCarToPatient(Request request);
+    int generateRandomNum(int min, int max);
 
     void loadInputData();
     void simulate();

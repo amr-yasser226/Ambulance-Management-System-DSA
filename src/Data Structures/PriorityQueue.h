@@ -71,17 +71,20 @@ public:
         return head;
     }
 
+    priNode<T> getHeadAddress() const
+    {
+        return &head;
+    }
+
     void enqueue(const T &data, int priority)
     {
         priNode<T> *newNode = new priNode<T>(data, priority);
-
         if (head == nullptr || priority > head->getPri())
         {
             newNode->setNext(head);
             head = newNode;
             return;
         }
-
         priNode<T> *current = head;
         while (current->getNext() && priority <= current->getNext()->getPri())
         {
