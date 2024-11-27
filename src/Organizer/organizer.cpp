@@ -42,7 +42,18 @@ bool Organizer::assignCarToPatient(Request request)
     // decrement amount of cars and car's type in the hospital
     // enqueue the car to OUT list
 
-    double speed = (request.type == Car::CarType::SC) ? (specialCarSpeed) : (normalCarSpeed);
+    double speed = 0;
+    
+    if (request.type == Car::CarType::SC)
+    { 
+        speed = specialCarSpeed;
+    }
+    else
+    {
+        speed = normalCarSpeed;
+    }
+    //     double speed = (request.type == Car::CarType::SC) ? (specialCarSpeed) : (normalCarSpeed);
+
 
     request.status = Car::CarStatus::ASSIGNED;
     request.AT = currentTime;
@@ -51,7 +62,7 @@ bool Organizer::assignCarToPatient(Request request)
     request.FT = request.PT + (request.nearestHospitalDistance/(speed));
 
     // stop here
-    OUT.push(request)
+    //OUT.push(request)
 
     return true;
 }
