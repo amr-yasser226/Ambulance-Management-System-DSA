@@ -170,29 +170,29 @@ void Organizer::loadInputData()
         addHospital(newHospital);
     }
 
-    // Node<Hospital>* temp = hospitals; // DEBUGGING
-    // while (temp != nullptr)
-    // {
-    //     std::cout << "Hospital ID #" << temp->getData().getHospitalID() << std::endl;
-    //     std::cout << " - Total Cars: " << temp->getData().getTotalCars() << std::endl;
-    //     std::cout << " -  Special |  " << temp->getData().getSpecialCars() << std::endl;
-    //     std::cout << " -  Normal  |  " << temp->getData().getNormalCars() << std::endl;
-    //     std::cout << "---------------------" << std::endl;
-    //     temp = temp->getNext();
-    // }
+    Node<Hospital>* temp = hospitals; // DEBUGGING
+    while (temp != nullptr)
+    {
+        std::cout << "Hospital ID #" << temp->getData().getHospitalID() << std::endl;
+        std::cout << " - Total Cars: " << temp->getData().getTotalCars() << std::endl;
+        std::cout << " -  Special |  " << temp->getData().getSpecialCars() << std::endl;
+        std::cout << " -  Normal  |  " << temp->getData().getNormalCars() << std::endl;
+        std::cout << "---------------------" << std::endl;
+        temp = temp->getNext();
+    }
 
-    // Node<Hospital>* temp = hospitals; // DEBUGGING
-    // while (temp != nullptr)
-    // {
-    //     Node<Car>* tempCars = temp->getData().getCars();
-    //     while (tempCars != nullptr)
-    //     {
-    //         std::cout << tempCars->getData().getType() << " ";
-    //         tempCars = tempCars->getNext();
-    //     }
-    //     std::cout << std::endl;
-    //     temp = temp->getNext();
-    // }
+    temp = hospitals; // DEBUGGING
+    while (temp != nullptr)
+    {
+        Node<Car>* tempCars = temp->getData().getCars();
+        while (tempCars != nullptr)
+        {
+            std::cout << tempCars->getData().getType() << " ";
+            tempCars = tempCars->getNext();
+        }
+        std::cout << std::endl;
+        temp = temp->getNext();
+    }
 
     file.close();
 }
