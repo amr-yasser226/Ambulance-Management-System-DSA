@@ -1,93 +1,64 @@
 #include "patient.h"
 
-Patient::Patient() 
-    : firstName("")
-    , middleName("")
-    , lastName("")
-    , requestTime(0)
-    , severity(0)
-    , type(NP)
-    , nearestHospitalID(0) 
-{}
-
-void Patient::setPID(int pid)
+Patient::Patient() : 
+    type(NP),
+    pid(0),
+    nearestHospitalID(0),
+    nearestHospitalDistance(0),
+    QT(0.0),
+    AT(0.0),
+    PT(0.0),
+    WT(0.0),
+    FT(0.0),
+    carBusytime(0.0)
 {
-    this->pid = pid;
 }
 
-int Patient::getPID()
+Patient::Patient(int patientID, int hospitalID, int hospitalDistance, PatientType patientType) :
+    pid(patientID),
+    nearestHospitalID(hospitalID),
+    nearestHospitalDistance(hospitalDistance),
+    type(patientType),
+    QT(0.0),
+    AT(0.0),
+    PT(0.0),
+    WT(0.0),
+    FT(0.0),
+    carBusytime(0.0)
 {
-    return pid;
 }
 
-void Patient::setFirstName(const std::string &name)
-{
-    firstName = name;
-}
+PatientType Patient::getType() const { return type; }
 
-void Patient::setMiddleName(const std::string &name)
-{
-    middleName = name;
-}
+int Patient::getPID() const { return pid; }
+int Patient::getNearestHospitalID() const { return nearestHospitalID; }
+int Patient::getNearestHospitalDistance() const { return nearestHospitalDistance; }
 
-void Patient::setLastName(const std::string &name)
-{
-    lastName = name;
-}
+double Patient::getQT() const { return QT; }
+double Patient::getAT() const { return AT; }
+double Patient::getPT() const { return PT; }
+double Patient::getWT() const { return WT; }
+double Patient::getFT() const { return FT; }
+double Patient::getCarBusyTime() const { return carBusytime; }
 
-const std::string &Patient::getFirstName() const
+void Patient::printDetails()
 {
-    return firstName;
-}
-
-const std::string &Patient::getMiddleName() const
-{
-    return middleName;
-}
-
-const std::string &Patient::getLastName() const
-{
-    return lastName;
-}
-
-int Patient::getRequestTime() const
-{
-    return requestTime;
-}
-
-int Patient::getSeverity() const
-{
-    return severity;
-}
-
-void Patient::setSeverity(int severity)
-{
-    this->severity = severity;
-}
-
-Patient::PatientType Patient::getType() const
-{
-    return type;
-}
-
-void Patient::setPatientType(PatientType type)
-{
-    this->type = type;
-}
-
-int Patient::getNearestHospitalID() const
-{
-    return nearestHospitalID;
-}
-
-void Patient::printDetails() const
-{
-    std::cout << "First Name: " << firstName << "\n"
-              << "Middle Name: " << middleName << "\n"
-              << "Last Name: " << lastName << "\n";
-}
-
-void Patient::setNearestHospitalID(int ID)
-{
-    nearestHospitalID = ID;
+    std::cout << "Patient Details:" << std::endl;
+    std::cout << "Patient ID: " << pid << std::endl;
+    std::cout << "Patient Type: ";
+    switch (type)
+    {
+        case NP: std::cout << "Normal Patient"; break;
+        case SP: std::cout << "Special Patient"; break;
+        case EP: std::cout << "Emergency Patient"; break;
+    }
+    std::cout << std::endl;
+    std::cout << "Nearest Hospital ID: " << nearestHospitalID << std::endl;
+    std::cout << "Nearest Hospital Distance: " << nearestHospitalDistance << std::endl;
+    std::cout << "Request Time (QT): " << QT << std::endl;
+    std::cout << "Arrival Time (AT): " << AT << std::endl;
+    std::cout << "Pickup Time (PT): " << PT << std::endl;
+    std::cout << "Waiting Time (WT): " << WT << std::endl;
+    std::cout << "Finish Time (FT): " << FT << std::endl;
+    std::cout << "Car Busy Time: " << carBusytime << std::endl;
 }

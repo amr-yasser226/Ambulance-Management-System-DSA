@@ -10,6 +10,7 @@ private:
     T item;
     int pri;
     priNode<T> *next;
+
 public:
     priNode(const T &r_Item, int PRI)
     {

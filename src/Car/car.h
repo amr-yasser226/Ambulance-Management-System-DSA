@@ -2,18 +2,17 @@
 #define CAR_H
 
 #include <iostream>
-
-class Patient;
+#include "../Patient/patient.h"
 
 class Car
 {
 public:
     enum CarType
     {
-        SC, // Special Car
-        NC  // Normal Car
+        SC, // 0
+        NC  // 1
     };
-
+    
     enum CarStatus
     {
         READY,
@@ -24,18 +23,19 @@ public:
 private:
     CarType type;
     CarStatus status;
-    int speed;
     Patient *currentPatient;
 
 public:
-    Car(CarType type, int speed);
+    Car();
+    Car(CarType carType);
 
-    void assignPatient(Patient *patient);
-    void dropPatient();
-    CarStatus getStatus() const;
-    CarType getType() const;
-    int getSpeed() const;
-    Patient *getCurrentPatient() const;
+    CarType getCarType() const;
+    CarStatus getCarStatus() const;
+    Patient* getCurrentPatient() const;
+
+    void setCarStatus(CarStatus newStatus);
+    void setCurrentPatient(Patient* patient);
+
+    void printDetails() const;
 };
-
 #endif // CAR_H

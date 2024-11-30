@@ -1,84 +1,161 @@
 #include "hospital.h"
-#include "../Car/car.h"
 
-Hospital::Hospital(int hospitalID, int Cars, int SCars, int NCars) : hospitalID(hospitalID), Cars(Cars), SCars(SCars), NCars(NCars), patients(0), headPatient(nullptr), headCars(nullptr) {}
-
-int Hospital::getHospitalID() { return hospitalID; }
-int Hospital::getTotalCars() { return Cars; }
-int Hospital::getSpecialCars() { return SCars; }
-int Hospital::getNormalCars() { return NCars; }
-
-Node<Car>* Hospital::getCars() { return headCars; }
-
-int Hospital::getNumberOfPatients(int patientType)
+Hospital::Hospital(int ID) : hospitalID(ID)
 {
-    int count = 0;
-    Node<Patient> *temp = headPatient;
-    while (temp != nullptr)
+    headSP = new Queue<Patient>();
+    headEP = new PriorityQueue<Patient>();
+    headNP = new DerivedQueue<Patient>();
+    headSC = new Queue<Car>();
+    headNC = new Queue<Car>();
+}
+
+Hospital::~Hospital()
+{
+    delete headSP;
+    delete headEP;
+    delete headNP;
+    delete headSC;
+    delete headNC;
+}
+
+void Hospital::ad(Car carInstance, int amount)
+{
+    for (int i = 0; i < amount; ++i)
     {
-        // We first have to convert the enum to int
-        // so we are able to compare
-        int currentPatientType = static_cast<int>(temp->getData().getType());
-        if (currentPatientType == patientType)
+        switch (carInstance.getCarType())
         {
-            count++;
+            case Car::CarType::SC:
+                headSC->enqueue(carInstance);
+                break;
+            case Car::CarType::NC:
+                headNC->enqueue(carInstance);
+                break;
+            default:
+            std::cout << "CAR TYPE NOT FOUND!" << std::endl;
+                break;
         }
-        temp = temp->getNext();
     }
-    return count;
+}
+
+void Hospital::addCars(Car::CarType type, int amount)
+{
+    Queue<Car>* targetQueue = (type == Car::CarType::SC) ? headSC : headNC;
+    for (int i = 0; i < amount; i++)
+    {
+        targetQueue->enqueue(Car(type));
+    }
 }
 
 void Hospital::addPatient(Patient patientInstance)
 {
-    Node<Patient>* newPatient = new Node<Patient>(patientInstance);
-    newPatient->setNext(headPatient);
-    headPatient = newPatient;
-    patients++;
-}
-
-void Hospital::addCars(Car::CarType type, int speed, int amount)
-{
-    for (int i = 0; i < amount; i++)
+    switch (patientInstance.getPatientType())
     {
-        Car carInstance(type, speed);
-        Node<Car> *newCar = new Node<Car>(carInstance);
-        newCar->setNext(headCars);
-        headCars = newCar;
+        case Patient::PatientType::NP:
+            headNP->enqueue(patientInstance);
+            break;
+        case Patient::PatientType::SP:
+            headSP->enqueue(patientInstance);
+            break;
+        case Patient::PatientType::EP:
+            headEP->enqueue(patientInstance, patientInstance.getPriority());
+            break;
+        default:
+            std::cout << "PATIENT TYPE NOT FOUND!" << std::endl;
+            break;
     }
 }
 
-void Hospital::dequeueCar(Car::CarType type, int amount)
+int Hospital::getHospitalID()
 {
-    if (amount <= 0 || headCars == nullptr) 
-        return;
+    return hospitalID;
+}
 
-    Node<Car>* current = headCars;
-    Node<Car>* prev = nullptr;
-    int removedCount = 0;
-
-    while (current != nullptr && removedCount < amount) 
+int Hospital::getNumberOfPatients(int type)
+{
+    int count = 0;
+    switch (type)
     {
-        if (current->getData().getType() == type) 
+        case 0: // NP
         {
-            if (prev == nullptr) 
+            DerivedQueue<Patient> tempQueue(*headNP);
+            Patient temp;
+            while (!tempQueue.isEmpty())
             {
-                headCars = current->getNext();
-                delete current;
-                current = headCars;
+                tempQueue.dequeue(temp);
+                count++;
             }
-            else 
+            break;
+        }
+        case 1: // SP
+        {
+            Queue<Patient> tempQueue(*headSP);
+            Patient temp;
+            while (!tempQueue.isEmpty())
             {
-                prev->setNext(current->getNext());
-                delete current;
-                current = prev->getNext();
+                tempQueue.dequeue(temp);
+                count++;
             }
+            break;
+        }
+        case 2: // EP
+        {
+            priQueue<Patient> tempQueue;
+            Patient temp;
+            int pri;
             
-            removedCount++;
+            priNode<Patient>* current = headEP->getHead();
+            while (current)
+            {
+                int priority;
+                tempQueue.enqueue(current->getItem(priority), priority);
+                current = current->getNext();
+                count++;
+            }
+            break;
         }
-        else 
-        {
-            prev = current;
-            current = current->getNext();
-        }
+        case 3: // All patients
+            count = getNumberOfPatients(0) + getNumberOfPatients(1) + getNumberOfPatients(2);
+            break;
+        default:
+            std::cout << "NO PATIENT TYPE MATCHED!" << std::endl;
+            break;
     }
+    return count;
+}
+
+int Hospital::getNumberOfCars(int type)
+{
+    int count = 0;
+    switch (type)
+    {
+        case 0: // SC
+        {
+            Queue<Car> tempQueue(*headSC);
+            Car temp;
+            while (!tempQueue.isEmpty())
+            {
+                tempQueue.dequeue(temp);
+                count++;
+            }
+            break;
+        }
+        case 1: // NC
+        {
+            Queue<Car> tempQueue(*headNC);
+            Car temp;
+            while (!tempQueue.isEmpty())
+            {
+                tempQueue.dequeue(temp);
+                count++;
+            }
+            break;
+        }
+        case 2: // All cars
+            count = getNumberOfCars(0) + getNumberOfCars(1);
+            break;
+        default:
+            std::cout << "NO CAR TYPE MATCHED!" << std::endl;
+            break;
+    }
+    return count;
 }

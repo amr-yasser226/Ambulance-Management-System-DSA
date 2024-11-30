@@ -1,22 +1,8 @@
 #ifndef LINKED_QUEUE_H
 #define LINKED_QUEUE_H
 
-template <typename T>
-class Node
-{
-private:
-    T item;
-    Node<T> *next;
-
-public:
-    Node();
-    Node(const T &r_Item);
-    Node(const T &r_Item, Node<T> *nextNodePtr);
-    void setItem(const T &r_Item);
-    void setNext(Node<T> *nextNodePtr);
-    T getItem() const;
-    Node<T> *getNext() const;
-};
+#include "Node.h"
+#include <iostream>
 
 // Node class implementations
 template <typename T>
@@ -52,36 +38,36 @@ Node<T> *Node<T>::getNext() const
     return next;
 }
 
-// LinkedQueue class
+// Queue class
 template <typename T>
-class LinkedQueue
+class Queue
 {
 private:
     Node<T> *backPtr;
     Node<T> *frontPtr;
 
 public:
-    LinkedQueue();
+    Queue();
     bool isEmpty() const;
     bool enqueue(const T &newEntry);
     bool dequeue(T &frntEntry);
     bool peek(T &frntEntry) const;
-    ~LinkedQueue();
-    LinkedQueue(const LinkedQueue<T> &LQ);
+    ~Queue();
+    Queue(const Queue<T> &LQ);
 };
 
-// LinkedQueue class implementations
+// Queue class implementations
 template <typename T>
-LinkedQueue<T>::LinkedQueue() : backPtr(nullptr), frontPtr(nullptr) {}
+Queue<T>::Queue() : backPtr(nullptr), frontPtr(nullptr) {}
 
 template <typename T>
-bool LinkedQueue<T>::isEmpty() const
+bool Queue<T>::isEmpty() const
 {
     return frontPtr == nullptr;
 }
 
 template <typename T>
-bool LinkedQueue<T>::enqueue(const T &newEntry)
+bool Queue<T>::enqueue(const T &newEntry)
 {
     Node<T> *newNodePtr = new Node<T>(newEntry);
     if (isEmpty())
@@ -93,7 +79,7 @@ bool LinkedQueue<T>::enqueue(const T &newEntry)
 }
 
 template <typename T>
-bool LinkedQueue<T>::dequeue(T &frntEntry)
+bool Queue<T>::dequeue(T &frntEntry)
 {
     if (isEmpty())
         return false;
@@ -107,7 +93,7 @@ bool LinkedQueue<T>::dequeue(T &frntEntry)
 }
 
 template <typename T>
-bool LinkedQueue<T>::peek(T &frntEntry) const
+bool Queue<T>::peek(T &frntEntry) const
 {
     if (isEmpty())
         return false;
@@ -116,7 +102,7 @@ bool LinkedQueue<T>::peek(T &frntEntry) const
 }
 
 template <typename T>
-LinkedQueue<T>::~LinkedQueue()
+Queue<T>::~Queue()
 {
     T temp;
     while (dequeue(temp))
@@ -124,7 +110,7 @@ LinkedQueue<T>::~LinkedQueue()
 }
 
 template <typename T>
-LinkedQueue<T>::LinkedQueue(const LinkedQueue<T> &LQ) : backPtr(nullptr), frontPtr(nullptr)
+Queue<T>::Queue(const Queue<T> &LQ) : backPtr(nullptr), frontPtr(nullptr)
 {
     Node<T> *NodePtr = LQ.frontPtr;
     while (NodePtr)

@@ -1,8 +1,6 @@
 #ifndef PATIENT_H
 #define PATIENT_H
-
 #include <iostream>
-#include <string>
 
 class Patient
 {
@@ -15,41 +13,28 @@ public:
     };
 
 private:
-    std::string firstName;
-    std::string middleName;
-    std::string lastName;
-    int pid;
-    int requestTime; // most likely will be removed
-    int severity;
     PatientType type;
+    int pid;
     int nearestHospitalID;
+    int nearestHospitalDistance;
+    double QT, AT, PT, WT, FT, carBusytime;
 
 public:
     Patient();
-
-    void setPID(int pid);
-    int getPID();
-
-    // Removed methods related to user input
-    void setFirstName(const std::string &name);
-    void setMiddleName(const std::string &name);
-    void setLastName(const std::string &name);
-    void setNearestHospitalID(int ID);
-
-    const std::string &getFirstName() const;
-    const std::string &getMiddleName() const;
-    const std::string &getLastName() const;
-
-    int getRequestTime() const;
-    int getSeverity() const;
-
+    Patient(int patientID, int hospitalID, int hospitalDistance, PatientType patientType);
+    
     PatientType getType() const;
-    void setPatientType(PatientType type);
-
+    int getPID() const;
     int getNearestHospitalID() const;
-    void printDetails() const;
-
-    void setSeverity(int severity);
+    int getNearestHospitalDistance() const;
+    
+    double getQT() const;
+    double getAT() const;
+    double getPT() const;
+    double getWT() const;
+    double getFT() const;
+    double getCarBusyTime() const;
+    
+    void printDetails();
 };
-
 #endif // PATIENT_H
