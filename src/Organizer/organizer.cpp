@@ -2,6 +2,7 @@
 
 Organizer::Organizer() :
     hospitals(nullptr),
+    requests(0),
     hospitalCount(0),
     specialCarSpeed(0),
     normalCarSpeed(0),
@@ -16,9 +17,10 @@ Organizer::~Organizer()
     {
         Node<Hospital>* temp = current;
         current = current->getNext();
-        delete &temp->getItem();
         delete temp;
     }
+
+    hospitals = nullptr;
 }
 
 int Organizer::getValueByMap(int index)

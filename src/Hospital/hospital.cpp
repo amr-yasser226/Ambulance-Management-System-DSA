@@ -14,27 +14,9 @@ Hospital::~Hospital()
     delete headSP;
     delete headEP;
     delete headNP;
+
     delete headSC;
     delete headNC;
-}
-
-void Hospital::ad(Car carInstance, int amount)
-{
-    for (int i = 0; i < amount; ++i)
-    {
-        switch (carInstance.getCarType())
-        {
-            case Car::CarType::SC:
-                headSC->enqueue(carInstance);
-                break;
-            case Car::CarType::NC:
-                headNC->enqueue(carInstance);
-                break;
-            default:
-            std::cout << "CAR TYPE NOT FOUND!" << std::endl;
-                break;
-        }
-    }
 }
 
 void Hospital::addCars(Car::CarType type, int amount)
@@ -46,9 +28,9 @@ void Hospital::addCars(Car::CarType type, int amount)
     }
 }
 
-void Hospital::addPatient(Patient patientInstance)
+void Hospital::addPatient(Patient patientInstance, int severity)
 {
-    switch (patientInstance.getPatientType())
+    switch (patientInstance.getType())
     {
         case Patient::PatientType::NP:
             headNP->enqueue(patientInstance);
@@ -57,7 +39,7 @@ void Hospital::addPatient(Patient patientInstance)
             headSP->enqueue(patientInstance);
             break;
         case Patient::PatientType::EP:
-            headEP->enqueue(patientInstance, patientInstance.getPriority());
+            headEP->enqueue(patientInstance, severity);
             break;
         default:
             std::cout << "PATIENT TYPE NOT FOUND!" << std::endl;
@@ -72,13 +54,15 @@ int Hospital::getHospitalID()
 
 int Hospital::getNumberOfPatients(int type)
 {
-    int count = 0;
+    Patient temp;
+    int trash, count = 0;
+
     switch (type)
     {
         case 0: // NP
         {
             DerivedQueue<Patient> tempQueue(*headNP);
-            Patient temp;
+
             while (!tempQueue.isEmpty())
             {
                 tempQueue.dequeue(temp);
@@ -89,7 +73,7 @@ int Hospital::getNumberOfPatients(int type)
         case 1: // SP
         {
             Queue<Patient> tempQueue(*headSP);
-            Patient temp;
+
             while (!tempQueue.isEmpty())
             {
                 tempQueue.dequeue(temp);
@@ -99,15 +83,12 @@ int Hospital::getNumberOfPatients(int type)
         }
         case 2: // EP
         {
-            priQueue<Patient> tempQueue;
-            Patient temp;
-            int pri;
+            PriorityQueue<Patient> tempQueue;
             
             priNode<Patient>* current = headEP->getHead();
             while (current)
             {
-                int priority;
-                tempQueue.enqueue(current->getItem(priority), priority);
+                tempQueue.enqueue(current->getItem(trash), trash);
                 current = current->getNext();
                 count++;
             }

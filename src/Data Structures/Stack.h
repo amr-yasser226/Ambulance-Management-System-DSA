@@ -3,23 +3,20 @@
 
 #include <iostream>
 
-// Node class for the Stack
 template <typename T>
 class StackNode
 {
 private:
-    T item;             // A data item
-    StackNode<T> *next; // Pointer to the next node
+    T item;
+    StackNode<T> *next;
 
 public:
-    // Constructor
     StackNode(const T &r_Item, StackNode<T> *nextNodePtr = nullptr)
     {
         item = r_Item;
         next = nextNodePtr;
     }
 
-    // Setters
     void setItem(const T &r_Item)
     {
         item = r_Item;
@@ -30,7 +27,6 @@ public:
         next = nextNodePtr;
     }
 
-    // Getters
     T getItem() const
     {
         return item;
@@ -42,18 +38,15 @@ public:
     }
 };
 
-// Stack class
 template <typename T>
 class Stack
 {
 private:
-    StackNode<T> *topPtr; // Pointer to the top of the stack
+    StackNode<T> *topPtr;
 
 public:
-    // Constructor
     Stack() : topPtr(nullptr) {}
 
-    // Destructor
     ~Stack()
     {
         while (!isEmpty())
@@ -63,20 +56,17 @@ public:
         }
     }
 
-    // Check if the stack is empty
     bool isEmpty() const
     {
         return topPtr == nullptr;
     }
 
-    // Push a new item onto the stack
     void push(const T &newEntry)
     {
         StackNode<T> *newNode = new StackNode<T>(newEntry, topPtr);
         topPtr = newNode;
     }
 
-    // Pop the top item off the stack
     bool pop(T &topEntry)
     {
         if (isEmpty())
@@ -89,7 +79,6 @@ public:
         return true;
     }
 
-    // Peek at the top item of the stack without removing it
     bool peek(T &topEntry) const
     {
         if (isEmpty())

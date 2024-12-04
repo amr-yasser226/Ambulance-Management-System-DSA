@@ -22,6 +22,7 @@ private:
 
 public:
     Hospital(int hospitalID);
+    ~Hospital();
 
     void addCars(Car::CarType type, int amount);
     // loadInputData()
@@ -29,7 +30,7 @@ public:
     // that check car type first, after it finds the car type, it will enqueue to its
     // list x amount of cars
 
-    void addPatient(Patient patientInstance);
+    void addPatient(Patient patientInstance, int severity);
     // loadInputData()
     // this function will first check the patient's type
     // then will add them to their list accordingly

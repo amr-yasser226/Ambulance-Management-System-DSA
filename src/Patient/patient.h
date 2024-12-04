@@ -13,10 +13,10 @@ public:
     };
 
 private:
-    PatientType type;
     int pid;
     int nearestHospitalID;
     int nearestHospitalDistance;
+    PatientType type;
     double QT, AT, PT, WT, FT, carBusytime;
 
 public:

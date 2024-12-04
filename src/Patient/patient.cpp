@@ -1,18 +1,17 @@
 #include "patient.h"
 
-Patient::Patient() : 
-    type(NP),
+Patient::Patient() :
     pid(0),
     nearestHospitalID(0),
     nearestHospitalDistance(0),
+    type(NP),
     QT(0.0),
     AT(0.0),
     PT(0.0),
     WT(0.0),
     FT(0.0),
     carBusytime(0.0)
-{
-}
+{}
 
 Patient::Patient(int patientID, int hospitalID, int hospitalDistance, PatientType patientType) :
     pid(patientID),
@@ -25,10 +24,9 @@ Patient::Patient(int patientID, int hospitalID, int hospitalDistance, PatientTyp
     WT(0.0),
     FT(0.0),
     carBusytime(0.0)
-{
-}
+{}
 
-PatientType Patient::getType() const { return type; }
+Patient::PatientType Patient::getType() const { return type; }
 
 int Patient::getPID() const { return pid; }
 int Patient::getNearestHospitalID() const { return nearestHospitalID; }

@@ -1,38 +1,39 @@
-#ifndef LINKED_QUEUE_H
-#define LINKED_QUEUE_H
+#ifndef DERIVED_QUEUE_H
+#define DERIVED_QUEUE_H
 
-#include <iostream>
 #include "Node.h"
+#include <iostream>
 
-// DerivedQueue class for integers
+template <typename T>
 class DerivedQueue
 {
 private:
-    Node<int> *backPtr;
-    Node<int> *frontPtr;
+    Node<T> *backPtr;
+    Node<T> *frontPtr;
 
 public:
     DerivedQueue();
     bool isEmpty() const;
-    bool enqueue(const int &newEntry);
-    bool dequeue(int &frntEntry);
-    bool peek(int &frntEntry) const;
+    bool enqueue(const T &newEntry);
+    bool dequeue(T &frntEntry);
+    bool peek(T &frntEntry) const;
     ~DerivedQueue();
-    DerivedQueue(const DerivedQueue &LQ);
+    DerivedQueue(const DerivedQueue<T> &LQ);
 };
 
-// DerivedQueue class implementations
+template <typename T>
+DerivedQueue<T>::DerivedQueue() : backPtr(nullptr), frontPtr(nullptr) {}
 
-DerivedQueue::DerivedQueue() : backPtr(nullptr), frontPtr(nullptr) {}
-
-bool DerivedQueue::isEmpty() const
+template <typename T>
+bool DerivedQueue<T>::isEmpty() const
 {
     return frontPtr == nullptr;
 }
 
-bool DerivedQueue::enqueue(const int &newEntry)
+template <typename T>
+bool DerivedQueue<T>::enqueue(const T &newEntry)
 {
-    Node<int> *newNodePtr = new Node<int>(newEntry);
+    Node<T> *newNodePtr = new Node<T>(newEntry);
     if (isEmpty())
         frontPtr = newNodePtr;
     else
@@ -41,11 +42,12 @@ bool DerivedQueue::enqueue(const int &newEntry)
     return true;
 }
 
-bool DerivedQueue::dequeue(int &frntEntry)
+template <typename T>
+bool DerivedQueue<T>::dequeue(T &frntEntry)
 {
     if (isEmpty())
         return false;
-    Node<int> *nodeToDeletePtr = frontPtr;
+    Node<T> *nodeToDeletePtr = frontPtr;
     frntEntry = frontPtr->getItem();
     frontPtr = frontPtr->getNext();
     if (nodeToDeletePtr == backPtr)
@@ -54,7 +56,8 @@ bool DerivedQueue::dequeue(int &frntEntry)
     return true;
 }
 
-bool DerivedQueue::peek(int &frntEntry) const
+template <typename T>
+bool DerivedQueue<T>::peek(T &frntEntry) const
 {
     if (isEmpty())
         return false;
@@ -62,20 +65,22 @@ bool DerivedQueue::peek(int &frntEntry) const
     return true;
 }
 
-DerivedQueue::~DerivedQueue()
+template <typename T>
+DerivedQueue<T>::~DerivedQueue()
 {
-    int temp;
+    T temp;
     while (dequeue(temp))
         ;
 }
 
-DerivedQueue::DerivedQueue(const DerivedQueue &LQ) : backPtr(nullptr), frontPtr(nullptr)
+template <typename T>
+DerivedQueue<T>::DerivedQueue(const DerivedQueue<T> &LQ) : backPtr(nullptr), frontPtr(nullptr)
 {
-    Node<int> *nodePtr = LQ.frontPtr;
-    while (nodePtr)
+    Node<T> *NodePtr = LQ.frontPtr;
+    while (NodePtr)
     {
-        enqueue(nodePtr->getItem());
-        nodePtr = nodePtr->getNext();
+        enqueue(NodePtr->getItem());
+        NodePtr = NodePtr->getNext();
     }
 }
 
