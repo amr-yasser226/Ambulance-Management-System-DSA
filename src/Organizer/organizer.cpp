@@ -126,6 +126,10 @@ bool Organizer::assignCarToPatient(Patient patientInstance)
     else
     {
         // add this patient to a waiting list
+
+        // update:
+        //  not a waiting list
+        //  he will just remain in his place
     }
 
     return true;
@@ -154,13 +158,102 @@ void Organizer::loadInputData()
     // for each hospital set its required/given data
     // from the input file then add it the hospitals' linkedlist
     int specialCarsAmount, normalCarsAmount;
-    for (int y = 1; y < hospitalCount+1; y++)
+    for (int y = 1; y <= hospitalCount; y++)
     {
         file >> specialCarsAmount >> normalCarsAmount;
         Hospital* newHospital = new Hospital(y);
         newHospital->addCars(Car::CarType::SC, specialCarsAmount);
         newHospital->addCars(Car::CarType::NC, normalCarsAmount);
         addHospital(newHospital);
+    }
+
+    file >> requests;
+
+    std::string inputType;
+    int inputQT, inputPID, inputHID, inputDistance, inputSeverity;
+    int cTime, cPID, cHID;
+
+    for (int i = 0; i < requests; i++)
+    {
+        if (file >> inputType >> inputQT >> inputPID >> inputHID >> inputDistance >> inputSeverity)
+        {
+            Patient::PatientType inputTypeConverted;
+
+            if (inputType == "NP")
+            {
+                inputTypeConverted = Patient::PatientType::NP;
+            }
+            else if (inputType == "SP")
+            {
+                inputTypeConverted = Patient::PatientType::SP;
+            }
+            else if (inputType == "EP")
+            {
+                inputTypeConverted = Patient::PatientType::EP;
+            }
+            else
+            {
+                std::cerr << "Error opening file (organizer.cpp / loadInputData [2])" << std::endl;
+                inputTypeConverted = Patient::PatientType::NP;
+            }
+
+            Patient newPatient
+            (
+                inputQT,
+                inputPID,
+                inputHID,
+                inputDistance,
+                inputTypeConverted
+            );
+
+            Node<Hospital>* targetHospital = nullptr;
+            Node<Hospital>* temp = Organizer::hospitals;
+
+            while (temp != nullptr)
+            {
+                if (temp->getItem().getHospitalID() == inputHID)
+                {
+                    targetHospital = temp;
+                    break;
+                }
+
+                temp = temp->getNext();
+            }
+
+            if (targetHospital != nullptr)
+            {
+                targetHospital->getItem().addPatient(newPatient, inputSeverity);
+            }
+            else
+            {
+                std::cerr << "Error opening file (organizer.cpp / loadInputData / dereferencing a nullptr)" << std::endl;
+            }
+        }
+
+        if (!(file >> cancellations))
+        {
+            std::cerr << "Error: Unexpected end of file or invalid data." << std::endl;
+            break;
+        }
+
+        file >> cancellations;
+        std::cout << "DEBUGGING: " << cancellations << std::endl;
+
+        for (int i = 0; i < cancellations; i++)
+        {
+            if (file >> cTime >> cPID >> cHID)
+            {
+                // This will stay untouched until
+                // we ask the TA
+
+                // Question:
+                // Where will these 3 paramteres be saved?
+
+                // For now, this functionality does not
+                // affect our code flow anyway
+                std::cout << std::endl;
+            }
+        }
     }
 
     file.close();

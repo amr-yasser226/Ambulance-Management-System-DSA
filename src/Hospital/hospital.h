@@ -11,7 +11,7 @@
 class Hospital
 {
 private:
-    int hospitalID;
+    int hospitalID = 0;
 
     Queue<Patient> *headSP; // doesn't matter if it's served first or not because it got its own type of cars and cannot be served otherwise.
     PriorityQueue<Patient>* headEP;

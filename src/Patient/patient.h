@@ -13,16 +13,16 @@ public:
     };
 
 private:
-    int pid;
-    int nearestHospitalID;
-    int nearestHospitalDistance;
+    int pid = 0;
+    int nearestHospitalID = 0;
+    int nearestHospitalDistance = 0;
     PatientType type;
-    double QT, AT, PT, WT, FT, carBusytime;
+    double QT = 0, AT = 0, PT = 0, WT = 0, FT = 0, carBusytime = 0;
 
 public:
     Patient();
-    Patient(int patientID, int hospitalID, int hospitalDistance, PatientType patientType);
-    
+    Patient(int requestTime, int patientID, int hospitalID, int hospitalDistance, PatientType patientType);
+
     PatientType getType() const;
     int getPID() const;
     int getNearestHospitalID() const;

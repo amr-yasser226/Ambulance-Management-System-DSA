@@ -13,12 +13,12 @@ Patient::Patient() :
     carBusytime(0.0)
 {}
 
-Patient::Patient(int patientID, int hospitalID, int hospitalDistance, PatientType patientType) :
+Patient::Patient(int requestTime, int patientID, int hospitalID, int hospitalDistance, PatientType patientType) :
     pid(patientID),
     nearestHospitalID(hospitalID),
     nearestHospitalDistance(hospitalDistance),
     type(patientType),
-    QT(0.0),
+    QT(requestTime),
     AT(0.0),
     PT(0.0),
     WT(0.0),

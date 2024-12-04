@@ -15,7 +15,7 @@ class Organizer
 private:
     Node<Hospital>* hospitals;
 
-    int requests, hospitalCount, specialCarSpeed, normalCarSpeed, currentTime;
+    int requests = 0, cancellations = 0, hospitalCount = 0, specialCarSpeed = 0, normalCarSpeed = 0, currentTime = 0;
 
 public:
     Organizer();
