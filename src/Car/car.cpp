@@ -1,36 +1,66 @@
 #include "car.h"
-#include "patient.h"
 
-Car::Car(CarType type, int speed) : type(type), status(READY), speed(speed), currentPatient(nullptr) {}
-
-void Car::assignPatient(Patient *patient)
+Car::Car() : type(NC), status(READY), currentPatient(nullptr)
 {
-    status = ASSIGNED;
-    currentPatient = patient;
 }
 
-void Car::dropPatient()
+Car::Car(CarType carType) : type(carType), status(READY), currentPatient(nullptr)
 {
-    status = READY;
-    currentPatient = nullptr;
 }
 
-Car::CarStatus Car::getStatus() const
-{
-    return status;
-}
-
-Car::CarType Car::getType() const
+Car::CarType Car::getCarType() const
 {
     return type;
 }
 
-int Car::getSpeed() const
+Car::CarStatus Car::getCarStatus() const
 {
-    return speed;
+    return status;
 }
 
-Patient *Car::getCurrentPatient() const
+Patient* Car::getCurrentPatient() const
 {
     return currentPatient;
+}
+
+void Car::setCarStatus(CarStatus newStatus)
+{
+    status = newStatus;
+}
+
+void Car::setCurrentPatient(Patient* patient)
+{
+    currentPatient = patient;
+}
+
+void Car::printDetails() const
+{
+    std::cout << "Car Details:" << std::endl;
+    
+    std::cout << "Car Type: ";
+    switch (type)
+    {
+        case SC: std::cout << "Special Car"; break;
+        case NC: std::cout << "Normal Car"; break;
+    }
+    std::cout << std::endl;
+    
+    std::cout << "Car Status: ";
+    switch (status)
+    {
+        case READY: std::cout << "Ready"; break;
+        case ASSIGNED: std::cout << "Assigned"; break;
+        case LOADED: std::cout << "Loaded"; break;
+    }
+    std::cout << std::endl;
+
+    if (currentPatient)
+    {
+        std::cout << "Current Patient Details:" << std::endl;
+        currentPatient->printDetails();
+    }
+    else
+    {
+        std::cout << "No patient assigned" << std::endl;
+    }
 }

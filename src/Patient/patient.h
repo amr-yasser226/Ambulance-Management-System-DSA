@@ -1,42 +1,40 @@
 #ifndef PATIENT_H
 #define PATIENT_H
-
 #include <iostream>
 
 class Patient
 {
-private:
-    std::string firstName;
-    std::string middleName;
-    std::string lastName;
-    int requestTime;
-    int severity;
+public:
     enum PatientType
     {
-        NP,
-        SP,
-        EP
-    } type;
-    int nearestHospitalID;
+        NP, // 0
+        SP, // 1
+        EP  // 2
+    };
+
+private:
+    int pid = 0;
+    int nearestHospitalID = 0;
+    int nearestHospitalDistance = 0;
+    PatientType type;
+    double QT = 0, AT = 0, PT = 0, WT = 0, FT = 0, carBusytime = 0;
 
 public:
     Patient();
+    Patient(int requestTime, int patientID, int hospitalID, int hospitalDistance, PatientType patientType);
 
-    // Removed methods related to user input
-    void setFirstName(const std::string &name);
-    void setMiddleName(const std::string &name);
-    void setLastName(const std::string &name);
-
-    const std::string &getFirstName() const;
-    const std::string &getMiddleName() const;
-    const std::string &getLastName() const;
-
-    int getRequestTime() const;
-    int getSeverity() const;
     PatientType getType() const;
+    int getPID() const;
     int getNearestHospitalID() const;
-
-    void printDetails() const;
+    int getNearestHospitalDistance() const;
+    
+    double getQT() const;
+    double getAT() const;
+    double getPT() const;
+    double getWT() const;
+    double getFT() const;
+    double getCarBusyTime() const;
+    
+    void printDetails();
 };
-
 #endif // PATIENT_H

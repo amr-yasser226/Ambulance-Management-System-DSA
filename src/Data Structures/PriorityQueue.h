@@ -1,128 +1,190 @@
 #ifndef PRIORITY_QUEUE_H
 #define PRIORITY_QUEUE_H
 
-// Define the priNode class
+#include "Node.h"
+#include <iostream>
+
 template <typename T>
 class priNode
 {
 private:
-    T item;           // A data item
-    int pri;          // Priority of the item
-    priNode<T> *next; // Pointer to the next node
+    T item;
+    int priority;
+    priNode<T> *next;
 
 public:
-    // Constructor
-    priNode(const T &r_Item, int PRI)
-    {
-        setItem(r_Item, PRI);
-        next = nullptr;
-    }
-
-    // Set the item and its priority
-    void setItem(const T &r_Item, int PRI)
-    {
-        item = r_Item;
-        pri = PRI;
-    }
-
-    // Set the next node pointer
-    void setNext(priNode<T> *nextNodePtr)
-    {
-        next = nextNodePtr;
-    }
-
-    // Get the item and update the priority reference
-    T getItem(int &PRI) const
-    {
-        PRI = pri;
-        return item;
-    }
-
-    // Get the next node pointer
-    priNode<T> *getNext() const
-    {
-        return next;
-    }
-
-    // Get the priority of the node
-    int getPri() const
-    {
-        return pri;
-    }
+    priNode();
+    priNode(const T &item, int priority);
+    priNode(const T &item, int priority, priNode<T> *nextNodePtr);
+    void setItem(const T &item, int priority);
+    void setNext(priNode<T> *nextNodePtr);
+    T getItem(int &priority) const;
+    priNode<T> *getNext() const;
+    int getPriority() const;
 };
 
-// Define the priQueue class, which implements a priority queue using a linked list
 template <typename T>
-class priQueue
+class PriorityQueue
 {
 private:
-    priNode<T> *head; // Pointer to the head of the list
+    priNode<T> *head;
 
 public:
-    // Constructor
-    priQueue() : head(nullptr) {}
-
-    // Destructor to free memory
-    ~priQueue()
-    {
-        T tmp;
-        int p;
-        while (dequeue(tmp, p))
-            ;
-    }
-
-    // Enqueue a new node based on its priority
-    void enqueue(const T &data, int priority)
-    {
-        priNode<T> *newNode = new priNode<T>(data, priority);
-
-        // If the list is empty or the new node has the highest priority
-        if (head == nullptr || priority > head->getPri())
-        {
-            newNode->setNext(head);
-            head = newNode;
-            return;
-        }
-
-        // Traverse to find the correct position for the new node
-        priNode<T> *current = head;
-        while (current->getNext() && priority <= current->getNext()->getPri())
-        {
-            current = current->getNext();
-        }
-        newNode->setNext(current->getNext());
-        current->setNext(newNode);
-    }
-
-    // Dequeue the node with the highest priority
-    bool dequeue(T &topEntry, int &pri)
-    {
-        if (isEmpty())
-            return false;
-
-        topEntry = head->getItem(pri);
-        priNode<T> *temp = head;
-        head = head->getNext();
-        delete temp;
-        return true;
-    }
-
-    // Peek at the node with the highest priority without removing it
-    bool peek(T &topEntry, int &pri)
-    {
-        if (isEmpty())
-            return false;
-
-        topEntry = head->getItem(pri);
-        pri = head->getPri();
-        return true;
-    }
-
-    // Check if the priority queue is empty
-    bool isEmpty() const
-    {
-        return head == nullptr;
-    }
+    PriorityQueue();
+    ~PriorityQueue();
+    PriorityQueue(const PriorityQueue<T> &otherQueue);
+    bool isEmpty() const;
+    void enqueue(const T &item, int priority);
+    bool dequeue(T &frontEntry, int &priority);
+    bool peek(T &frontEntry, int &priority) const;
+    int size() const;
+    void display() const;
+    priNode<T> *getHead() const;
 };
+
+template <typename T>
+priNode<T> *PriorityQueue<T>::getHead() const
+{
+    return head;
+}
+
+template <typename T>
+priNode<T>::priNode() : next(nullptr), priority(0) {}
+
+template <typename T>
+priNode<T>::priNode(const T &item, int priority) : item(item), priority(priority), next(nullptr) {}
+
+template <typename T>
+priNode<T>::priNode(const T &item, int priority, priNode<T> *nextNodePtr)
+    : item(item), priority(priority), next(nextNodePtr) {}
+
+template <typename T>
+void priNode<T>::setItem(const T &item, int priority)
+{
+    this->item = item;
+    this->priority = priority;
+}
+
+template <typename T>
+void priNode<T>::setNext(priNode<T> *nextNodePtr)
+{
+    next = nextNodePtr;
+}
+
+template <typename T>
+T priNode<T>::getItem(int &priority) const
+{
+    priority = this->priority;
+    return item;
+}
+
+template <typename T>
+priNode<T> *priNode<T>::getNext() const
+{
+    return next;
+}
+
+template <typename T>
+int priNode<T>::getPriority() const
+{
+    return priority;
+}
+
+template <typename T>
+PriorityQueue<T>::PriorityQueue() : head(nullptr) {}
+
+template <typename T>
+PriorityQueue<T>::~PriorityQueue()
+{
+    T tempItem;
+    int tempPriority;
+    while (dequeue(tempItem, tempPriority))
+        ;
+}
+
+template <typename T>
+PriorityQueue<T>::PriorityQueue(const PriorityQueue<T> &otherQueue) : head(nullptr)
+{
+    priNode<T> *current = otherQueue.head;
+    while (current)
+    {
+        enqueue(current->getItem(current->getPriority()), current->getPriority());
+        current = current->getNext();
+    }
+}
+
+template <typename T>
+bool PriorityQueue<T>::isEmpty() const
+{
+    return head == nullptr;
+}
+
+template <typename T>
+void PriorityQueue<T>::enqueue(const T &item, int priority)
+{
+    priNode<T> *newNode = new priNode<T>(item, priority);
+    if (isEmpty() || priority > head->getPriority())
+    {
+        newNode->setNext(head);
+        head = newNode;
+        return;
+    }
+
+    priNode<T> *current = head;
+    while (current->getNext() && current->getNext()->getPriority() >= priority)
+    {
+        current = current->getNext();
+    }
+    newNode->setNext(current->getNext());
+    current->setNext(newNode);
+}
+
+template <typename T>
+bool PriorityQueue<T>::dequeue(T &frontEntry, int &priority)
+{
+    if (isEmpty())
+        return false;
+
+    priNode<T> *nodeToDelete = head;
+    frontEntry = head->getItem(priority);
+    head = head->getNext();
+    delete nodeToDelete;
+    return true;
+}
+
+template <typename T>
+bool PriorityQueue<T>::peek(T &frontEntry, int &priority) const
+{
+    if (isEmpty())
+        return false;
+
+    frontEntry = head->getItem(priority);
+    return true;
+}
+
+template <typename T>
+int PriorityQueue<T>::size() const
+{
+    int count = 0;
+    priNode<T> *current = head;
+    while (current)
+    {
+        count++;
+        current = current->getNext();
+    }
+    return count;
+}
+
+template <typename T>
+void PriorityQueue<T>::display() const
+{
+    priNode<T> *current = head;
+    while (current)
+    {
+        std::cout << "Item: " << current->getItem(current->getPriority())
+                  << ", Priority: " << current->getPriority() << std::endl;
+        current = current->getNext();
+    }
+}
 
 #endif // PRIORITY_QUEUE_H

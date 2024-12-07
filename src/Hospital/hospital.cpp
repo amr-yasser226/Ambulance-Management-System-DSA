@@ -1,40 +1,117 @@
 #include "hospital.h"
 
-Hospital::Hospital(int hospitalID) : hospitalID(hospitalID), patients(0), headPatient(nullptr), cars(0), headCar(nullptr) {}
+Hospital::Hospital(int ID) :
+      hospitalID(ID), 
+      headSP(new Queue<Patient>()), 
+      headEP(new PriorityQueue<Patient>()), 
+      headNP(new DerivedQueue<Patient>()), 
+      headSC(new Queue<Car>()), 
+      headNC(new Queue<Car>()) 
+{}
 
-int Hospital::getNumberOfPatients(int patientType)
+void Hospital::addCars(Car::CarType type, int amount)
 {
-    int count = 0;
-    Node<Patient> *temp = headPatient;
-    while (temp != nullptr)
+    Queue<Car>* targetQueue = (type == Car::CarType::SC) ? headSC : headNC;
+    for (int i = 0; i < amount; i++)
     {
-        if (temp->getData().getType() == patientType)
+        targetQueue->enqueue(Car(type));
+    }
+}
+
+void Hospital::addPatient(Patient patientInstance, int severity)
+{
+    switch (patientInstance.getType())
+    {
+        case Patient::PatientType::NP:
+            headNP->enqueue(patientInstance);
+            break;
+        case Patient::PatientType::SP:
+            headSP->enqueue(patientInstance);
+            break;
+        case Patient::PatientType::EP:
+            headEP->enqueue(patientInstance, severity);
+            break;
+        default:
+            std::cout << "PATIENT TYPE NOT FOUND!" << std::endl;
+            break;
+    }
+}
+
+int Hospital::getHospitalID()
+{
+    return hospitalID;
+}
+
+int Hospital::getNumberOfPatients(int type)
+{
+    Patient temp;
+    int trash, count = 0;
+
+    switch (type)
+    {
+        case 0: // NP
         {
-            count++;
+            DerivedQueue<Patient> tempQueue(*headNP);
+
+            while (!tempQueue.isEmpty())
+            {
+                tempQueue.dequeue(temp);
+                count++;
+            }
+            break;
         }
-        temp = temp->getNext();
+        case 1: // SP
+        {
+            Queue<Patient> tempQueue(*headSP);
+
+            while (!tempQueue.isEmpty())
+            {
+                tempQueue.dequeue(temp);
+                count++;
+            }
+            break;
+        }
+        case 2: // EP
+        {
+            PriorityQueue<Patient> tempQueue;
+            
+            priNode<Patient>* current = headEP->getHead();
+            while (current)
+            {
+                tempQueue.enqueue(current->getItem(trash), trash);
+                current = current->getNext();
+                count++;
+            }
+            break;
+        }
+        case 3: // All patients
+            count = getNumberOfPatients(0) + getNumberOfPatients(1) + getNumberOfPatients(2);
+            break;
+        default:
+            std::cout << "NO PATIENT TYPE MATCHED!" << std::endl;
+            break;
     }
     return count;
 }
 
-void Hospital::addPatient(Patient patientInstance)
+int Hospital::getNumberOfCars(int type)
 {
-    Node<Patient> *newPatient = new Node<Patient>(patientInstance);
-    newPatient->setNext(headPatient);
-    headPatient = newPatient;
-    patients++;
-}
+    if (!headSC || !headNC) // Check if queues are initialized
+    {
+        std::cerr << "Error: Car queues are not initialized!" << std::endl;
+        return 0;
+    }
 
-void Hospital::addCar(Car carInstance)
-{
-    Node<Car> *newCar = new Node<Car>(carInstance);
-    newCar->setNext(headCar);
-    headCar = newCar;
-    cars++;
-}
-
-bool Hospital::assignCarToPatient()
-{
-    // Implement the logic to assign a car to a patient based on their speed and priority
-    return false;
+    switch (type)
+    {
+    case 0: // SC
+        return headSC->size();
+    case 1: // NC
+        return headNC->size();
+    case 2: // All cars
+        return headSC->size() + headNC->size();
+    default:
+        std::cerr << "NO CAR TYPE MATCHED!" << std::endl;
+        return 0;
+    }
 }

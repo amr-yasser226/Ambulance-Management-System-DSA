@@ -1,60 +1,62 @@
 #include "patient.h"
 
-Patient::Patient() : requestTime(0), severity(0), type(NP), nearestHospitalID(0) {}
+Patient::Patient() :
+    pid(0),
+    nearestHospitalID(0),
+    nearestHospitalDistance(0),
+    type(NP),
+    QT(0.0),
+    AT(0.0),
+    PT(0.0),
+    WT(0.0),
+    FT(0.0),
+    carBusytime(0.0)
+{}
 
-void Patient::setFirstName(const std::string &name)
-{
-    firstName = name;
-}
+Patient::Patient(int requestTime, int patientID, int hospitalID, int hospitalDistance, PatientType patientType) :
+    pid(patientID),
+    nearestHospitalID(hospitalID),
+    nearestHospitalDistance(hospitalDistance),
+    type(patientType),
+    QT(requestTime),
+    AT(0.0),
+    PT(0.0),
+    WT(0.0),
+    FT(0.0),
+    carBusytime(0.0)
+{}
 
-void Patient::setMiddleName(const std::string &name)
-{
-    middleName = name;
-}
+Patient::PatientType Patient::getType() const { return type; }
 
-void Patient::setLastName(const std::string &name)
-{
-    lastName = name;
-}
+int Patient::getPID() const { return pid; }
+int Patient::getNearestHospitalID() const { return nearestHospitalID; }
+int Patient::getNearestHospitalDistance() const { return nearestHospitalDistance; }
 
-const std::string &Patient::getFirstName() const
-{
-    return firstName;
-}
+double Patient::getQT() const { return QT; }
+double Patient::getAT() const { return AT; }
+double Patient::getPT() const { return PT; }
+double Patient::getWT() const { return WT; }
+double Patient::getFT() const { return FT; }
+double Patient::getCarBusyTime() const { return carBusytime; }
 
-const std::string &Patient::getMiddleName() const
+void Patient::printDetails()
 {
-    return middleName;
-}
-
-const std::string &Patient::getLastName() const
-{
-    return lastName;
-}
-
-int Patient::getRequestTime() const
-{
-    return requestTime;
-}
-
-int Patient::getSeverity() const
-{
-    return severity;
-}
-
-Patient::PatientType Patient::getType() const
-{
-    return type;
-}
-
-int Patient::getNearestHospitalID() const
-{
-    return nearestHospitalID;
-}
-
-void Patient::printDetails() const
-{
-    std::cout << "First Name: " << firstName << "\n"
-              << "Middle Name: " << middleName << "\n"
-              << "Last Name: " << lastName << "\n";
+    std::cout << "Patient Details:" << std::endl;
+    std::cout << "Patient ID: " << pid << std::endl;
+    std::cout << "Patient Type: ";
+    switch (type)
+    {
+        case NP: std::cout << "Normal Patient"; break;
+        case SP: std::cout << "Special Patient"; break;
+        case EP: std::cout << "Emergency Patient"; break;
+    }
+    std::cout << std::endl;
+    std::cout << "Nearest Hospital ID: " << nearestHospitalID << std::endl;
+    std::cout << "Nearest Hospital Distance: " << nearestHospitalDistance << std::endl;
+    std::cout << "Request Time (QT): " << QT << std::endl;
+    std::cout << "Arrival Time (AT): " << AT << std::endl;
+    std::cout << "Pickup Time (PT): " << PT << std::endl;
+    std::cout << "Waiting Time (WT): " << WT << std::endl;
+    std::cout << "Finish Time (FT): " << FT << std::endl;
+    std::cout << "Car Busy Time: " << carBusytime << std::endl;
 }
