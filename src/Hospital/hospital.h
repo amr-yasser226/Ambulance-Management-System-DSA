@@ -20,9 +20,9 @@ private:
     Queue<Car> *headSC;
     Queue<Car> *headNC;
 
-public:
+  public:
+    Hospital() {}
     Hospital(int hospitalID);
-    ~Hospital();
 
     void addCars(Car::CarType type, int amount);
     // loadInputData()

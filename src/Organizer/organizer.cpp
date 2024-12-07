@@ -3,24 +3,20 @@
 Organizer::Organizer() :
     hospitals(nullptr),
     requests(0),
+    cancellations(0),
     hospitalCount(0),
     specialCarSpeed(0),
     normalCarSpeed(0),
     currentTime(0)
 {}
 
-Organizer::~Organizer() 
+Organizer::~Organizer()
 {
-    Node<Hospital>* current = hospitals;
-
-    while (current != nullptr)
+    if (hospitals != nullptr)
     {
-        Node<Hospital>* temp = current;
-        current = current->getNext();
-        delete temp;
+        delete[] hospitals;
+        hospitals = nullptr;
     }
-
-    hospitals = nullptr;
 }
 
 int Organizer::getValueByMap(int index)
@@ -57,83 +53,65 @@ int Organizer::getValueByMap(int index)
     return value;
 }
 
-void Organizer::addHospital(Hospital* hospitalInstance)
-{
-    // Logic of interseting a node to the end of a linkedlist
+// bool Organizer::assignCarToPatient(Patient patientInstance)
+// {
+//     Node<Hospital>* targetHospital = nullptr;
 
-    Node<Hospital>* instance = new Node<Hospital>(*hospitalInstance);
+//     int tempNearestHospitalID = patientInstance.getNearestHospitalID();
 
-    if (hospitals == nullptr)
-    {
-        hospitals = instance;
-    }
-    else
-    {
-        Node<Hospital>* temp = hospitals;
-        while (temp->getNext() != nullptr) { temp = temp->getNext(); }
-        temp->setNext(instance);
-    }
-}
+//     Node<Hospital>* temp = hospitals;
+//     while (temp != nullptr)
+//     {
+//         if (temp->getItem().getHospitalID() == tempNearestHospitalID)
+//         {
+//             targetHospital = temp;
+//             break;
+//         }
 
-bool Organizer::assignCarToPatient(Patient patientInstance)
-{
-    Node<Hospital>* targetHospital = nullptr;
+//         temp = temp->getNext();
+//     }
 
-    int tempNearestHospitalID = patientInstance.getNearestHospitalID();
+//     if (targetHospital == nullptr) { return false; }
 
-    Node<Hospital>* temp = hospitals;
-    while (temp != nullptr)
-    {
-        if (temp->getItem().getHospitalID() == tempNearestHospitalID)
-        {
-            targetHospital = temp;
-            break;
-        }
+//     int requiredCarType;
+//     switch (patientInstance.getType())
+//     {
+//         case Patient::PatientType::NP:
+//             requiredCarType = 1;
+//             break;
+//         case Patient::PatientType::SP:
+//             requiredCarType = 0;
+//             break;
+//         case Patient::PatientType::EP:
+//             requiredCarType = 1;
+//             break;
+//         default:
+//             return false;
+//     }
 
-        temp = temp->getNext();
-    }
+//     if (targetHospital->getItem().getNumberOfCars(requiredCarType) > 0)
+//     {
+//         // implement assigning logic here based on his car type
+//     }
+//     else if (patientInstance.getType() == Patient::PatientType::EP && targetHospital->getItem().getNumberOfCars(1) <= 0)
+//     {
+//         if (targetHospital->getItem().getNumberOfCars(0) > 0)
+//         {
+//             // implement the same assigning logic here
+//             // for this emergency patient but using a Special car
+//         }
+//     }
+//     else
+//     {
+//         // add this patient to a waiting list
 
-    if (targetHospital == nullptr) { return false; }
+//         // update:
+//         //  not a waiting list
+//         //  he will just remain in his place
+//     }
 
-    int requiredCarType;
-    switch (patientInstance.getType())
-    {
-        case Patient::PatientType::NP:
-            requiredCarType = 1;
-            break;
-        case Patient::PatientType::SP:
-            requiredCarType = 0;
-            break;
-        case Patient::PatientType::EP:
-            requiredCarType = 1;
-            break;
-        default:
-            return false;
-    }
-
-    if (targetHospital->getItem().getNumberOfCars(requiredCarType) > 0)
-    {
-        // implement assigning logic here based on his car type
-    }
-    else if (patientInstance.getType() == Patient::PatientType::EP && targetHospital->getItem().getNumberOfCars(1) <= 0)
-    {
-        if (targetHospital->getItem().getNumberOfCars(0) > 0)
-        {
-            // implement the same assigning logic here
-            // for this emergency patient but using a Special car
-        }
-    }
-    else
-    {
-        // add this patient to a waiting list
-
-        // update:
-        //  not a waiting list
-        //  he will just remain in his place
-    }
-
-    return true;
-}
+//     return true;
+// }
 
 void Organizer::loadInputData()
 {
@@ -157,21 +135,34 @@ void Organizer::loadInputData()
     // create x number of hospitals based on hospitalCount
     // for each hospital set its required/given data
     // from the input file then add it the hospitals' linkedlist
+
+    hospitals = new Hospital[hospitalCount];
+
     int specialCarsAmount, normalCarsAmount;
-    for (int y = 1; y <= hospitalCount; y++)
+    for (int y = 0; y < hospitalCount; y++)
     {
         file >> specialCarsAmount >> normalCarsAmount;
-        Hospital* newHospital = new Hospital(y);
-        newHospital->addCars(Car::CarType::SC, specialCarsAmount);
-        newHospital->addCars(Car::CarType::NC, normalCarsAmount);
-        addHospital(newHospital);
+
+        Hospital newHospital(y+1);
+
+        std::cout << "Before: " << newHospital.getNumberOfCars(0) << " " << newHospital.getNumberOfCars(1) << std::endl;
+
+        newHospital.addCars(Car::CarType::SC, specialCarsAmount);
+        newHospital.addCars(Car::CarType::NC, normalCarsAmount);
+
+        std::cout << "After:  " << newHospital.getNumberOfCars(0) << " " << newHospital.getNumberOfCars(1) << std::endl;
+
+        hospitals[y] = newHospital;
+        std::cout << "Total cars amount: " << hospitals[y].getNumberOfCars(2) << std::endl;
     }
+
+    std::cout << std::endl;
 
     file >> requests;
 
     std::string inputType;
     int inputQT, inputPID, inputHID, inputDistance, inputSeverity;
-    // int cTime, cPID, cHID;
+    int cTime, cPID, cHID;
 
     for (int i = 0; i < requests; i++)
     {
@@ -206,19 +197,38 @@ void Organizer::loadInputData()
                 inputTypeConverted
             );
 
-            Node<Hospital>* temp = Organizer::hospitals;
-
-            while (temp != nullptr)
+            for (int i = 0; i < hospitalCount; i++)
             {
-                if (temp->getItem().getHospitalID() == inputHID)
+                if (hospitals[i].getHospitalID() == inputHID)
                 {
-                    std::cout << temp->getItem().getHospitalID() << std::endl;
-                    temp->getItem().addPatient(newPatient, inputSeverity);
-                    break;
+                    hospitals[i].addPatient(newPatient, inputSeverity);
                 }
-
-                temp = temp->getNext();
             }
+        }
+    }
+
+    // Debugging:
+    for (int i = 0; i < hospitalCount; i++) { std::cout << "Hospital " << i+1 << " patients: " << hospitals[i].getNumberOfPatients(3) << std::endl; }
+
+    if (!(file >> cancellations))
+    {
+        std::cerr << "Error: Cannot read cancellations amount!" << std::endl;
+    }
+
+    // Debugging:
+    std::cout << "CANCELLED REQUESTS: " << cancellations << std::endl;
+
+    for (int i = 0; i < cancellations; i++)
+    {
+        if (file >> cTime >> cPID >> cHID)
+        {
+            // This will stay untouched until
+            // we ask the TA
+            // Question:
+            // Where will these 3 paramteres be saved?
+            // For now, this functionality does not
+            // affect our code flow anyway
+            std::cout << "cancel request num " << i+1 << std::endl;
         }
     }
 

@@ -1,23 +1,13 @@
 #include "hospital.h"
 
-Hospital::Hospital(int ID) : hospitalID(ID)
-{
-    headSP = new Queue<Patient>();
-    headEP = new PriorityQueue<Patient>();
-    headNP = new DerivedQueue<Patient>();
-    headSC = new Queue<Car>();
-    headNC = new Queue<Car>();
-}
-
-Hospital::~Hospital()
-{
-    delete headSP;
-    delete headEP;
-    delete headNP;
-
-    delete headSC;
-    delete headNC;
-}
+Hospital::Hospital(int ID) :
+      hospitalID(ID), 
+      headSP(new Queue<Patient>()), 
+      headEP(new PriorityQueue<Patient>()), 
+      headNP(new DerivedQueue<Patient>()), 
+      headSC(new Queue<Car>()), 
+      headNC(new Queue<Car>()) 
+{}
 
 void Hospital::addCars(Car::CarType type, int amount)
 {
@@ -106,37 +96,22 @@ int Hospital::getNumberOfPatients(int type)
 
 int Hospital::getNumberOfCars(int type)
 {
-    int count = 0;
+    if (!headSC || !headNC) // Check if queues are initialized
+    {
+        std::cerr << "Error: Car queues are not initialized!" << std::endl;
+        return 0;
+    }
+
     switch (type)
     {
-        case 0: // SC
-        {
-            Queue<Car> tempQueue(*headSC);
-            Car temp;
-            while (!tempQueue.isEmpty())
-            {
-                tempQueue.dequeue(temp);
-                count++;
-            }
-            break;
-        }
-        case 1: // NC
-        {
-            Queue<Car> tempQueue(*headNC);
-            Car temp;
-            while (!tempQueue.isEmpty())
-            {
-                tempQueue.dequeue(temp);
-                count++;
-            }
-            break;
-        }
-        case 2: // All cars
-            count = getNumberOfCars(0) + getNumberOfCars(1);
-            break;
-        default:
-            std::cout << "NO CAR TYPE MATCHED!" << std::endl;
-            break;
+    case 0: // SC
+        return headSC->size();
+    case 1: // NC
+        return headNC->size();
+    case 2: // All cars
+        return headSC->size() + headNC->size();
+    default:
+        std::cerr << "NO CAR TYPE MATCHED!" << std::endl;
+        return 0;
     }
-    return count;
 }
