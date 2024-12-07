@@ -171,7 +171,7 @@ void Organizer::loadInputData()
 
     std::string inputType;
     int inputQT, inputPID, inputHID, inputDistance, inputSeverity;
-    int cTime, cPID, cHID;
+    // int cTime, cPID, cHID;
 
     for (int i = 0; i < requests; i++)
     {
@@ -206,52 +206,18 @@ void Organizer::loadInputData()
                 inputTypeConverted
             );
 
-            Node<Hospital>* targetHospital = nullptr;
             Node<Hospital>* temp = Organizer::hospitals;
 
             while (temp != nullptr)
             {
                 if (temp->getItem().getHospitalID() == inputHID)
                 {
-                    targetHospital = temp;
+                    std::cout << temp->getItem().getHospitalID() << std::endl;
+                    temp->getItem().addPatient(newPatient, inputSeverity);
                     break;
                 }
 
                 temp = temp->getNext();
-            }
-
-            if (targetHospital != nullptr)
-            {
-                targetHospital->getItem().addPatient(newPatient, inputSeverity);
-            }
-            else
-            {
-                std::cerr << "Error opening file (organizer.cpp / loadInputData / dereferencing a nullptr)" << std::endl;
-            }
-        }
-
-        if (!(file >> cancellations))
-        {
-            std::cerr << "Error: Unexpected end of file or invalid data." << std::endl;
-            break;
-        }
-
-        file >> cancellations;
-        std::cout << "DEBUGGING: " << cancellations << std::endl;
-
-        for (int i = 0; i < cancellations; i++)
-        {
-            if (file >> cTime >> cPID >> cHID)
-            {
-                // This will stay untouched until
-                // we ask the TA
-
-                // Question:
-                // Where will these 3 paramteres be saved?
-
-                // For now, this functionality does not
-                // affect our code flow anyway
-                std::cout << std::endl;
             }
         }
     }
