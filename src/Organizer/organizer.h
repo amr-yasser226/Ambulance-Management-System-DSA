@@ -4,7 +4,8 @@
 #include "../Car/car.h"
 #include "../Patient/patient.h"
 #include "../Hospital/hospital.h"
-#include "../Data Structures/Node.h"
+#include "../Data Structures/Queue.h"
+#include "../Data Structures/CancelledRequest.h"
 
 #include <iostream>
 #include <fstream>
@@ -13,8 +14,11 @@
 class Organizer
 {
 private:
-    // Hospital* hospitals;
     Hospital *hospitals = new Hospital[hospitalCount];
+
+    Queue<Patient> *incomingPatients;
+    Queue<Patient> *waitingPatients;
+    Queue<CancelledRequest> *cancelledPatients;
 
     int requests = 0,
         cancellations = 0,
@@ -26,14 +30,15 @@ private:
 public:
     Organizer();
     ~Organizer();
-    
+
+    // This function will be used for the bonus (or deleted entirely)
     int getValueByMap(int index);               
     // Example: getValueByMap(12) will return value at row index 0 at column index 1
     //          getValueByMap(11) or getValueByMap(33) will return 0 always
     //          if return is -1, then index not found
     //          if return is -2, then error opening input file
 
-    bool assignCarToPatient(Patient patientInstnace);
+    bool assignCarToPatient();
     // This should go to the car of the patient's request type in the required hospital (we get the required hospital from the patientInstance's nearestHospitalID)
     // then assign it a patient using setCurrentPatient(Patient patientInstance) <-- this function is in car class
     // - Now, it will be holding a patient

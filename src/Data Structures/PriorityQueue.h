@@ -58,6 +58,7 @@ template <typename T>
 priNode<T>::priNode(const T &item, int priority, priNode<T> *nextNodePtr)
     : item(item), priority(priority), next(nextNodePtr) {}
 
+
 template <typename T>
 void priNode<T>::setItem(const T &item, int priority)
 {
@@ -105,13 +106,18 @@ PriorityQueue<T>::~PriorityQueue()
 template <typename T>
 PriorityQueue<T>::PriorityQueue(const PriorityQueue<T> &otherQueue) : head(nullptr)
 {
-    priNode<T> *current = otherQueue.head;
+    if (!otherQueue.head)
+        return; // If the source queue is empty, nothing to copy.
+
+    priNode<T> *current = otherQueue.head; // Pointer to traverse the source queue.
     while (current)
     {
-        enqueue(current->getItem(current->getPriority()), current->getPriority());
-        current = current->getNext();
+        int tempPriority = current->getPriority(); // Store the current node's priority.
+        enqueue(current->getItem(tempPriority), tempPriority); // Enqueue the item and priority into the new queue.
+        current = current->getNext(); // Move to the next node.
     }
 }
+
 
 template <typename T>
 bool PriorityQueue<T>::isEmpty() const
@@ -181,8 +187,7 @@ void PriorityQueue<T>::display() const
     priNode<T> *current = head;
     while (current)
     {
-        std::cout << "Item: " << current->getItem(current->getPriority())
-                  << ", Priority: " << current->getPriority() << std::endl;
+        std::cout << "Item: " << current->getItem(current->getPriority()) << ", Priority: " << current->getPriority() << std::endl;
         current = current->getNext();
     }
 }

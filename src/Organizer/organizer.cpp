@@ -2,6 +2,9 @@
 
 Organizer::Organizer() :
     hospitals(nullptr),
+    incomingPatients(new Queue<Patient>()), 
+    waitingPatients(new Queue<Patient>()), 
+    cancelledPatients(new Queue<CancelledRequest>()), 
     requests(0),
     cancellations(0),
     hospitalCount(0),
@@ -53,68 +56,36 @@ int Organizer::getValueByMap(int index)
     return value;
 }
 
-// bool Organizer::assignCarToPatient(Patient patientInstance)
-// {
-//     Node<Hospital>* targetHospital = nullptr;
+bool Organizer::assignCarToPatient()
+{
+    for (int i = 0; i < hospitalCount; i++)
+    {
+        Car tempSC;
+        Patient tempSP;
+        if (hospitals[i].getHeadSP()->peek(tempSP))
+        {
+            if (hospitals[i].getNumberOfCars(0) > 0)
+            {
+                hospitals[i].getHeadSP()->dequeue(tempSP);
+                hospitals[i].getHeadSC()->dequeue(tempSC);
 
-//     int tempNearestHospitalID = patientInstance.getNearestHospitalID();
+                // tempSC.setCurrentPatient(tempSP);
+                // tempSC.setCarStatus(Car::CarStatus::ASSIGNED);
+            }
+        }
+        else
+        {
+            std::cout << currentTime << " | No SP to serve!" << std::endl;
+        }
+    }
 
-//     Node<Hospital>* temp = hospitals;
-//     while (temp != nullptr)
-//     {
-//         if (temp->getItem().getHospitalID() == tempNearestHospitalID)
-//         {
-//             targetHospital = temp;
-//             break;
-//         }
-
-//         temp = temp->getNext();
-//     }
-
-//     if (targetHospital == nullptr) { return false; }
-
-//     int requiredCarType;
-//     switch (patientInstance.getType())
-//     {
-//         case Patient::PatientType::NP:
-//             requiredCarType = 1;
-//             break;
-//         case Patient::PatientType::SP:
-//             requiredCarType = 0;
-//             break;
-//         case Patient::PatientType::EP:
-//             requiredCarType = 1;
-//             break;
-//         default:
-//             return false;
-//     }
-
-//     if (targetHospital->getItem().getNumberOfCars(requiredCarType) > 0)
-//     {
-//         // implement assigning logic here based on his car type
-//     }
-//     else if (patientInstance.getType() == Patient::PatientType::EP && targetHospital->getItem().getNumberOfCars(1) <= 0)
-//     {
-//         if (targetHospital->getItem().getNumberOfCars(0) > 0)
-//         {
-//             // implement the same assigning logic here
-//             // for this emergency patient but using a Special car
-//         }
-//     }
-//     else
-//     {
-//         // add this patient to a waiting list
-
-//         // update:
-//         //  not a waiting list
-//         //  he will just remain in his place
-//     }
-
-//     return true;
-// }
+    return true;
+}
 
 void Organizer::loadInputData()
 {
+    std::cout << std::endl << "Loading data to be simulated..." << std::endl << std::endl;
+
     std::ifstream file("../data/input/input_1_1.txt");
 
     if (!file.is_open())
@@ -188,27 +159,22 @@ void Organizer::loadInputData()
                 inputTypeConverted = Patient::PatientType::NP;
             }
 
-            Patient newPatient
+            Patient* newPatient = new Patient
             (
                 inputQT,
                 inputPID,
                 inputHID,
                 inputDistance,
-                inputTypeConverted
+                inputTypeConverted,
+                inputSeverity
             );
 
-            for (int i = 0; i < hospitalCount; i++)
-            {
-                if (hospitals[i].getHospitalID() == inputHID)
-                {
-                    hospitals[i].addPatient(newPatient, inputSeverity);
-                }
-            }
+            incomingPatients->enqueue(*newPatient);
         }
     }
 
     // Debugging:
-    for (int i = 0; i < hospitalCount; i++) { std::cout << "Hospital " << i+1 << " patients: " << hospitals[i].getNumberOfPatients(3) << std::endl; }
+    // for (int i = 0; i < hospitalCount; i++) { std::cout << "Hospital " << i+1 << " patients: " << hospitals[i].getNumberOfPatients(3) << std::endl; }
 
     if (!(file >> cancellations))
     {
@@ -222,13 +188,14 @@ void Organizer::loadInputData()
     {
         if (file >> cTime >> cPID >> cHID)
         {
-            // This will stay untouched until
-            // we ask the TA
-            // Question:
-            // Where will these 3 paramteres be saved?
-            // For now, this functionality does not
-            // affect our code flow anyway
-            std::cout << "cancel request num " << i+1 << std::endl;
+            // struct:
+            CancelledRequest cancelledRequestInstance;
+
+            cancelledRequestInstance.cTimestep = cTime;
+            cancelledRequestInstance.cPID = cPID;
+            cancelledRequestInstance.cHID = cHID;
+
+            cancelledPatients->enqueue(cancelledRequestInstance);
         }
     }
 
@@ -237,11 +204,109 @@ void Organizer::loadInputData()
 
 void Organizer::simulate()
 {
-    std::cout << "Processing simulation..." << std::endl;
+    std::cout << std::endl << "Processing simulation..." << std::endl;
+
+    // // debugging:
+    // while (!incomingPatients->isEmpty())
+    // {
+    //     Patient temp;
+    //     incomingPatients->dequeue(temp);
+    //     temp.printDetails();
+    //     std::cout << "\n-----------------------\n" << std::endl;
+    // }
+
+    // // debugging:
+    // while (!cancelledPatients->isEmpty())
+    // {
+    //     CancelledRequest temp;
+    //     cancelledPatients->dequeue(temp);
+    //     std::cout << temp.cTimestep << " " << temp.cPID << " " << temp.cHID << std::endl;
+    //     std::cout << "\n-----------------------\n" << std::endl;
+    // }
+
+    for (currentTime = 1; currentTime < 100; currentTime++)
+    {
+        // Beginning of each loop:
+        //
+        // - We check on cancelledRequests list if there were any
+        //   If yes, based on certain criteria:
+        //   enqueue the car from OUT list & enqueue it back to
+        //   its patient's hospital ID & flag the patient as cancelledRequest
+        //   and move the patient to finish list
+        //
+        // - We check on OUT list if the patient's car PK == currentTime
+        //   If yes, dequeue from OUT & enqueue to BACK, else do nothing
+        //
+        // - We check on BACK list if the patient's car FT == currentTime
+        //   If yes:
+        //      - send patient to finish list
+        //      - dequeue car from BACK
+        //      - enqueue the car to the patient's hospital ID
+        // - else:
+        //      do nothing
+
+
+        // Actually process the simulation now:
+
+
+        // Serve waiting patients first:
+        // - Add them to their according list inside their hospital
+
+        // Serve incoming patients second:
+        // -    Add them to their according list inside their hospital
+        // else:
+        // -    Enqueue them to the waitingPatients list
+        Patient tempPeek;
+        if (incomingPatients->peek(tempPeek))
+        {
+            incomingPatients->dequeue(tempPeek);
+
+            if (tempPeek.getQT() == currentTime)
+            {
+                for (int i = 0; i < hospitalCount; i++)
+                {
+                    if (hospitals[i].getHospitalID() == tempPeek.getNearestHospitalID())
+                    {
+                        hospitals[i].addPatient(tempPeek, tempPeek.getSeverity());
+                    }
+                }
+            }
+            else
+            {
+                waitingPatients->enqueue(tempPeek);
+            }
+        }
+
+        // Note:
+        // At this point of code:
+        // - Any request inside any hospital must have
+        //   at least 1 car available to serve that request
+
+        // Loop over each hospital:
+        // - Peek on each list:
+        //   - Assign the patients inside each list their car
+        //   - Assignment involves updating the patient's info (times)
+        // assignCarToPatient();
+    }
+
+    // debugging:
+    // for (int i = 0; i < hospitalCount; i++)
+    // {
+    //     hospitals[i].printHospitalDetails();
+    // }
+
+    // debugging:
+    // while (!incomingPatients->isEmpty())
+    // {
+    //     Patient temp;
+    //     incomingPatients->dequeue(temp);
+    //     temp.printDetails();
+    //     std::cout << "\n-----------------------\n" << std::endl;
+    // }
 }
 
 void Organizer::generateOutput()
 {
     // Placeholder for generating output
-    std::cout << "Simulation complete. Generating output...\n";
+    std::cout << std::endl << "Simulation complete. Generating output...\n";
 }

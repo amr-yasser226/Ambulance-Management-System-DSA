@@ -14,6 +14,7 @@ public:
 
 private:
     int pid = 0;
+    int severity = 0;
     int nearestHospitalID = 0;
     int nearestHospitalDistance = 0;
     PatientType type;
@@ -21,10 +22,11 @@ private:
 
 public:
     Patient();
-    Patient(int requestTime, int patientID, int hospitalID, int hospitalDistance, PatientType patientType);
+    Patient(int requestTime, int patientID, int hospitalID, int hospitalDistance, PatientType patientType, int severity);
 
     PatientType getType() const;
     int getPID() const;
+    int getSeverity() const;
     int getNearestHospitalID() const;
     int getNearestHospitalDistance() const;
     

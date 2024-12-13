@@ -10,7 +10,7 @@
 
 class Hospital
 {
-private:
+  private:
     int hospitalID = 0;
 
     Queue<Patient> *headSP; // doesn't matter if it's served first or not because it got its own type of cars and cannot be served otherwise.
@@ -23,6 +23,13 @@ private:
   public:
     Hospital() {}
     Hospital(int hospitalID);
+
+    Queue<Patient>* getHeadSP() const;
+    PriorityQueue<Patient>* getHeadEP() const;
+    DerivedQueue<Patient>* getHeadNP() const;
+
+    Queue<Car>* getHeadSC() const;
+    Queue<Car>* getHeadNC() const;
 
     void addCars(Car::CarType type, int amount);
     // loadInputData()
@@ -54,6 +61,8 @@ private:
     // 0 = SC
     // 1 = NC
     // 2 = All cars
+
+    void printHospitalDetails();
 };
 
 #endif
