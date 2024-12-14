@@ -36,6 +36,12 @@ public:
     double getWT() const;
     double getFT() const;
     double getCarBusyTime() const;
+
+    void setAT(double value);
+    void setPT(double value);
+    void setWT(double value);
+    void setFT(double value);
+    void setCarBusyTime(double value);
     
     void printDetails();
 };

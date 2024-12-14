@@ -24,11 +24,12 @@ private:
     ExtendedPriorityQueue<Car*> *OUT;
     ExtendedPriorityQueue<Car*> *BACK;
 
+    double specialCarSpeed = 0.0,
+           normalCarSpeed = 0.0;
+
     int requests = 0,
         cancellations = 0,
         hospitalCount = 0,
-        specialCarSpeed = 0,
-        normalCarSpeed = 0,
         currentTime = 0;
 
 public:

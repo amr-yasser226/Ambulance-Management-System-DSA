@@ -7,11 +7,11 @@ Organizer::Organizer() :
     cancelledPatients(new Queue<CancelledRequest>()), 
     OUT(new ExtendedPriorityQueue<Car*>()), 
     BACK(new ExtendedPriorityQueue<Car*>()), 
+    specialCarSpeed(0.0),
+    normalCarSpeed(0.0),
     requests(0),
     cancellations(0),
     hospitalCount(0),
-    specialCarSpeed(0),
-    normalCarSpeed(0),
     currentTime(0)
 {}
 
@@ -285,13 +285,36 @@ void Organizer::simulate()
         //      - do nothing (the patient will remain in their list)
         for (int i = 0; i < hospitalCount; i++)
         {
+            double AT = 0.0, PT = 0.0, WT = 0.0, FT = 0.0, CBT = 0.0;
+
             Patient* assignSPatient = new Patient();
             while (hospitals[i].getHeadSP()->peek(assignSPatient))
             {
                 if (hospitals[i].getNumberOfCars(0) > 0)
                 {
-                    hospitals[i].getHeadSP()->dequeue(assignSPatient);
                     // assign logic here (special car)
+
+                    Car* assignSCar = new Car();
+
+                    hospitals[i].getHeadSP()->dequeue(assignSPatient);
+                    hospitals[i].getHeadSC()->dequeue(assignSCar);
+
+                    AT = currentTime;
+                    PT = AT + (assignSPatient->getNearestHospitalDistance() / specialCarSpeed);
+                    WT = PT - assignSPatient->getQT();
+                    FT = PT + (assignSPatient->getNearestHospitalDistance() / specialCarSpeed);
+                    CBT = FT - AT;
+
+                    assignSPatient->setAT(AT);
+                    assignSPatient->setPT(PT);
+                    assignSPatient->setWT(WT);
+                    assignSPatient->setFT(FT);
+                    assignSPatient->setCarBusyTime(CBT);
+
+                    assignSCar->setCurrentPatient(assignSPatient);
+                    assignSCar->setCarStatus(Car::CarStatus::ASSIGNED);
+
+                    OUT->enqueue(assignSCar, PT);
                 }
                 else
                 {
@@ -332,6 +355,15 @@ void Organizer::simulate()
                     break;
                 }
             }
+        }
+
+        while (!OUT->isEmpty())
+        {
+            int pri;
+            Car* test = new Car();
+            OUT->dequeue(test, pri);
+            Patient* ptest = test->getCurrentPatient();
+            std::cout << ptest->getPT() << std::endl;
         }
     }
 
