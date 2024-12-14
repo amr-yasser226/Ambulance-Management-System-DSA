@@ -28,9 +28,15 @@ void Car::setCarStatus(CarStatus newStatus)
     status = newStatus;
 }
 
+
 void Car::setCurrentPatient(Patient* patient)
 {
     currentPatient = patient;
+}
+
+void Car::clearRidingPatient()
+{
+    delete currentPatient;
 }
 
 void Car::printDetails() const

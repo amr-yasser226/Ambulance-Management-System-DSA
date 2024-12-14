@@ -35,6 +35,7 @@ public:
 
     void setCarStatus(CarStatus newStatus);
     void setCurrentPatient(Patient* patient);
+    void clearRidingPatient();
 
     void printDetails() const;
 };

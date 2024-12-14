@@ -18,11 +18,13 @@ private:
     Hospital *hospitals = new Hospital[hospitalCount];
 
     Queue<Patient*> *incomingPatients;
-    Queue<Patient*> *waitingPatients;
     Queue<CancelledRequest> *cancelledPatients;
+    Queue<Patient*> *finishedPatients;
 
     ExtendedPriorityQueue<Car*> *OUT;
     ExtendedPriorityQueue<Car*> *BACK;
+
+
 
     double specialCarSpeed = 0.0,
            normalCarSpeed = 0.0;

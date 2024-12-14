@@ -37,6 +37,8 @@ class Hospital
     // that check car type first, after it finds the car type, it will enqueue to its
     // list x amount of cars
 
+    void returnCar(Car* carInstance);
+
     void addPatient(Patient* patientInstance, int severity);
     // loadInputData()
     // this function will first check the patient's type

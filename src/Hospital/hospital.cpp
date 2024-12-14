@@ -26,6 +26,22 @@ void Hospital::addCars(Car::CarType type, int amount)
     }
 }
 
+void Hospital::returnCar(Car* carInstance)
+{
+    switch (carInstance->getCarType())
+    {
+        case Car::CarType::SC:
+            headSC->enqueue(carInstance);
+            break;
+        case Car::CarType::NC:
+            headNC->enqueue(carInstance);
+            break;
+        default:
+            std::cout << "RETURNED CAR OF INVALID TYPE!" << std::endl; // this should never trigger
+            break;
+    }
+}
+
 void Hospital::addPatient(Patient* patientInstance, int severity)
 {
     switch (patientInstance->getType())

@@ -3,8 +3,8 @@
 Organizer::Organizer() :
     hospitals(nullptr),
     incomingPatients(new Queue<Patient*>()), 
-    waitingPatients(new Queue<Patient*>()), 
     cancelledPatients(new Queue<CancelledRequest>()), 
+    finishedPatients(new Queue<Patient*>()), 
     OUT(new ExtendedPriorityQueue<Car*>()), 
     BACK(new ExtendedPriorityQueue<Car*>()), 
     specialCarSpeed(0.0),
@@ -241,13 +241,70 @@ void Organizer::simulate()
         //      - enqueue the car to the patient's hospital ID
         // - else:
         //      do nothing
+        
+        // Move from OUT to BACK
+        double outCompareTime = 0.0;
+        Car* outToBackCar = new Car();
+        if (OUT->peek(outToBackCar, outCompareTime))
+        {
+            while (OUT->peek(outToBackCar, outCompareTime))
+            {
+                if (currentTime >= outCompareTime)
+                {
+                    // move logic here (before u move check if it is cancelled first)
+
+                    OUT->dequeue(outToBackCar, outCompareTime);
+                    outToBackCar->setCarStatus(Car::CarStatus::LOADED);
+                    BACK->enqueue(outToBackCar, outToBackCar->getCurrentPatient()->getFT());
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        // Move from BACK to FINISH
+        double backCompareTime = 0.0;
+        Car* backToHospitalCar = new Car();
+        if (BACK->peek(backToHospitalCar, backCompareTime))
+        {
+            while (BACK->peek(backToHospitalCar, backCompareTime))
+            {
+                if (currentTime >= backCompareTime)
+                {
+                    // move logic here
+
+                    BACK->dequeue(backToHospitalCar, backCompareTime);
+
+                    Patient* finishedPatient = backToHospitalCar->getCurrentPatient();
+                    finishedPatients->enqueue(finishedPatient);
+
+                    backToHospitalCar->clearRidingPatient();
+                    backToHospitalCar->setCarStatus(Car::CarStatus::READY);
+                    
+                    // return the car back to its hospital
+                    for (int i = 0; i < hospitalCount; i++)
+                    {
+                        if (hospitals[i].getHospitalID() == finishedPatient->getNearestHospitalID())
+                        {
+                            hospitals[i].returnCar(backToHospitalCar);
+                        }
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
 
 
         // Actually process the simulation now:
 
 
-        // Serve waiting patients first:
-        // - Add them to their according list inside their hospital
+        // Serve patients of same timestep in incomingPatients
+        // Send each one to their hospital
         std::cout << "Timestep: " << currentTime << std::endl;
         Patient* servePatient = new Patient();
         if (incomingPatients->peek(servePatient))
@@ -357,14 +414,15 @@ void Organizer::simulate()
             }
         }
 
-        while (!OUT->isEmpty())
-        {
-            int pri;
-            Car* test = new Car();
-            OUT->dequeue(test, pri);
-            Patient* ptest = test->getCurrentPatient();
-            std::cout << ptest->getPT() << std::endl;
-        }
+        // debugging:
+        // while (!OUT->isEmpty())
+        // {
+        //     int pri;
+        //     Car* test = new Car();
+        //     OUT->dequeue(test, pri);
+        //     Patient* ptest = test->getCurrentPatient();
+        //     std::cout << ptest->getPT() << std::endl;
+        // }
     }
 
     // debugging:
