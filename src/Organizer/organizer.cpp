@@ -248,25 +248,92 @@ void Organizer::simulate()
 
         // Serve waiting patients first:
         // - Add them to their according list inside their hospital
+        std::cout << "Timestep: " << currentTime << std::endl;
+        Patient* servePatient = new Patient();
+        if (incomingPatients->peek(servePatient))
+        {
+            while (incomingPatients->peek(servePatient))
+            {
+                if (servePatient->getQT() <= currentTime)
+                {
+                    incomingPatients->dequeue(servePatient);
 
-        // Serve incoming patients second:
-        // -    Add them to their according list inside their hospital
-        // else:
-        // -    Enqueue them to the waitingPatients list
-
-        // Note:
-        // At this point of code:
-        // - Any request inside any hospital must have
-        //   at least 1 car available to serve that request
+                    for (int i = 0; i < hospitalCount; i++)
+                    {
+                        if (hospitals[i].getHospitalID() == servePatient->getNearestHospitalID())
+                        {
+                            hospitals[i].addPatient(servePatient, servePatient->getSeverity());
+                        }
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
 
         // Loop over each hospital:
         // - Peek on each list:
-        //   - Assign the patients inside each list their car
-        //   - Assignment involves updating the patient's info (times)
-        // assignCarToPatient();
-    }
+        //   - Check if the patient's car type exists
+        //      - Assign the patients inside each list their car
+        //      - Assignment involves updating the patient's info (times)
+        //      - Dequeue a car from the hospital's cars list
+        //      - Then dequeuing the patient from their list & set him to that car
+        //      - Then enqueue the car to the OUT list
+        //   - else:
+        //      - do nothing (the patient will remain in their list)
+        for (int i = 0; i < hospitalCount; i++)
+        {
+            Patient* assignSPatient = new Patient();
+            while (hospitals[i].getHeadSP()->peek(assignSPatient))
+            {
+                if (hospitals[i].getNumberOfCars(0) > 0)
+                {
+                    hospitals[i].getHeadSP()->dequeue(assignSPatient);
+                    // assign logic here (special car)
+                }
+                else
+                {
+                    break;
+                }
+            }
 
-    OUT->display();
+            int assignEPriority;
+            Patient* assignEPatient = new Patient();
+            while (hospitals[i].getHeadEP()->peek(assignEPatient, assignEPriority))
+            {
+                if (hospitals[i].getNumberOfCars(1) > 0)
+                {
+                    hospitals[i].getHeadEP()->dequeue(assignEPatient, assignEPriority);
+                    // assign logic here (normal car)
+                }
+                else if (hospitals[i].getNumberOfCars(0) > 0)
+                {
+                    hospitals[i].getHeadEP()->dequeue(assignEPatient, assignEPriority);
+                    // assign logic here (special car)
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            Patient* assignNPatient = new Patient();
+            while (hospitals[i].getHeadNP()->peek(assignNPatient))
+            {
+                if (hospitals[i].getNumberOfCars(1) > 0)
+                {
+                    hospitals[i].getHeadNP()->dequeue(assignNPatient);
+                    // assign logic here (normal car)
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+    }
 
     // debugging:
     // for (int i = 0; i < hospitalCount; i++)

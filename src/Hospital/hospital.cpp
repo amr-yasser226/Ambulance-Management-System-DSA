@@ -32,15 +32,15 @@ void Hospital::addPatient(Patient* patientInstance, int severity)
     {
         case Patient::PatientType::NP:
             headNP->enqueue(patientInstance);
-            // std::cout << "\n+ Added NP patient_" << patientInstance.getPID() << " to H: " << patientInstance.getNearestHospitalID() << "\n" << std::endl;
+            std::cout << "\n+ Added NP patient_" << patientInstance->getPID() << " to H: " << patientInstance->getNearestHospitalID() << "\n" << std::endl;
             break;
         case Patient::PatientType::SP:
             headSP->enqueue(patientInstance);
-            // std::cout << "\n+ Added SP patient_" << patientInstance.getPID() << " to H: " << patientInstance.getNearestHospitalID() << "\n" << std::endl;
+            std::cout << "\n+ Added SP patient_" << patientInstance->getPID() << " to H: " << patientInstance->getNearestHospitalID() << "\n" << std::endl;
             break;
         case Patient::PatientType::EP:
             headEP->enqueue(patientInstance, severity);
-            // std::cout << "\n+ Added EP patient_" << patientInstance.getPID() << " to H: " << patientInstance.getNearestHospitalID() << "\n" << std::endl;
+            std::cout << "\n+ Added EP patient_" << patientInstance->getPID() << " to H: " << patientInstance->getNearestHospitalID() << "\n" << std::endl;
             break;
         default:
             std::cout << "PATIENT TYPE NOT FOUND!" << std::endl;
