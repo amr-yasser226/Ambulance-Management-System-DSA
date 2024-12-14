@@ -2,9 +2,11 @@
 
 Organizer::Organizer() :
     hospitals(nullptr),
-    incomingPatients(new Queue<Patient>()), 
-    waitingPatients(new Queue<Patient>()), 
+    incomingPatients(new Queue<Patient*>()), 
+    waitingPatients(new Queue<Patient*>()), 
     cancelledPatients(new Queue<CancelledRequest>()), 
+    OUT(new ExtendedPriorityQueue<Car*>()), 
+    BACK(new ExtendedPriorityQueue<Car*>()), 
     requests(0),
     cancellations(0),
     hospitalCount(0),
@@ -60,22 +62,17 @@ bool Organizer::assignCarToPatient()
 {
     for (int i = 0; i < hospitalCount; i++)
     {
-        Car tempSC;
-        Patient tempSP;
-        if (hospitals[i].getHeadSP()->peek(tempSP))
+        Car* tempSC = new Car();
+        Patient* tempSP = new Patient();
+        while (hospitals[i].getNumberOfCars(0) > 0 && hospitals[i].getHeadSP()->peek(tempSP))
         {
-            if (hospitals[i].getNumberOfCars(0) > 0)
-            {
-                hospitals[i].getHeadSP()->dequeue(tempSP);
-                hospitals[i].getHeadSC()->dequeue(tempSC);
+            hospitals[i].getHeadSP()->dequeue(tempSP);
+            hospitals[i].getHeadSC()->dequeue(tempSC);
 
-                // tempSC.setCurrentPatient(tempSP);
-                // tempSC.setCarStatus(Car::CarStatus::ASSIGNED);
-            }
-        }
-        else
-        {
-            std::cout << currentTime << " | No SP to serve!" << std::endl;
+            tempSC->setCurrentPatient(tempSP);
+            tempSC->setCarStatus(Car::CarStatus::ASSIGNED);
+
+            OUT->enqueue(tempSC, tempSP->getPT());
         }
     }
 
@@ -169,7 +166,7 @@ void Organizer::loadInputData()
                 inputSeverity
             );
 
-            incomingPatients->enqueue(*newPatient);
+            incomingPatients->enqueue(newPatient);
         }
     }
 
@@ -256,26 +253,6 @@ void Organizer::simulate()
         // -    Add them to their according list inside their hospital
         // else:
         // -    Enqueue them to the waitingPatients list
-        Patient tempPeek;
-        if (incomingPatients->peek(tempPeek))
-        {
-            incomingPatients->dequeue(tempPeek);
-
-            if (tempPeek.getQT() == currentTime)
-            {
-                for (int i = 0; i < hospitalCount; i++)
-                {
-                    if (hospitals[i].getHospitalID() == tempPeek.getNearestHospitalID())
-                    {
-                        hospitals[i].addPatient(tempPeek, tempPeek.getSeverity());
-                    }
-                }
-            }
-            else
-            {
-                waitingPatients->enqueue(tempPeek);
-            }
-        }
 
         // Note:
         // At this point of code:
@@ -288,6 +265,8 @@ void Organizer::simulate()
         //   - Assignment involves updating the patient's info (times)
         // assignCarToPatient();
     }
+
+    OUT->display();
 
     // debugging:
     // for (int i = 0; i < hospitalCount; i++)

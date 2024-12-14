@@ -1,100 +1,100 @@
-#ifndef PRIORITY_QUEUE_H
-#define PRIORITY_QUEUE_H
+#ifndef EXTENDED_PRIORITY_QUEUE_H
+#define EXTENDED_PRIORITY_QUEUE_H
 
 #include <iostream>
 
 template <typename T>
-class priNode
+class extPriNode
 {
 private:
     T item;
     int priority;
-    priNode<T> *next;
+    extPriNode<T> *next;
 
 public:
-    priNode();
-    priNode(const T &item, int priority);
-    priNode(const T &item, int priority, priNode<T> *nextNodePtr);
+    extPriNode();
+    extPriNode(const T &item, int priority);
+    extPriNode(const T &item, int priority, extPriNode<T> *nextNodePtr);
     void setItem(const T &item, int priority);
-    void setNext(priNode<T> *nextNodePtr);
+    void setNext(extPriNode<T> *nextNodePtr);
     T getItem(int &priority) const;
-    priNode<T> *getNext() const;
+    extPriNode<T> *getNext() const;
     int getPriority() const;
 };
 
 template <typename T>
-class PriorityQueue
+class ExtendedPriorityQueue
 {
 private:
-    priNode<T> *head;
+    extPriNode<T> *head;
 
 public:
-    PriorityQueue();
-    ~PriorityQueue();
-    PriorityQueue(const PriorityQueue<T> &otherQueue);
+    ExtendedPriorityQueue();
+    ~ExtendedPriorityQueue();
+    ExtendedPriorityQueue(const ExtendedPriorityQueue<T> &otherQueue);
     bool isEmpty() const;
     void enqueue(const T &item, int priority);
     bool dequeue(T &frontEntry, int &priority);
     bool peek(T &frontEntry, int &priority) const;
     int size() const;
     void display() const;
-    priNode<T> *getHead() const;
+    extPriNode<T> *getHead() const;
 };
 
 template <typename T>
-priNode<T> *PriorityQueue<T>::getHead() const
+extPriNode<T> *ExtendedPriorityQueue<T>::getHead() const
 {
     return head;
 }
 
 template <typename T>
-priNode<T>::priNode() : next(nullptr), priority(0) {}
+extPriNode<T>::extPriNode() : next(nullptr), priority(0) {}
 
 template <typename T>
-priNode<T>::priNode(const T &item, int priority) : item(item), priority(priority), next(nullptr) {}
+extPriNode<T>::extPriNode(const T &item, int priority) : item(item), priority(priority), next(nullptr) {}
 
 template <typename T>
-priNode<T>::priNode(const T &item, int priority, priNode<T> *nextNodePtr)
+extPriNode<T>::extPriNode(const T &item, int priority, extPriNode<T> *nextNodePtr)
     : item(item), priority(priority), next(nextNodePtr) {}
 
 
 template <typename T>
-void priNode<T>::setItem(const T &item, int priority)
+void extPriNode<T>::setItem(const T &item, int priority)
 {
     this->item = item;
     this->priority = priority;
 }
 
 template <typename T>
-void priNode<T>::setNext(priNode<T> *nextNodePtr)
+void extPriNode<T>::setNext(extPriNode<T> *nextNodePtr)
 {
     next = nextNodePtr;
 }
 
 template <typename T>
-T priNode<T>::getItem(int &priority) const
+T extPriNode<T>::getItem(int &priority) const
 {
     priority = this->priority;
     return item;
 }
 
 template <typename T>
-priNode<T> *priNode<T>::getNext() const
+extPriNode<T> *extPriNode<T>::getNext() const
 {
     return next;
 }
 
 template <typename T>
-int priNode<T>::getPriority() const
+int extPriNode<T>::getPriority() const
 {
     return priority;
 }
 
 template <typename T>
-PriorityQueue<T>::PriorityQueue() : head(nullptr) {}
+ExtendedPriorityQueue<T>::ExtendedPriorityQueue() : head(nullptr) {}
 
 template <typename T>
-PriorityQueue<T>::~PriorityQueue()
+ExtendedPriorityQueue<T>::~ExtendedPriorityQueue()
 {
     T tempItem;
     int tempPriority;
@@ -103,12 +103,12 @@ PriorityQueue<T>::~PriorityQueue()
 }
 
 template <typename T>
-PriorityQueue<T>::PriorityQueue(const PriorityQueue<T> &otherQueue) : head(nullptr)
+ExtendedPriorityQueue<T>::ExtendedPriorityQueue(const ExtendedPriorityQueue<T> &otherQueue) : head(nullptr)
 {
     if (!otherQueue.head)
         return; // If the source queue is empty, nothing to copy.
 
-    priNode<T> *current = otherQueue.head; // Pointer to traverse the source queue.
+    extPriNode<T> *current = otherQueue.head; // Pointer to traverse the source queue.
     while (current)
     {
         int tempPriority = current->getPriority(); // Store the current node's priority.
@@ -119,38 +119,40 @@ PriorityQueue<T>::PriorityQueue(const PriorityQueue<T> &otherQueue) : head(nullp
 
 
 template <typename T>
-bool PriorityQueue<T>::isEmpty() const
+bool ExtendedPriorityQueue<T>::isEmpty() const
 {
     return head == nullptr;
 }
 
 template <typename T>
-void PriorityQueue<T>::enqueue(const T &item, int priority)
+void ExtendedPriorityQueue<T>::enqueue(const T &item, int priority)
 {
-    priNode<T> *newNode = new priNode<T>(item, priority);
-    if (isEmpty() || priority > head->getPriority())
+    extPriNode<T> *newNode = new extPriNode<T>(item, priority);
+
+    if (isEmpty() || priority < head->getPriority())
     {
         newNode->setNext(head);
         head = newNode;
         return;
     }
 
-    priNode<T> *current = head;
-    while (current->getNext() && current->getNext()->getPriority() >= priority)
+    extPriNode<T> *current = head;
+    while (current->getNext() && current->getNext()->getPriority() <= priority)
     {
         current = current->getNext();
     }
+
     newNode->setNext(current->getNext());
     current->setNext(newNode);
 }
 
 template <typename T>
-bool PriorityQueue<T>::dequeue(T &frontEntry, int &priority)
+bool ExtendedPriorityQueue<T>::dequeue(T &frontEntry, int &priority)
 {
     if (isEmpty())
         return false;
 
-    priNode<T> *nodeToDelete = head;
+    extPriNode<T> *nodeToDelete = head;
     frontEntry = head->getItem(priority);
     head = head->getNext();
     delete nodeToDelete;
@@ -158,7 +160,7 @@ bool PriorityQueue<T>::dequeue(T &frontEntry, int &priority)
 }
 
 template <typename T>
-bool PriorityQueue<T>::peek(T &frontEntry, int &priority) const
+bool ExtendedPriorityQueue<T>::peek(T &frontEntry, int &priority) const
 {
     if (isEmpty())
         return false;
@@ -168,10 +170,10 @@ bool PriorityQueue<T>::peek(T &frontEntry, int &priority) const
 }
 
 template <typename T>
-int PriorityQueue<T>::size() const
+int ExtendedPriorityQueue<T>::size() const
 {
     int count = 0;
-    priNode<T> *current = head;
+    extPriNode<T> *current = head;
     while (current)
     {
         count++;
@@ -181,14 +183,16 @@ int PriorityQueue<T>::size() const
 }
 
 template <typename T>
-void PriorityQueue<T>::display() const
+void ExtendedPriorityQueue<T>::display() const
 {
-    priNode<T> *current = head;
+    extPriNode<T> *current = head;
     while (current)
     {
-        std::cout << "Item: " << current->getItem(current->getPriority()) << ", Priority: " << current->getPriority() << std::endl;
+        int priority = current->getPriority();
+        std::cout << "Item: " << current->getItem(priority)
+                  << ", Priority: " << priority << std::endl;
         current = current->getNext();
     }
 }
 
-#endif // PRIORITY_QUEUE_H
+#endif // EXTENDED_PRIORITY_QUEUE_H

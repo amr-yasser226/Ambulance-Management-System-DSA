@@ -2,33 +2,33 @@
 
 Hospital::Hospital(int ID) :
     hospitalID(ID), 
-    headSP(new Queue<Patient>()), 
-    headEP(new PriorityQueue<Patient>()), 
-    headNP(new DerivedQueue<Patient>()), 
-    headSC(new Queue<Car>()), 
-    headNC(new Queue<Car>()) 
+    headSP(new Queue<Patient*>()), 
+    headEP(new PriorityQueue<Patient*>()), 
+    headNP(new DerivedQueue<Patient*>()), 
+    headSC(new Queue<Car*>()), 
+    headNC(new Queue<Car*>()) 
 {}
 
-Queue<Patient>* Hospital::getHeadSP() const { return headSP; }
-PriorityQueue<Patient>* Hospital::getHeadEP() const { return headEP; }
-DerivedQueue<Patient>* Hospital::getHeadNP() const { return headNP; }
+Queue<Patient*>* Hospital::getHeadSP() const { return headSP; }
+PriorityQueue<Patient*>* Hospital::getHeadEP() const { return headEP; }
+DerivedQueue<Patient*>* Hospital::getHeadNP() const { return headNP; }
 
-Queue<Car>* Hospital::getHeadSC() const { return headSC; }
-Queue<Car>* Hospital::getHeadNC() const { return headNC; }
+Queue<Car*>* Hospital::getHeadSC() const { return headSC; }
+Queue<Car*>* Hospital::getHeadNC() const { return headNC; }
 
 void Hospital::addCars(Car::CarType type, int amount)
 {
-    Queue<Car>* targetQueue = (type == Car::CarType::SC) ? headSC : headNC;
+    Queue<Car*>* targetQueue = (type == Car::CarType::SC) ? headSC : headNC;
     for (int i = 0; i < amount; i++)
     {
         Car* newCar = new Car(type);
-        targetQueue->enqueue(*newCar);
+        targetQueue->enqueue(newCar);
     }
 }
 
-void Hospital::addPatient(Patient patientInstance, int severity)
+void Hospital::addPatient(Patient* patientInstance, int severity)
 {
-    switch (patientInstance.getType())
+    switch (patientInstance->getType())
     {
         case Patient::PatientType::NP:
             headNP->enqueue(patientInstance);
@@ -55,14 +55,14 @@ int Hospital::getHospitalID()
 
 int Hospital::getNumberOfPatients(int type)
 {
-    Patient temp;
+    Patient* temp = new Patient();
     int trash, count = 0;
 
     switch (type)
     {
         case 0: // NP
         {
-            DerivedQueue<Patient> tempQueue(*headNP);
+            DerivedQueue<Patient*> tempQueue(*headNP);
 
             while (!tempQueue.isEmpty())
             {
@@ -73,7 +73,7 @@ int Hospital::getNumberOfPatients(int type)
         }
         case 1: // SP
         {
-            Queue<Patient> tempQueue(*headSP);
+            Queue<Patient*> tempQueue(*headSP);
 
             while (!tempQueue.isEmpty())
             {
@@ -84,9 +84,9 @@ int Hospital::getNumberOfPatients(int type)
         }
         case 2: // EP
         {
-            PriorityQueue<Patient> tempQueue;
+            PriorityQueue<Patient*> tempQueue;
             
-            priNode<Patient>* current = headEP->getHead();
+            priNode<Patient*>* current = headEP->getHead();
             while (current)
             {
                 tempQueue.enqueue(current->getItem(trash), trash);
@@ -133,26 +133,26 @@ void Hospital::printHospitalDetails()
     std::cout << "Hospital ID: " << hospitalID << std::endl;
     std::cout << "Hospital Patient Lists Details:" << std::endl;
     
-    Queue<Patient> spTempQueue(*headSP);
-    Patient spTemp;
+    Queue<Patient*> spTempQueue(*headSP);
+    Patient* spTemp = new Patient();
     while (spTempQueue.dequeue(spTemp))
     {
-        spTemp.printDetails();
+        spTemp->printDetails();
     }
 
-    DerivedQueue<Patient> npTempQueue(*headNP);
-    Patient npTemp;
+    DerivedQueue<Patient*> npTempQueue(*headNP);
+    Patient* npTemp = new Patient();
     while (npTempQueue.dequeue(npTemp))
     {
-        npTemp.printDetails();
+        npTemp->printDetails();
     }
 
     int severity;
-    PriorityQueue<Patient> epTempQueue(*headEP);
-    Patient epTemp;
+    PriorityQueue<Patient*> epTempQueue(*headEP);
+    Patient* epTemp = new Patient();
     while (epTempQueue.dequeue(epTemp, severity))
     {
-        epTemp.printDetails();
+        epTemp->printDetails();
     }
 
     // headEP->display();

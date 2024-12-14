@@ -13,23 +13,23 @@ class Hospital
   private:
     int hospitalID = 0;
 
-    Queue<Patient> *headSP; // doesn't matter if it's served first or not because it got its own type of cars and cannot be served otherwise.
-    PriorityQueue<Patient>* headEP;
-    DerivedQueue<Patient>* headNP;
+    Queue<Patient*> *headSP; // doesn't matter if it's served first or not because it got its own type of cars and cannot be served otherwise.
+    PriorityQueue<Patient*>* headEP;
+    DerivedQueue<Patient*>* headNP;
 
-    Queue<Car> *headSC;
-    Queue<Car> *headNC;
+    Queue<Car*> *headSC;
+    Queue<Car*> *headNC;
 
   public:
     Hospital() {}
     Hospital(int hospitalID);
 
-    Queue<Patient>* getHeadSP() const;
-    PriorityQueue<Patient>* getHeadEP() const;
-    DerivedQueue<Patient>* getHeadNP() const;
+    Queue<Patient*>* getHeadSP() const;
+    PriorityQueue<Patient*>* getHeadEP() const;
+    DerivedQueue<Patient*>* getHeadNP() const;
 
-    Queue<Car>* getHeadSC() const;
-    Queue<Car>* getHeadNC() const;
+    Queue<Car*>* getHeadSC() const;
+    Queue<Car*>* getHeadNC() const;
 
     void addCars(Car::CarType type, int amount);
     // loadInputData()
@@ -37,7 +37,7 @@ class Hospital
     // that check car type first, after it finds the car type, it will enqueue to its
     // list x amount of cars
 
-    void addPatient(Patient patientInstance, int severity);
+    void addPatient(Patient* patientInstance, int severity);
     // loadInputData()
     // this function will first check the patient's type
     // then will add them to their list accordingly

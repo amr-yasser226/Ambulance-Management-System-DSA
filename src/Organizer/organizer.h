@@ -5,6 +5,7 @@
 #include "../Patient/patient.h"
 #include "../Hospital/hospital.h"
 #include "../Data Structures/Queue.h"
+#include "../Data Structures/ExtendedPriorityQueue.h"
 #include "../Data Structures/CancelledRequest.h"
 
 #include <iostream>
@@ -16,9 +17,12 @@ class Organizer
 private:
     Hospital *hospitals = new Hospital[hospitalCount];
 
-    Queue<Patient> *incomingPatients;
-    Queue<Patient> *waitingPatients;
+    Queue<Patient*> *incomingPatients;
+    Queue<Patient*> *waitingPatients;
     Queue<CancelledRequest> *cancelledPatients;
+
+    ExtendedPriorityQueue<Car*> *OUT;
+    ExtendedPriorityQueue<Car*> *BACK;
 
     int requests = 0,
         cancellations = 0,
