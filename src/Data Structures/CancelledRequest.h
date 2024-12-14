@@ -3,7 +3,7 @@
 
 struct CancelledRequest
 {
-    int cTimestep;
+    double cTimestep;
     int cPID;
     int cHID;
 };

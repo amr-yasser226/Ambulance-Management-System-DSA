@@ -4,9 +4,11 @@
 #include "../Car/car.h"
 #include "../Patient/patient.h"
 #include "../Hospital/hospital.h"
+#include "../Data Structures/Node.h"
 #include "../Data Structures/Queue.h"
-#include "../Data Structures/ExtendedPriorityQueue.h"
+#include "../Data Structures/LinkedList.h"
 #include "../Data Structures/CancelledRequest.h"
+#include "../Data Structures/ExtendedPriorityQueue.h"
 
 #include <iostream>
 #include <fstream>
@@ -18,16 +20,14 @@ private:
     Hospital *hospitals = new Hospital[hospitalCount];
 
     Queue<Patient*> *incomingPatients;
-    Queue<CancelledRequest> *cancelledPatients;
+    LinkedList<CancelledRequest> *cancelledPatients;
     Queue<Patient*> *finishedPatients;
 
     ExtendedPriorityQueue<Car*> *OUT;
     ExtendedPriorityQueue<Car*> *BACK;
 
-
-
     double specialCarSpeed = 0.0,
-           normalCarSpeed = 0.0;
+            normalCarSpeed = 0.0;
 
     int requests = 0,
         cancellations = 0,
@@ -45,11 +45,18 @@ public:
     //          if return is -1, then index not found
     //          if return is -2, then error opening input file
 
-    bool assignCarToPatient();
+    // bool assignCarToPatient();
     // This should go to the car of the patient's request type in the required hospital (we get the required hospital from the patientInstance's nearestHospitalID)
     // then assign it a patient using setCurrentPatient(Patient patientInstance) <-- this function is in car class
     // - Now, it will be holding a patient
     // then dequeue that car from its hospital cars and enqueue it to OUT list in organizer (OUT list not created in organizer yet)
+
+    bool isRequestCancelled(Car* checkCar);
+    // if return 0, meaning not cancelled
+    // if return number between 1 & hospitalCount
+    // - then the request will be cancelled
+    // - and that number represents the hospital
+    // - the car will return to
 
     int fetchPatientsInHospital(int hospitalID, int type);
     int fetchCarsInHospital(int hospitalID, int type);

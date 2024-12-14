@@ -15,6 +15,7 @@ public:
 private:
     int pid = 0;
     int severity = 0;
+    int cancelled = 0;
     int nearestHospitalID = 0;
     int nearestHospitalDistance = 0;
     PatientType type;
@@ -37,6 +38,7 @@ public:
     double getFT() const;
     double getCarBusyTime() const;
 
+    void setCancelled();
     void setAT(double value);
     void setPT(double value);
     void setWT(double value);

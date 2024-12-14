@@ -42,6 +42,7 @@ double Patient::getWT() const { return WT; }
 double Patient::getFT() const { return FT; }
 double Patient::getCarBusyTime() const { return carBusytime; }
 
+void Patient::setCancelled() { cancelled = 1; }
 void Patient::setAT(double value) { AT = value; }
 void Patient::setPT(double value) { PT = value; }
 void Patient::setWT(double value) { WT = value; }

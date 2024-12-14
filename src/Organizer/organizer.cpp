@@ -3,7 +3,7 @@
 Organizer::Organizer() :
     hospitals(nullptr),
     incomingPatients(new Queue<Patient*>()), 
-    cancelledPatients(new Queue<CancelledRequest>()), 
+    cancelledPatients(new LinkedList<CancelledRequest>()), 
     finishedPatients(new Queue<Patient*>()), 
     OUT(new ExtendedPriorityQueue<Car*>()), 
     BACK(new ExtendedPriorityQueue<Car*>()), 
@@ -22,6 +22,34 @@ Organizer::~Organizer()
         delete[] hospitals;
         hospitals = nullptr;
     }
+}
+
+bool Organizer::isRequestCancelled(Car* checkCar)
+{
+    CancelledRequest tempCR;
+    Patient* tempPatient = checkCar->getCurrentPatient();
+    Node<CancelledRequest>* CR = cancelledPatients->getHead();
+
+    // According to project rules only normal patient can cancel
+    // even though I could let other type of patients cancel too
+    //
+    if (tempPatient->getType() == Patient::PatientType::NP)
+    {
+        for (int i = 0; CR != nullptr; i++)
+        {
+            tempCR = CR->getItem();
+
+            if (tempCR.cTimestep < tempPatient->getPT() && tempCR.cPID == tempPatient->getPID())
+            {
+                std::cout << "[!] Patient " << tempPatient->getPID() << " has cancelled their request!   [CANCELLED]" << std::endl;
+                return true;
+            }
+
+            CR = CR->getNext();
+        }
+    }
+
+    return false;
 }
 
 int Organizer::getValueByMap(int index)
@@ -56,27 +84,6 @@ int Organizer::getValueByMap(int index)
     file.close();
 
     return value;
-}
-
-bool Organizer::assignCarToPatient()
-{
-    for (int i = 0; i < hospitalCount; i++)
-    {
-        Car* tempSC = new Car();
-        Patient* tempSP = new Patient();
-        while (hospitals[i].getNumberOfCars(0) > 0 && hospitals[i].getHeadSP()->peek(tempSP))
-        {
-            hospitals[i].getHeadSP()->dequeue(tempSP);
-            hospitals[i].getHeadSC()->dequeue(tempSC);
-
-            tempSC->setCurrentPatient(tempSP);
-            tempSC->setCarStatus(Car::CarStatus::ASSIGNED);
-
-            OUT->enqueue(tempSC, tempSP->getPT());
-        }
-    }
-
-    return true;
 }
 
 void Organizer::loadInputData()
@@ -130,7 +137,8 @@ void Organizer::loadInputData()
 
     std::string inputType;
     int inputQT, inputPID, inputHID, inputDistance, inputSeverity;
-    int cTime, cPID, cHID;
+    int cPID, cHID;
+    double cTime;
 
     for (int i = 0; i < requests; i++)
     {
@@ -192,7 +200,7 @@ void Organizer::loadInputData()
             cancelledRequestInstance.cPID = cPID;
             cancelledRequestInstance.cHID = cHID;
 
-            cancelledPatients->enqueue(cancelledRequestInstance);
+            cancelledPatients->insertLast(cancelledRequestInstance);
         }
     }
 
@@ -221,7 +229,7 @@ void Organizer::simulate()
     //     std::cout << "\n-----------------------\n" << std::endl;
     // }
 
-    for (currentTime = 1; currentTime < 100; currentTime++)
+    for (currentTime = 1; currentTime < 150; currentTime++)
     {
         // Beginning of each loop:
         //
@@ -252,10 +260,55 @@ void Organizer::simulate()
                 if (currentTime >= outCompareTime)
                 {
                     // move logic here (before u move check if it is cancelled first)
+                    if (!isRequestCancelled(outToBackCar))
+                    {
+                        OUT->dequeue(outToBackCar, outCompareTime);
+                        outToBackCar->setCarStatus(Car::CarStatus::LOADED);
 
-                    OUT->dequeue(outToBackCar, outCompareTime);
-                    outToBackCar->setCarStatus(Car::CarStatus::LOADED);
-                    BACK->enqueue(outToBackCar, outToBackCar->getCurrentPatient()->getFT());
+                        // TO CHECK THE PT & FT ONLY ONLY ONLY
+                        //
+                        // if (outToBackCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
+                        // {
+                        //     std::cout << "EP: " << outToBackCar->getCurrentPatient()->getPID() << std::endl;
+                        //     std::cout << outToBackCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        //     std::cout << outToBackCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                        // }
+                        // else if (outToBackCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
+                        // {
+                        //     std::cout << "SP: " << outToBackCar->getCurrentPatient()->getPID() << std::endl;
+                        //     std::cout << outToBackCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        //     std::cout << outToBackCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                        // }
+                        // else
+                        // {
+                        //     std::cout << "NP: " << outToBackCar->getCurrentPatient()->getPID() << std::endl;
+                        //     std::cout << outToBackCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        //     std::cout << outToBackCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                        // }
+
+                        BACK->enqueue(outToBackCar, outToBackCar->getCurrentPatient()->getFT());
+                    }
+                    else
+                    {
+                        // cancellation protocol
+                        OUT->dequeue(outToBackCar, outCompareTime);
+
+                        Patient* CPatient = outToBackCar->getCurrentPatient();
+                        CPatient->setCancelled();
+                        finishedPatients->enqueue(CPatient);
+
+                        outToBackCar->clearRidingPatient();
+                        outToBackCar->setCarStatus(Car::CarStatus::READY);
+
+                        // return the car back to its hospital
+                        for (int i = 0; i < hospitalCount; i++)
+                        {
+                            if (hospitals[i].getHospitalID() == CPatient->getNearestHospitalID())
+                            {
+                                hospitals[i].returnCar(outToBackCar);
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -278,6 +331,7 @@ void Organizer::simulate()
                     BACK->dequeue(backToHospitalCar, backCompareTime);
 
                     Patient* finishedPatient = backToHospitalCar->getCurrentPatient();
+                    std::cout << "[+] Patient " << finishedPatient->getPID() << " has arrived to hospital " << finishedPatient->getNearestHospitalID() << "." << std::endl;
                     finishedPatients->enqueue(finishedPatient);
 
                     backToHospitalCar->clearRidingPatient();
@@ -344,6 +398,106 @@ void Organizer::simulate()
         {
             double AT = 0.0, PT = 0.0, WT = 0.0, FT = 0.0, CBT = 0.0;
 
+            int assignEPriority;
+            Patient* assignEPatient = new Patient();
+            while (hospitals[i].getHeadEP()->peek(assignEPatient, assignEPriority))
+            {
+                if (hospitals[i].getNumberOfCars(1) > 0)
+                {
+                    // assign logic here (normal car)
+
+                    Car* assignNCar = new Car();
+
+                    hospitals[i].getHeadEP()->dequeue(assignEPatient, assignEPriority);
+                    hospitals[i].getHeadNC()->dequeue(assignNCar);
+
+                    AT = currentTime;
+                    PT = AT + (assignEPatient->getNearestHospitalDistance() / normalCarSpeed);
+                    WT = PT - assignEPatient->getQT();
+                    FT = PT + (assignEPatient->getNearestHospitalDistance() / normalCarSpeed);
+                    CBT = FT - AT;
+
+                    assignEPatient->setAT(AT);
+                    assignEPatient->setPT(PT);
+                    assignEPatient->setWT(WT);
+                    assignEPatient->setFT(FT);
+                    assignEPatient->setCarBusyTime(CBT);
+
+                    assignNCar->setCurrentPatient(assignEPatient);
+                    assignNCar->setCarStatus(Car::CarStatus::ASSIGNED);
+
+                    if (assignNCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
+                    {
+                        std::cout << "EP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
+                        std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    }
+                    else if (assignNCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
+                    {
+                        std::cout << "SP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
+                        std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    }
+                    else
+                    {
+                        std::cout << "NP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
+                        std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    }
+
+                    OUT->enqueue(assignNCar, PT);
+                }
+                else if (hospitals[i].getNumberOfCars(0) > 0)
+                {
+                    // assign logic here (special car)
+
+                    Car* assignSCar = new Car();
+
+                    hospitals[i].getHeadEP()->dequeue(assignEPatient, assignEPriority);
+                    hospitals[i].getHeadSC()->dequeue(assignSCar);
+
+                    AT = currentTime;
+                    PT = AT + (assignEPatient->getNearestHospitalDistance() / specialCarSpeed);
+                    WT = PT - assignEPatient->getQT();
+                    FT = PT + (assignEPatient->getNearestHospitalDistance() / specialCarSpeed);
+                    CBT = FT - AT;
+
+                    assignEPatient->setAT(AT);
+                    assignEPatient->setPT(PT);
+                    assignEPatient->setWT(WT);
+                    assignEPatient->setFT(FT);
+                    assignEPatient->setCarBusyTime(CBT);
+
+                    assignSCar->setCurrentPatient(assignEPatient);
+                    assignSCar->setCarStatus(Car::CarStatus::ASSIGNED);
+
+                    if (assignSCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
+                    {
+                        std::cout << "EP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
+                        std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    }
+                    else if (assignSCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
+                    {
+                        std::cout << "SP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
+                        std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    }
+                    else
+                    {
+                        std::cout << "NP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
+                        std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    }
+
+                    OUT->enqueue(assignSCar, PT);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
             Patient* assignSPatient = new Patient();
             while (hospitals[i].getHeadSP()->peek(assignSPatient))
             {
@@ -371,27 +525,26 @@ void Organizer::simulate()
                     assignSCar->setCurrentPatient(assignSPatient);
                     assignSCar->setCarStatus(Car::CarStatus::ASSIGNED);
 
-                    OUT->enqueue(assignSCar, PT);
-                }
-                else
-                {
-                    break;
-                }
-            }
+                    if (assignSCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
+                    {
+                        std::cout << "EP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
+                        std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    }
+                    else if (assignSCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
+                    {
+                        std::cout << "SP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
+                        std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    }
+                    else
+                    {
+                        std::cout << "NP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
+                        std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    }
 
-            int assignEPriority;
-            Patient* assignEPatient = new Patient();
-            while (hospitals[i].getHeadEP()->peek(assignEPatient, assignEPriority))
-            {
-                if (hospitals[i].getNumberOfCars(1) > 0)
-                {
-                    hospitals[i].getHeadEP()->dequeue(assignEPatient, assignEPriority);
-                    // assign logic here (normal car)
-                }
-                else if (hospitals[i].getNumberOfCars(0) > 0)
-                {
-                    hospitals[i].getHeadEP()->dequeue(assignEPatient, assignEPriority);
-                    // assign logic here (special car)
+                    OUT->enqueue(assignSCar, PT);
                 }
                 else
                 {
@@ -404,8 +557,48 @@ void Organizer::simulate()
             {
                 if (hospitals[i].getNumberOfCars(1) > 0)
                 {
-                    hospitals[i].getHeadNP()->dequeue(assignNPatient);
                     // assign logic here (normal car)
+
+                    Car* assignNCar = new Car();
+
+                    hospitals[i].getHeadNP()->dequeue(assignNPatient);
+                    hospitals[i].getHeadNC()->dequeue(assignNCar);
+
+                    AT = currentTime;
+                    PT = AT + (assignNPatient->getNearestHospitalDistance() / normalCarSpeed);
+                    WT = PT - assignNPatient->getQT();
+                    FT = PT + (assignNPatient->getNearestHospitalDistance() / normalCarSpeed);
+                    CBT = FT - AT;
+
+                    assignNPatient->setAT(AT);
+                    assignNPatient->setPT(PT);
+                    assignNPatient->setWT(WT);
+                    assignNPatient->setFT(FT);
+                    assignNPatient->setCarBusyTime(CBT);
+
+                    assignNCar->setCurrentPatient(assignNPatient);
+                    assignNCar->setCarStatus(Car::CarStatus::ASSIGNED);
+
+                    if (assignNCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
+                    {
+                        std::cout << "EP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
+                        std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    }
+                    else if (assignNCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
+                    {
+                        std::cout << "SP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
+                        std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    }
+                    else
+                    {
+                        std::cout << "NP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
+                        std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                        std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    }
+
+                    OUT->enqueue(assignNCar, PT);
                 }
                 else
                 {
