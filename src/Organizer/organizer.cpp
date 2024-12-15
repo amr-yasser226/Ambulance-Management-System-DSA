@@ -35,6 +35,18 @@ Organizer::~Organizer()
     }
 }
 
+int Organizer::getMinValue(int array[], int size) {
+    int minValue = array[0];
+    
+    for (int i = 1; i < size; i++) {
+        if (array[i] < minValue) {
+            minValue = array[i];
+        }
+    }
+    
+    return minValue;
+}
+
 int Organizer::fetchPatientsInHospital(int hospitalID, int type)
 {
     return hospitals[hospitalID - 1].getNumberOfPatients(type);
@@ -413,7 +425,19 @@ void Organizer::simulate()
 
                         if (servePatient->getType() == Patient::PatientType::EP)
                         {
-                            // 
+                            //  [4, 20, 20, 11, 4, 16]
+                            //
+                            // if min is repeated
+                            //      if min < yourHospital
+                            //          pick one with nearest...
+                            //      else
+                            //          pick your hospital
+                            // else
+                            // (which means min is not repeated)
+                            //      if min < yourHospital
+                            //          pick min hospital ID
+                            //      else
+                            //          pick your hospital
                         }
 
                         if (hospitals[i].getHospitalID() == servePatient->getNearestHospitalID())

@@ -61,6 +61,7 @@ public:
     // - the car will return to
 
     int checkNearestHospital(Patient* thePatient);
+    int getMinValue(int array[], int size);
 
     int fetchPatientsInHospital(int hospitalID, int type);
     int fetchCarsInHospital(int hospitalID, int type);
