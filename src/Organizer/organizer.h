@@ -7,12 +7,16 @@
 #include "../Data Structures/Node.h"
 #include "../Data Structures/Queue.h"
 #include "../Data Structures/LinkedList.h"
+#include "../Data Structures/FinishedRequest.h"
 #include "../Data Structures/CancelledRequest.h"
 #include "../Data Structures/ExtendedPriorityQueue.h"
 
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 #include <string>
+#include <cctype>
+#include <ctime>
 
 class Organizer
 {
@@ -23,7 +27,8 @@ private:
 
     Queue<Patient*> *incomingPatients;
     LinkedList<CancelledRequest> *cancelledPatients;
-    Queue<Patient*> *finishedPatients;
+    LinkedList<FinishedRequest> *finishedPatients;
+    // Queue<Patient*> *finishedPatients;
 
     ExtendedPriorityQueue<Car*> *OUT;
     ExtendedPriorityQueue<Car*> *BACK;
@@ -34,10 +39,12 @@ private:
     int requests = 0,
         cancellations = 0,
         hospitalCount = 0,
-        currentTime = 0;
+        currentTime = 0,
+        mode = 0;
 
 public:
     Organizer();
+    Organizer(int mode);
     ~Organizer();
 
     // This function will be used for the bonus (or deleted entirely)
@@ -65,6 +72,8 @@ public:
 
     int fetchPatientsInHospital(int hospitalID, int type);
     int fetchCarsInHospital(int hospitalID, int type);
+
+    std::string generateFileName();
 
     void loadInputData();
     void simulate();

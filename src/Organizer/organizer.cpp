@@ -1,11 +1,11 @@
 #include "organizer.h"
 
-Organizer::Organizer() :
+Organizer::Organizer(int mode) :
     matrix(nullptr),
     hospitals(nullptr),
     incomingPatients(new Queue<Patient*>()), 
     cancelledPatients(new LinkedList<CancelledRequest>()), 
-    finishedPatients(new Queue<Patient*>()), 
+    finishedPatients(new LinkedList<FinishedRequest>()), 
     OUT(new ExtendedPriorityQueue<Car*>()), 
     BACK(new ExtendedPriorityQueue<Car*>()), 
     specialCarSpeed(0.0),
@@ -13,7 +13,25 @@ Organizer::Organizer() :
     requests(0),
     cancellations(0),
     hospitalCount(0),
-    currentTime(0)
+    currentTime(0),
+    mode(mode)
+{}
+
+Organizer::Organizer() :
+    matrix(nullptr),
+    hospitals(nullptr),
+    incomingPatients(new Queue<Patient*>()), 
+    cancelledPatients(new LinkedList<CancelledRequest>()), 
+    finishedPatients(new LinkedList<FinishedRequest>()), 
+    OUT(new ExtendedPriorityQueue<Car*>()), 
+    BACK(new ExtendedPriorityQueue<Car*>()), 
+    specialCarSpeed(0.0),
+    normalCarSpeed(0.0),
+    requests(0),
+    cancellations(0),
+    hospitalCount(0),
+    currentTime(0),
+    mode(0)
 {}
 
 Organizer::~Organizer()
@@ -52,6 +70,11 @@ int Organizer::fetchPatientsInHospital(int hospitalID, int type)
     return hospitals[hospitalID - 1].getNumberOfPatients(type);
 }
 
+int Organizer::fetchCarsInHospital(int hospitalID, int type)
+{
+    return hospitals[hospitalID - 1].getNumberOfCars(type);
+}
+
 bool Organizer::isRequestCancelled(Car* checkCar)
 {
     CancelledRequest tempCR;
@@ -69,7 +92,7 @@ bool Organizer::isRequestCancelled(Car* checkCar)
 
             if (tempCR.cTimestep < tempPatient->getPT() && tempCR.cPID == tempPatient->getPID())
             {
-                std::cout << "[!] Patient " << tempPatient->getPID() << " has cancelled their request!   [CANCELLED]" << std::endl;
+                // std::cout << "[!] Patient " << tempPatient->getPID() << " has cancelled their request!   [CANCELLED]" << std::endl;
                 return true;
             }
 
@@ -116,7 +139,7 @@ int Organizer::getValueByMap(int index)
 
 void Organizer::loadInputData()
 {
-    std::cout << std::endl << "Loading data to be simulated..." << std::endl << std::endl;
+    // std::cout << std::endl << "Loading data to be simulated..." << std::endl << std::endl;
 
     std::ifstream file("../data/input/input_1_1.txt");
 
@@ -164,18 +187,16 @@ void Organizer::loadInputData()
 
         Hospital newHospital(y+1);
 
-        std::cout << "Before: " << newHospital.getNumberOfCars(0) << " " << newHospital.getNumberOfCars(1) << std::endl;
+        // std::cout << "Before: " << newHospital.getNumberOfCars(0) << " " << newHospital.getNumberOfCars(1) << std::endl;
 
         newHospital.addCars(Car::CarType::SC, specialCarsAmount);
         newHospital.addCars(Car::CarType::NC, normalCarsAmount);
 
-        std::cout << "After:  " << newHospital.getNumberOfCars(0) << " " << newHospital.getNumberOfCars(1) << std::endl;
+        // std::cout << "After:  " << newHospital.getNumberOfCars(0) << " " << newHospital.getNumberOfCars(1) << std::endl;
 
         hospitals[y] = newHospital;
-        std::cout << "Total cars amount: " << hospitals[y].getNumberOfCars(2) << std::endl;
+        // std::cout << "Total cars amount: " << hospitals[y].getNumberOfCars(2) << std::endl;
     }
-
-    std::cout << std::endl;
 
     file >> requests;
 
@@ -231,7 +252,7 @@ void Organizer::loadInputData()
     }
 
     // Debugging:
-    std::cout << "CANCELLED REQUESTS: " << cancellations << std::endl;
+    // std::cout << "CANCELLED REQUESTS: " << cancellations << std::endl;
 
     for (int i = 0; i < cancellations; i++)
     {
@@ -253,7 +274,7 @@ void Organizer::loadInputData()
 
 void Organizer::simulate()
 {
-    std::cout << std::endl << "Processing simulation..." << std::endl;
+    // std::cout << std::endl << "Processing simulation..." << std::endl;
 
     // // debugging:
     // while (!incomingPatients->isEmpty())
@@ -275,7 +296,7 @@ void Organizer::simulate()
 
     for (currentTime = 1; currentTime < 150; currentTime++)
     {
-        std::cout << "Timestep: " << currentTime << std::endl;
+        // std::cout << "Timestep: " << currentTime << std::endl;
         // Beginning of each loop:
         //
         // - We check on cancelledRequests list if there were any
@@ -340,7 +361,21 @@ void Organizer::simulate()
 
                         Patient* CPatient = outToBackCar->getCurrentPatient();
                         CPatient->setCancelled();
-                        finishedPatients->enqueue(CPatient);
+
+                        FinishedRequest FR;
+                        FR.PID = CPatient->getPID();
+                        FR.Severity = CPatient->getSeverity();
+                        FR.nearestHospitalID = CPatient->getNearestHospitalID();
+                        FR.nearestHospitalDistance = CPatient->getNearestHospitalDistance();
+                        FR.type = (CPatient->getType() == Patient::PatientType::EP) ? 2 : (CPatient->getType() == Patient::PatientType::SP) ? 1 : 0;
+                        FR.QT = CPatient->getQT();
+                        FR.AT = CPatient->getAT();
+                        FR.PT = CPatient->getPT();
+                        FR.WT = CPatient->getWT();
+                        FR.FT = CPatient->getFT();
+                        FR.carBusyTime = CPatient->getCarBusyTime();
+
+                        finishedPatients->insertLast(FR);
 
                         outToBackCar->clearRidingPatient();
                         outToBackCar->setCarStatus(Car::CarStatus::READY);
@@ -376,12 +411,26 @@ void Organizer::simulate()
                     BACK->dequeue(backToHospitalCar, backCompareTime);
 
                     Patient* finishedPatient = backToHospitalCar->getCurrentPatient();
-                    std::cout << "[+] Patient " << finishedPatient->getPID() << " has arrived to hospital " << finishedPatient->getNearestHospitalID() << " at timestep: " << currentTime << "." << std::endl;
-                    finishedPatients->enqueue(finishedPatient);
+                    // std::cout << "[+] Patient " << finishedPatient->getPID() << " has arrived to hospital " << finishedPatient->getNearestHospitalID() << " at timestep: " << currentTime << "." << std::endl;
+
+                    FinishedRequest FR;
+                    FR.PID = finishedPatient->getPID();
+                    FR.Severity = finishedPatient->getSeverity();
+                    FR.nearestHospitalID = finishedPatient->getNearestHospitalID();
+                    FR.nearestHospitalDistance = finishedPatient->getNearestHospitalDistance();
+                    FR.type = (finishedPatient->getType() == Patient::PatientType::EP) ? 2 : (finishedPatient->getType() == Patient::PatientType::SP) ? 1 : 0;
+                    FR.QT = finishedPatient->getQT();
+                    FR.AT = finishedPatient->getAT();
+                    FR.PT = finishedPatient->getPT();
+                    FR.WT = finishedPatient->getWT();
+                    FR.FT = finishedPatient->getFT();
+                    FR.carBusyTime = finishedPatient->getCarBusyTime();
+
+                    finishedPatients->insertLast(FR);
 
                     backToHospitalCar->clearRidingPatient();
                     backToHospitalCar->setCarStatus(Car::CarStatus::READY);
-                    
+
                     // return the car back to its hospital
                     for (int i = 0; i < hospitalCount; i++)
                     {
@@ -453,7 +502,7 @@ void Organizer::simulate()
             }
         }
 
-        std::cout << "--------------------------> TIMESTEP: " << currentTime << " EP COUNT IN HOS-3: " << fetchPatientsInHospital(3, 2) << std::endl;
+        // std::cout << "--------------------------> TIMESTEP: " << currentTime << " EP COUNT IN HOS-3: " << fetchPatientsInHospital(3, 2) << std::endl;
 
         // Loop over each hospital:
         // - Peek on each list:
@@ -497,24 +546,25 @@ void Organizer::simulate()
                     assignNCar->setCurrentPatient(assignEPatient);
                     assignNCar->setCarStatus(Car::CarStatus::ASSIGNED);
 
-                    if (assignNCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
-                    {
-                        std::cout << "EP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
-                        std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
-                        std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
-                    }
-                    else if (assignNCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
-                    {
-                        std::cout << "SP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
-                        std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
-                        std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
-                    }
-                    else
-                    {
-                        std::cout << "NP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
-                        std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
-                        std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
-                    }
+                    // BLOCK
+                    // if (assignNCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
+                    // {
+                    //     std::cout << "EP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
+                    //     std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                    //     std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    // }
+                    // else if (assignNCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
+                    // {
+                    //     std::cout << "SP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
+                    //     std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                    //     std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    // }
+                    // else
+                    // {
+                    //     std::cout << "NP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
+                    //     std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                    //     std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    // }
 
                     OUT->enqueue(assignNCar, PT);
                 }
@@ -542,24 +592,25 @@ void Organizer::simulate()
                     assignSCar->setCurrentPatient(assignEPatient);
                     assignSCar->setCarStatus(Car::CarStatus::ASSIGNED);
 
-                    if (assignSCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
-                    {
-                        std::cout << "EP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
-                        std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
-                        std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
-                    }
-                    else if (assignSCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
-                    {
-                        std::cout << "SP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
-                        std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
-                        std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
-                    }
-                    else
-                    {
-                        std::cout << "NP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
-                        std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
-                        std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
-                    }
+                    // BLOCK
+                    // if (assignSCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
+                    // {
+                    //     std::cout << "EP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
+                    //     std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                    //     std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    // }
+                    // else if (assignSCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
+                    // {
+                    //     std::cout << "SP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
+                    //     std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                    //     std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    // }
+                    // else
+                    // {
+                    //     std::cout << "NP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
+                    //     std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                    //     std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    // }
 
                     OUT->enqueue(assignSCar, PT);
                 }
@@ -596,24 +647,25 @@ void Organizer::simulate()
                     assignSCar->setCurrentPatient(assignSPatient);
                     assignSCar->setCarStatus(Car::CarStatus::ASSIGNED);
 
-                    if (assignSCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
-                    {
-                        std::cout << "EP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
-                        std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
-                        std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
-                    }
-                    else if (assignSCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
-                    {
-                        std::cout << "SP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
-                        std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
-                        std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
-                    }
-                    else
-                    {
-                        std::cout << "NP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
-                        std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
-                        std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
-                    }
+                    // BLOCK
+                    // if (assignSCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
+                    // {
+                    //     std::cout << "EP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
+                    //     std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                    //     std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    // }
+                    // else if (assignSCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
+                    // {
+                    //     std::cout << "SP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
+                    //     std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                    //     std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    // }
+                    // else
+                    // {
+                    //     std::cout << "NP: " << assignSCar->getCurrentPatient()->getPID() << std::endl;
+                    //     std::cout << assignSCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                    //     std::cout << assignSCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    // }
 
                     OUT->enqueue(assignSCar, PT);
                 }
@@ -650,24 +702,25 @@ void Organizer::simulate()
                     assignNCar->setCurrentPatient(assignNPatient);
                     assignNCar->setCarStatus(Car::CarStatus::ASSIGNED);
 
-                    if (assignNCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
-                    {
-                        std::cout << "EP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
-                        std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
-                        std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
-                    }
-                    else if (assignNCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
-                    {
-                        std::cout << "SP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
-                        std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
-                        std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
-                    }
-                    else
-                    {
-                        std::cout << "NP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
-                        std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
-                        std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
-                    }
+                    // BLOCK
+                    // if (assignNCar->getCurrentPatient()->getType() == Patient::PatientType::EP)
+                    // {
+                    //     std::cout << "EP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
+                    //     std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                    //     std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    // }
+                    // else if (assignNCar->getCurrentPatient()->getType() == Patient::PatientType::SP)
+                    // {
+                    //     std::cout << "SP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
+                    //     std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                    //     std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    // }
+                    // else
+                    // {
+                    //     std::cout << "NP: " << assignNCar->getCurrentPatient()->getPID() << std::endl;
+                    //     std::cout << assignNCar->getCurrentPatient()->getPT() << std::endl; // debugging
+                    //     std::cout << assignNCar->getCurrentPatient()->getFT() << std::endl; // debugging
+                    // }
 
                     OUT->enqueue(assignNCar, PT);
                 }
@@ -705,8 +758,79 @@ void Organizer::simulate()
     // }
 }
 
+std::string Organizer::generateFileName()
+{
+    std::time_t now = std::time(0);
+    std::tm *localTime = std::localtime(&now);
+
+    // Format: output_DD_MM_YYYY_HH_MM
+    std::string fileName = "output_" +
+                           std::to_string(localTime->tm_mday) + "_" +
+                           std::to_string(localTime->tm_mon + 1) + "_" +
+                           std::to_string(localTime->tm_year + 1900) + "_" +
+                           std::to_string(localTime->tm_hour) + "_" +
+                           std::to_string(localTime->tm_min);
+
+    return fileName;
+}
+
 void Organizer::generateOutput()
 {
-    // Placeholder for generating output
-    std::cout << std::endl << "Simulation complete. Generating output...\n";
+    const std::string folderPath = "../data/output/";
+
+    std::string command = "mkdir -p " + folderPath;
+    std::system(command.c_str());
+
+    std::string fileName = folderPath + generateFileName() + ".txt";
+
+    std::ofstream outFile(fileName);
+
+    if (!outFile)
+    {
+        std::cerr << "Error: Cannot create the file!" << std::endl;
+        return;
+    }
+
+    outFile << "FT  PID QT  WT" << std::endl;
+
+    // std::cout << "SIZE: " << finishedPatients->size() << std::endl;
+
+    int FRcount = 0;
+    int EPcount = 0;
+    int SPcount = 0;
+    int NPcount = 0;
+
+    int allCars = 0;
+    int SCars = 0;
+    int NCars = 0;
+
+    for (int i = 1; i <= hospitalCount; i++)
+    {
+        allCars += fetchCarsInHospital(i, 2);
+        SCars += fetchCarsInHospital(i, 0);
+        NCars += fetchCarsInHospital(i, 1);
+    }
+
+    FinishedRequest tempFR;
+    Node<FinishedRequest>* FR = finishedPatients->getHead();
+
+    for (int i = 0; FR != nullptr; i++)
+    {
+        FRcount++;
+        if (tempFR.type == 2) { EPcount++; }
+        if (tempFR.type == 1) { SPcount++; }
+        if (tempFR.type == 0) { NPcount++; }
+        tempFR = FR->getItem();
+        outFile << tempFR.FT << " " << tempFR.PID << " " << tempFR.QT << " " << tempFR.WT << std::endl;
+        FR = FR->getNext();
+    }
+
+    outFile << std::endl;
+    outFile << "Patients: " << FRcount << " [NP: " << NPcount << ", SP: " << SPcount << ", EP: " << EPcount << "]" << std::endl;
+    outFile << "Hospitals: " << hospitalCount << std::endl;
+    outFile << "Cars: " << allCars << " [SCars: " << SCars << ", NCars: " << NCars << "]" << std::endl;
+
+    outFile.close();
+
+    std::cout << std::endl << "Data has been written to file: " << fileName << std::endl;
 }

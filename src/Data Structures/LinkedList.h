@@ -23,6 +23,7 @@ public:
     bool deleteNodeByValue(const T &value); // Deletes the first node with the specified value
     bool deleteNodeAtPosition(int position); // Deletes a node at the specified position (0-based index)
     Node<T> *getHead() const;
+    T peek() const; // Returns the value at the head of the list
 };
 
 template <typename T>
@@ -148,5 +149,16 @@ bool LinkedList<T>::deleteNodeAtPosition(int position)
     itemCount--;
     return true;
 }
+
+template <typename T>
+T LinkedList<T>::peek() const
+{
+    if (isEmpty())
+    {
+        throw std::runtime_error("List is empty. Cannot peek.");
+    }
+    return head->getItem(); // Return the value of the first node
+}
+
 
 #endif // LINKED_LIST_H
