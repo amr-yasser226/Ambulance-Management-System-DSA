@@ -17,6 +17,8 @@
 class Organizer
 {
 private:
+
+    int **matrix = new int*[2];
     Hospital *hospitals = new Hospital[hospitalCount];
 
     Queue<Patient*> *incomingPatients;
@@ -57,6 +59,8 @@ public:
     // - then the request will be cancelled
     // - and that number represents the hospital
     // - the car will return to
+
+    int checkNearestHospital(Patient* thePatient);
 
     int fetchPatientsInHospital(int hospitalID, int type);
     int fetchCarsInHospital(int hospitalID, int type);

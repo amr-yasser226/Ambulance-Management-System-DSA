@@ -10,6 +10,7 @@ class DerivedQueue
 private:
     Node<T> *backPtr;
     Node<T> *frontPtr;
+    int itemCount; // Keeps track of the number of items in the queue
 
 public:
     DerivedQueue();
@@ -17,12 +18,13 @@ public:
     bool enqueue(const T &newEntry);
     bool dequeue(T &frntEntry);
     bool peek(T &frntEntry) const;
+    int size() const; // Returns the current size of the queue
     ~DerivedQueue();
     DerivedQueue(const DerivedQueue<T> &LQ);
 };
 
 template <typename T>
-DerivedQueue<T>::DerivedQueue() : backPtr(nullptr), frontPtr(nullptr) {}
+DerivedQueue<T>::DerivedQueue() : backPtr(nullptr), frontPtr(nullptr), itemCount(0) {}
 
 template <typename T>
 bool DerivedQueue<T>::isEmpty() const
@@ -39,6 +41,7 @@ bool DerivedQueue<T>::enqueue(const T &newEntry)
     else
         backPtr->setNext(newNodePtr);
     backPtr = newNodePtr;
+    itemCount++; // Increment the count
     return true;
 }
 
@@ -53,6 +56,7 @@ bool DerivedQueue<T>::dequeue(T &frntEntry)
     if (nodeToDeletePtr == backPtr)
         backPtr = nullptr;
     delete nodeToDeletePtr;
+    if (itemCount > 0) itemCount--; // Decrement the count
     return true;
 }
 
@@ -66,6 +70,12 @@ bool DerivedQueue<T>::peek(T &frntEntry) const
 }
 
 template <typename T>
+int DerivedQueue<T>::size() const
+{
+    return itemCount; // Return the number of items in the queue
+}
+
+template <typename T>
 DerivedQueue<T>::~DerivedQueue()
 {
     T temp;
@@ -74,7 +84,7 @@ DerivedQueue<T>::~DerivedQueue()
 }
 
 template <typename T>
-DerivedQueue<T>::DerivedQueue(const DerivedQueue<T> &LQ) : backPtr(nullptr), frontPtr(nullptr)
+DerivedQueue<T>::DerivedQueue(const DerivedQueue<T> &LQ) : backPtr(nullptr), frontPtr(nullptr), itemCount(0)
 {
     Node<T> *NodePtr = LQ.frontPtr;
     while (NodePtr)
@@ -84,4 +94,4 @@ DerivedQueue<T>::DerivedQueue(const DerivedQueue<T> &LQ) : backPtr(nullptr), fro
     }
 }
 
-#endif // LINKED_QUEUE_H
+#endif // DERIVED_QUEUE_H

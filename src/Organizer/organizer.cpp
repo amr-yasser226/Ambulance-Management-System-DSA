@@ -1,6 +1,7 @@
 #include "organizer.h"
 
 Organizer::Organizer() :
+    matrix(nullptr),
     hospitals(nullptr),
     incomingPatients(new Queue<Patient*>()), 
     cancelledPatients(new LinkedList<CancelledRequest>()), 
@@ -17,11 +18,26 @@ Organizer::Organizer() :
 
 Organizer::~Organizer()
 {
+    if (matrix != nullptr)
+    {
+        for (int i = 0; i < hospitalCount; i++)
+        {
+            delete[] matrix[i];
+        }
+        delete[] matrix;
+        matrix = nullptr;
+    }
+
     if (hospitals != nullptr)
     {
         delete[] hospitals;
         hospitals = nullptr;
     }
+}
+
+int Organizer::fetchPatientsInHospital(int hospitalID, int type)
+{
+    return hospitals[hospitalID - 1].getNumberOfPatients(type);
 }
 
 bool Organizer::isRequestCancelled(Car* checkCar)
@@ -102,17 +118,33 @@ void Organizer::loadInputData()
     file >> hospitalCount;
     file >> specialCarSpeed >> normalCarSpeed;
 
-    // Skip the hospitals distance matrix
-    int spam;
-    for (int y = 0; y < hospitalCount * hospitalCount; y++) { file >> spam; }
-    // Skipped to the beginning of each hospital's cars amount
+    matrix = new int*[hospitalCount];
+    hospitals = new Hospital[hospitalCount];
+
+    // Read the matrix
+    for (int y = 0; y < hospitalCount; y++)
+    {
+        matrix[y] = new int[hospitalCount];
+
+        for (int x = 0; x < hospitalCount; x++)
+        {
+            file >> matrix[y][x];
+        }
+    }
+
+    // debugging:
+    // for (int y = 0; y < hospitalCount; y++)
+    // {
+    //     for (int x = 0; x < hospitalCount; x++)
+    //     {
+    //         std::cout << matrix[y][x] << " ";
+    //     }
+    //     std::cout << std::endl;
+    // }
 
     // create x number of hospitals based on hospitalCount
     // for each hospital set its required/given data
-    // from the input file then add it the hospitals' linkedlist
-
-    hospitals = new Hospital[hospitalCount];
-
+    // from the input file then add it the hospitals' dynamic array
     int specialCarsAmount, normalCarsAmount;
     for (int y = 0; y < hospitalCount; y++)
     {
@@ -231,6 +263,7 @@ void Organizer::simulate()
 
     for (currentTime = 1; currentTime < 150; currentTime++)
     {
+        std::cout << "Timestep: " << currentTime << std::endl;
         // Beginning of each loop:
         //
         // - We check on cancelledRequests list if there were any
@@ -331,7 +364,7 @@ void Organizer::simulate()
                     BACK->dequeue(backToHospitalCar, backCompareTime);
 
                     Patient* finishedPatient = backToHospitalCar->getCurrentPatient();
-                    std::cout << "[+] Patient " << finishedPatient->getPID() << " has arrived to hospital " << finishedPatient->getNearestHospitalID() << "." << std::endl;
+                    std::cout << "[+] Patient " << finishedPatient->getPID() << " has arrived to hospital " << finishedPatient->getNearestHospitalID() << " at timestep: " << currentTime << "." << std::endl;
                     finishedPatients->enqueue(finishedPatient);
 
                     backToHospitalCar->clearRidingPatient();
@@ -359,7 +392,6 @@ void Organizer::simulate()
 
         // Serve patients of same timestep in incomingPatients
         // Send each one to their hospital
-        std::cout << "Timestep: " << currentTime << std::endl;
         Patient* servePatient = new Patient();
         if (incomingPatients->peek(servePatient))
         {
@@ -371,6 +403,19 @@ void Organizer::simulate()
 
                     for (int i = 0; i < hospitalCount; i++)
                     {
+                        // EPatients have a special case that we check on their hospital's cars
+                        // if they exist, if no cars found:
+                        //      - Loop on all hospitals & serve him the one with least
+                        //      - EPatients in queue
+                        //          if multiple ones have same amount of EPatients or
+                        //          their EPatients in queue are more than his initial hospital
+                        //              - Serve him the hospital nearest to his current hospital
+
+                        if (servePatient->getType() == Patient::PatientType::EP)
+                        {
+                            // 
+                        }
+
                         if (hospitals[i].getHospitalID() == servePatient->getNearestHospitalID())
                         {
                             hospitals[i].addPatient(servePatient, servePatient->getSeverity());
@@ -383,6 +428,8 @@ void Organizer::simulate()
                 }
             }
         }
+
+        std::cout << "--------------------------> TIMESTEP: " << currentTime << " EP COUNT IN HOS-3: " << fetchPatientsInHospital(3, 2) << std::endl;
 
         // Loop over each hospital:
         // - Peek on each list:

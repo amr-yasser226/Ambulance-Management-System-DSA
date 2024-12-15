@@ -56,6 +56,11 @@ void Hospital::addPatient(Patient* patientInstance, int severity)
             break;
         case Patient::PatientType::EP:
             headEP->enqueue(patientInstance, severity);
+            // debugging:
+            // if (patientInstance->getPID() == 4)
+            // {
+            //     std::cout << "w elmos7af da5lt el mosta4fa" << std::endl;
+            // }
             // std::cout << "\n+ Added EP patient_" << patientInstance->getPID() << " to H: " << patientInstance->getNearestHospitalID() << "\n" << std::endl;
             break;
         default:
@@ -71,53 +76,11 @@ int Hospital::getHospitalID()
 
 int Hospital::getNumberOfPatients(int type)
 {
-    Patient* temp = new Patient();
-    int trash, count = 0;
-
-    switch (type)
-    {
-        case 0: // NP
-        {
-            DerivedQueue<Patient*> tempQueue(*headNP);
-
-            while (!tempQueue.isEmpty())
-            {
-                tempQueue.dequeue(temp);
-                count++;
-            }
-            break;
-        }
-        case 1: // SP
-        {
-            Queue<Patient*> tempQueue(*headSP);
-
-            while (!tempQueue.isEmpty())
-            {
-                tempQueue.dequeue(temp);
-                count++;
-            }
-            break;
-        }
-        case 2: // EP
-        {
-            PriorityQueue<Patient*> tempQueue;
-            
-            priNode<Patient*>* current = headEP->getHead();
-            while (current)
-            {
-                tempQueue.enqueue(current->getItem(trash), trash);
-                current = current->getNext();
-                count++;
-            }
-            break;
-        }
-        case 3: // All patients
-            count = getNumberOfPatients(0) + getNumberOfPatients(1) + getNumberOfPatients(2);
-            break;
-        default:
-            std::cout << "NO PATIENT TYPE MATCHED!" << std::endl;
-            break;
-    }
+    int count = 0;
+    if (type == 0) count = headNP->size();
+    else if (type == 1) count = headSP->size();
+    else if (type == 2) count = headEP->size();
+    else count = headNP->size() + headSP->size() + headEP->size();
     return count;
 }
 
