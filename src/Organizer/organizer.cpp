@@ -383,7 +383,7 @@ void Organizer::simulate()
                         // return the car back to its hospital
                         for (int i = 0; i < hospitalCount; i++)
                         {
-                            if (hospitals[i].getHospitalID() == CPatient->getNearestHospitalID())
+                            if (hospitals[i].getHospitalID() == FR.nearestHospitalID)
                             {
                                 hospitals[i].returnCar(outToBackCar);
                             }
@@ -836,5 +836,5 @@ void Organizer::generateOutput()
 
     outFile.close();
 
-    std::cout << std::endl << "Data has been written to file: " << fileName << std::endl;
+    // std::cout << std::endl << "Data has been written to file: " << fileName << std::endl;
 }
