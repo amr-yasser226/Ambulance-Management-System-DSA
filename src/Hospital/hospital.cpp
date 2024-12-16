@@ -28,13 +28,16 @@ void Hospital::addCars(Car::CarType type, int amount)
 
 void Hospital::returnCar(Car* carInstance)
 {
+    // std::cout << "return call" << std::endl;
     switch (carInstance->getCarType())
     {
         case Car::CarType::SC:
             headSC->enqueue(carInstance);
+            // std::cout << "A special car has returned to hospital " << hospitalID << std::endl;
             break;
         case Car::CarType::NC:
             headNC->enqueue(carInstance);
+            // std::cout << "A normal car has returned to hospital " << hospitalID << std::endl;
             break;
         default:
             std::cout << "RETURNED CAR OF INVALID TYPE!" << std::endl; // this should never trigger

@@ -92,7 +92,7 @@ bool Organizer::isRequestCancelled(Car* checkCar)
 
             if (tempCR.cTimestep < tempPatient->getPT() && tempCR.cPID == tempPatient->getPID())
             {
-                // std::cout << "[!] Patient " << tempPatient->getPID() << " has cancelled their request!   [CANCELLED]" << std::endl;
+                std::cout << "[!] Patient " << tempPatient->getPID() << " has cancelled their request!   [CANCELLED]" << std::endl;
                 return true;
             }
 
@@ -434,7 +434,7 @@ void Organizer::simulate()
                     // return the car back to its hospital
                     for (int i = 0; i < hospitalCount; i++)
                     {
-                        if (hospitals[i].getHospitalID() == finishedPatient->getNearestHospitalID())
+                        if (hospitals[i].getHospitalID() == FR.nearestHospitalID)
                         {
                             hospitals[i].returnCar(backToHospitalCar);
                         }
@@ -567,6 +567,7 @@ void Organizer::simulate()
                     // }
 
                     OUT->enqueue(assignNCar, PT);
+                    // std::cout << "Car from hospital " << i+1 << " is going for patient " << assignNCar->getCurrentPatient()->getPID() << " at timestep " << currentTime << std::endl;
                 }
                 else if (hospitals[i].getNumberOfCars(0) > 0)
                 {
@@ -613,6 +614,7 @@ void Organizer::simulate()
                     // }
 
                     OUT->enqueue(assignSCar, PT);
+                    // std::cout << "Car from hospital " << i+1 << " is going for patient " << assignSCar->getCurrentPatient()->getPID() << " at timestep " << currentTime << std::endl;
                 }
                 else
                 {
@@ -668,6 +670,7 @@ void Organizer::simulate()
                     // }
 
                     OUT->enqueue(assignSCar, PT);
+                    // std::cout << "Car from hospital " << i+1 << " is going for patient " << assignSCar->getCurrentPatient()->getPID() << " at timestep " << currentTime << std::endl;
                 }
                 else
                 {
@@ -723,6 +726,7 @@ void Organizer::simulate()
                     // }
 
                     OUT->enqueue(assignNCar, PT);
+                    // std::cout << "Car from hospital " << i+1 << " is going for patient " << assignNCar->getCurrentPatient()->getPID() << " at timestep " << currentTime << std::endl;
                 }
                 else
                 {
@@ -732,13 +736,13 @@ void Organizer::simulate()
         }
 
         // debugging:
-        // while (!OUT->isEmpty())
+        // while (!BACK->isEmpty())
         // {
-        //     int pri;
+        //     double pri;
         //     Car* test = new Car();
         //     OUT->dequeue(test, pri);
         //     Patient* ptest = test->getCurrentPatient();
-        //     std::cout << ptest->getPT() << std::endl;
+        //     std::cout << "Patient: " << ptest->getPID() << std::endl;
         // }
     }
 
@@ -765,11 +769,11 @@ std::string Organizer::generateFileName()
 
     // Format: output_DD_MM_YYYY_HH_MM
     std::string fileName = "output_" +
-                           std::to_string(localTime->tm_mday) + "_" +
-                           std::to_string(localTime->tm_mon + 1) + "_" +
-                           std::to_string(localTime->tm_year + 1900) + "_" +
-                           std::to_string(localTime->tm_hour) + "_" +
-                           std::to_string(localTime->tm_min);
+                            std::to_string(localTime->tm_mday) + "_" +
+                            std::to_string(localTime->tm_mon + 1) + "_" +
+                            std::to_string(localTime->tm_year + 1900) + "_" +
+                            std::to_string(localTime->tm_hour) + "_" +
+                            std::to_string(localTime->tm_min);
 
     return fileName;
 }
