@@ -465,7 +465,7 @@ void Organizer::simulate()
                     for (int i = 0; i < hospitalCount; i++)
                     {
                         // EPatients have a special case that we check on their hospital's cars
-                        // if they exist, if no cars found:
+                        // if they exist then send the patient to his hospital normally, if no cars found:
                         //      - Loop on all hospitals & serve him the one with least
                         //      - EPatients in queue
                         //          if multiple ones have same amount of EPatients or
