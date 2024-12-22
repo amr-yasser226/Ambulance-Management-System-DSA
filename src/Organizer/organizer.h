@@ -28,7 +28,6 @@ private:
     Queue<Patient*> *incomingPatients;
     LinkedList<CancelledRequest> *cancelledPatients;
     LinkedList<FinishedRequest> *finishedPatients;
-    // Queue<Patient*> *finishedPatients;
 
     ExtendedPriorityQueue<Car*> *OUT;
     ExtendedPriorityQueue<Car*> *BACK;

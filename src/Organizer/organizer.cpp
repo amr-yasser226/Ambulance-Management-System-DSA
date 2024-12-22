@@ -92,7 +92,8 @@ bool Organizer::isRequestCancelled(Car* checkCar)
 
             if (tempCR.cTimestep < tempPatient->getPT() && tempCR.cPID == tempPatient->getPID())
             {
-                std::cout << "[!] Patient " << tempPatient->getPID() << " has cancelled their request!   [CANCELLED]" << std::endl;
+                // If in interactive mode, then notify
+                if (mode == 2) { std::cout << "[!] Patient " << tempPatient->getPID() << " has cancelled their request!   [CANCELLED]" << std::endl; }
                 return true;
             }
 
@@ -760,6 +761,25 @@ void Organizer::simulate()
     //     temp.printDetails();
     //     std::cout << "\n-----------------------\n" << std::endl;
     // }
+
+    // UI Interactive Mode:
+    if (mode == 1)
+    {
+        std::cout << "Current Timestep: " << currentTime << std::endl;
+        
+        for (int i = 1; i <= hospitalCount; i++)
+        {
+            std::string currentEPatients = " ";
+            std::string currentSPatients = " ";
+            std::string currentNPatients = " ";
+
+
+
+            std::cout << "==============   HOSPITAL #" << i << " Data   ==============" << std::endl;
+            // std::cout << fetchPatientsInHospital(i, 2) << " EP requests:" << EP
+        }
+        
+    }
 }
 
 std::string Organizer::generateFileName()

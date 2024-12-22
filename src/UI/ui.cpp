@@ -12,7 +12,7 @@ int UI::verifyInput()
     while (1)
     {
         std::cin >> input;
-        if (input == 1 || input == 2) { break; }
+        if (input == 1 || input == 2 || input == 5) { break; }
     }
 
     return input;
@@ -77,10 +77,14 @@ void UI::displayInterface()
     }
     else if (mode == 2)
     {
-        
+        Organizer interactiveMode(2);
+
+        interactiveMode.loadInputData();
+        interactiveMode.simulate();
+        interactiveMode.generateOutput();
     }
-    else
+    else // (mode == 5)
     {
-        std::cout << "batee5" << std::endl;
+        // Debugging mode (todo later)
     }
 }

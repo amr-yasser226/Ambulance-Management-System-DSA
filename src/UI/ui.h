@@ -13,6 +13,7 @@ private:
     // 0 - unselected
     // 1 - silent
     // 2 - interactive
+    // 5 - debugging
 
 public:
     UI();
