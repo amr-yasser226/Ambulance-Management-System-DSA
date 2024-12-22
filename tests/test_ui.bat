@@ -6,10 +6,10 @@ REM Change to src directory
 cd ..\src
 
 REM Clean previous build
-nmake -f ui-Makefile clean
+make -f ui-Makefile clean
 
 REM Build
-nmake -f ui-Makefile
+make -f ui-Makefile
 
 REM Check if build was successful
 if %ERRORLEVEL% EQU 0 (
