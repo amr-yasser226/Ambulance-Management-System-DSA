@@ -110,44 +110,6 @@ bool Organizer::isRequestCancelled(Car *checkCar)
     return false;
 }
 
-int Organizer::getValueByMap(int index)
-{
-    if (index % 11 == 0)
-        return 0; // The index corresponds to a diagonal element in the symmetric matrix
-
-    int spam, targetValue = 99, value = -1;
-
-    std::ifstream file("../data/input/input_1_1.txt");
-
-    if (!file.is_open())
-    {
-        std::cerr << "Error opening file (organizer.cpp / getValueByMap)" << std::endl;
-        return -2;
-    }
-
-    for (int i = 0; i < 3; i++)
-    {
-        file >> spam;
-    } // skip to the first actual number in the matrix
-    for (int y = 0; y < hospitalCount; y++)
-    {
-        for (int x = 0; x < hospitalCount && value == -1; x++)
-        {
-            targetValue = (y + 1) * 10 + (x + 1);
-            if (targetValue == index)
-            {
-                file >> value;
-                y = 9999;
-            }
-            file >> spam;
-        }
-    }
-
-    file.close();
-
-    return value;
-}
-
 void Organizer::loadInputData()
 {
     // std::cout << std::endl << "Loading data to be simulated..." << std::endl << std::endl;
