@@ -24,15 +24,19 @@ private:
     CarType type;
     CarStatus status;
     Patient *currentPatient;
+    int uniqueID;
 
 public:
     Car();
-    Car(CarType carType);
+    Car(CarType carType, int carID);
 
     CarType getCarType() const;
     CarStatus getCarStatus() const;
     Patient* getCurrentPatient() const;
 
+    int getUniqueID();
+
+    void setUniqueID(int newCarID);
     void setCarStatus(CarStatus newStatus);
     void setCurrentPatient(Patient* patient);
     void clearRidingPatient();

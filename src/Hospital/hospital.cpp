@@ -21,7 +21,7 @@ void Hospital::addCars(Car::CarType type, int amount)
     Queue<Car*>* targetQueue = (type == Car::CarType::SC) ? headSC : headNC;
     for (int i = 0; i < amount; i++)
     {
-        Car* newCar = new Car(type);
+        Car* newCar = new Car(type, i+1);
         targetQueue->enqueue(newCar);
     }
 }
