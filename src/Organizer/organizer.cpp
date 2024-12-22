@@ -1,38 +1,38 @@
 #include "organizer.h"
 
-Organizer::Organizer(int mode) :
-    matrix(nullptr),
-    hospitals(nullptr),
-    incomingPatients(new Queue<Patient*>()), 
-    cancelledPatients(new LinkedList<CancelledRequest>()), 
-    finishedPatients(new LinkedList<FinishedRequest>()), 
-    OUT(new ExtendedPriorityQueue<Car*>()), 
-    BACK(new ExtendedPriorityQueue<Car*>()), 
-    specialCarSpeed(0.0),
-    normalCarSpeed(0.0),
-    requests(0),
-    cancellations(0),
-    hospitalCount(0),
-    currentTime(0),
-    mode(mode)
-{}
+Organizer::Organizer(int mode) : matrix(nullptr),
+                                 hospitals(nullptr),
+                                 incomingPatients(new Queue<Patient *>()),
+                                 cancelledPatients(new LinkedList<CancelledRequest>()),
+                                 finishedPatients(new LinkedList<FinishedRequest>()),
+                                 OUT(new ExtendedPriorityQueue<Car *>()),
+                                 BACK(new ExtendedPriorityQueue<Car *>()),
+                                 specialCarSpeed(0.0),
+                                 normalCarSpeed(0.0),
+                                 requests(0),
+                                 cancellations(0),
+                                 hospitalCount(0),
+                                 currentTime(0),
+                                 mode(mode)
+{
+}
 
-Organizer::Organizer() :
-    matrix(nullptr),
-    hospitals(nullptr),
-    incomingPatients(new Queue<Patient*>()), 
-    cancelledPatients(new LinkedList<CancelledRequest>()), 
-    finishedPatients(new LinkedList<FinishedRequest>()), 
-    OUT(new ExtendedPriorityQueue<Car*>()), 
-    BACK(new ExtendedPriorityQueue<Car*>()), 
-    specialCarSpeed(0.0),
-    normalCarSpeed(0.0),
-    requests(0),
-    cancellations(0),
-    hospitalCount(0),
-    currentTime(0),
-    mode(0)
-{}
+Organizer::Organizer() : matrix(nullptr),
+                         hospitals(nullptr),
+                         incomingPatients(new Queue<Patient *>()),
+                         cancelledPatients(new LinkedList<CancelledRequest>()),
+                         finishedPatients(new LinkedList<FinishedRequest>()),
+                         OUT(new ExtendedPriorityQueue<Car *>()),
+                         BACK(new ExtendedPriorityQueue<Car *>()),
+                         specialCarSpeed(0.0),
+                         normalCarSpeed(0.0),
+                         requests(0),
+                         cancellations(0),
+                         hospitalCount(0),
+                         currentTime(0),
+                         mode(0)
+{
+}
 
 Organizer::~Organizer()
 {
@@ -53,15 +53,18 @@ Organizer::~Organizer()
     }
 }
 
-int Organizer::getMinValue(int array[], int size) {
+int Organizer::getMinValue(int array[], int size)
+{
     int minValue = array[0];
-    
-    for (int i = 1; i < size; i++) {
-        if (array[i] < minValue) {
+
+    for (int i = 1; i < size; i++)
+    {
+        if (array[i] < minValue)
+        {
             minValue = array[i];
         }
     }
-    
+
     return minValue;
 }
 
@@ -75,11 +78,11 @@ int Organizer::fetchCarsInHospital(int hospitalID, int type)
     return hospitals[hospitalID - 1].getNumberOfCars(type);
 }
 
-bool Organizer::isRequestCancelled(Car* checkCar)
+bool Organizer::isRequestCancelled(Car *checkCar)
 {
     CancelledRequest tempCR;
-    Patient* tempPatient = checkCar->getCurrentPatient();
-    Node<CancelledRequest>* CR = cancelledPatients->getHead();
+    Patient *tempPatient = checkCar->getCurrentPatient();
+    Node<CancelledRequest> *CR = cancelledPatients->getHead();
 
     // According to project rules only normal patient can cancel
     // even though I could let other type of patients cancel too
@@ -93,7 +96,10 @@ bool Organizer::isRequestCancelled(Car* checkCar)
             if (tempCR.cTimestep < tempPatient->getPT() && tempCR.cPID == tempPatient->getPID())
             {
                 // If in interactive mode, then notify
-                if (mode == 2) { std::cout << "[!] Patient " << tempPatient->getPID() << " has cancelled their request!   [CANCELLED]" << std::endl; }
+                if (mode == 2)
+                {
+                    std::cout << "[!] Patient " << tempPatient->getPID() << " has cancelled their request!   [CANCELLED]" << std::endl;
+                }
                 return true;
             }
 
@@ -106,7 +112,8 @@ bool Organizer::isRequestCancelled(Car* checkCar)
 
 int Organizer::getValueByMap(int index)
 {
-    if (index % 11 == 0) return 0; // The index corresponds to a diagonal element in the symmetric matrix
+    if (index % 11 == 0)
+        return 0; // The index corresponds to a diagonal element in the symmetric matrix
 
     int spam, targetValue = 99, value = -1;
 
@@ -118,12 +125,15 @@ int Organizer::getValueByMap(int index)
         return -2;
     }
 
-    for (int i = 0; i < 3; i++) { file >> spam; } // skip to the first actual number in the matrix
+    for (int i = 0; i < 3; i++)
+    {
+        file >> spam;
+    } // skip to the first actual number in the matrix
     for (int y = 0; y < hospitalCount; y++)
     {
         for (int x = 0; x < hospitalCount && value == -1; x++)
         {
-            targetValue = (y+1) * 10 + (x+1);
+            targetValue = (y + 1) * 10 + (x + 1);
             if (targetValue == index)
             {
                 file >> value;
@@ -154,7 +164,7 @@ void Organizer::loadInputData()
     file >> hospitalCount;
     file >> specialCarSpeed >> normalCarSpeed;
 
-    matrix = new int*[hospitalCount];
+    matrix = new int *[hospitalCount];
     hospitals = new Hospital[hospitalCount];
 
     // Read the matrix
@@ -186,7 +196,7 @@ void Organizer::loadInputData()
     {
         file >> specialCarsAmount >> normalCarsAmount;
 
-        Hospital newHospital(y+1);
+        Hospital newHospital(y + 1);
 
         // std::cout << "Before: " << newHospital.getNumberOfCars(0) << " " << newHospital.getNumberOfCars(1) << std::endl;
 
@@ -230,15 +240,13 @@ void Organizer::loadInputData()
                 inputTypeConverted = Patient::PatientType::NP;
             }
 
-            Patient* newPatient = new Patient
-            (
+            Patient *newPatient = new Patient(
                 inputQT,
                 inputPID,
                 inputHID,
                 inputDistance,
                 inputTypeConverted,
-                inputSeverity
-            );
+                inputSeverity);
 
             incomingPatients->enqueue(newPatient);
         }
@@ -316,10 +324,10 @@ void Organizer::simulate()
         //      - enqueue the car to the patient's hospital ID
         // - else:
         //      do nothing
-        
+
         // Move from OUT to BACK
         double outCompareTime = 0.0;
-        Car* outToBackCar = new Car();
+        Car *outToBackCar = new Car();
         if (OUT->peek(outToBackCar, outCompareTime))
         {
             while (OUT->peek(outToBackCar, outCompareTime))
@@ -360,7 +368,7 @@ void Organizer::simulate()
                         // cancellation protocol
                         OUT->dequeue(outToBackCar, outCompareTime);
 
-                        Patient* CPatient = outToBackCar->getCurrentPatient();
+                        Patient *CPatient = outToBackCar->getCurrentPatient();
                         CPatient->setCancelled();
 
                         FinishedRequest FR;
@@ -368,7 +376,8 @@ void Organizer::simulate()
                         FR.Severity = CPatient->getSeverity();
                         FR.nearestHospitalID = CPatient->getNearestHospitalID();
                         FR.nearestHospitalDistance = CPatient->getNearestHospitalDistance();
-                        FR.type = (CPatient->getType() == Patient::PatientType::EP) ? 2 : (CPatient->getType() == Patient::PatientType::SP) ? 1 : 0;
+                        FR.type = (CPatient->getType() == Patient::PatientType::EP) ? 2 : (CPatient->getType() == Patient::PatientType::SP) ? 1
+                                                                                                                                            : 0;
                         FR.QT = CPatient->getQT();
                         FR.AT = CPatient->getAT();
                         FR.PT = CPatient->getPT();
@@ -400,7 +409,7 @@ void Organizer::simulate()
 
         // Move from BACK to FINISH
         double backCompareTime = 0.0;
-        Car* backToHospitalCar = new Car();
+        Car *backToHospitalCar = new Car();
         if (BACK->peek(backToHospitalCar, backCompareTime))
         {
             while (BACK->peek(backToHospitalCar, backCompareTime))
@@ -411,7 +420,7 @@ void Organizer::simulate()
 
                     BACK->dequeue(backToHospitalCar, backCompareTime);
 
-                    Patient* finishedPatient = backToHospitalCar->getCurrentPatient();
+                    Patient *finishedPatient = backToHospitalCar->getCurrentPatient();
                     // std::cout << "[+] Patient " << finishedPatient->getPID() << " has arrived to hospital " << finishedPatient->getNearestHospitalID() << " at timestep: " << currentTime << "." << std::endl;
 
                     FinishedRequest FR;
@@ -419,7 +428,8 @@ void Organizer::simulate()
                     FR.Severity = finishedPatient->getSeverity();
                     FR.nearestHospitalID = finishedPatient->getNearestHospitalID();
                     FR.nearestHospitalDistance = finishedPatient->getNearestHospitalDistance();
-                    FR.type = (finishedPatient->getType() == Patient::PatientType::EP) ? 2 : (finishedPatient->getType() == Patient::PatientType::SP) ? 1 : 0;
+                    FR.type = (finishedPatient->getType() == Patient::PatientType::EP) ? 2 : (finishedPatient->getType() == Patient::PatientType::SP) ? 1
+                                                                                                                                                      : 0;
                     FR.QT = finishedPatient->getQT();
                     FR.AT = finishedPatient->getAT();
                     FR.PT = finishedPatient->getPT();
@@ -448,13 +458,11 @@ void Organizer::simulate()
             }
         }
 
-
         // Actually process the simulation now:
-
 
         // Serve patients of same timestep in incomingPatients
         // Send each one to their hospital
-        Patient* servePatient = new Patient();
+        Patient *servePatient = new Patient();
         if (incomingPatients->peek(servePatient))
         {
             while (incomingPatients->peek(servePatient))
@@ -465,32 +473,88 @@ void Organizer::simulate()
 
                     for (int i = 0; i < hospitalCount; i++)
                     {
-                        // EPatients have a special case that we check on their hospital's cars
-                        // if they exist then send the patient to his hospital normally, if no cars found:
-                        //      - Loop on all hospitals & serve him the one with least
-                        //      - EPatients in queue
-                        //          if multiple ones have same amount of EPatients or
-                        //          their EPatients in queue are more than his initial hospital
-                        //              - Serve him the hospital nearest to his current hospital
 
                         if (servePatient->getType() == Patient::PatientType::EP)
                         {
-                            //  [4, 20, 20, 11, 4, 16]
-                            //
-                            // if min is repeated
-                            //      if min < yourHospital
-                            //          pick one with nearest...
-                            //      else
-                            //          pick your hospital
-                            // else
-                            // (which means min is not repeated)
-                            //      if min < yourHospital
-                            //          pick min hospital ID
-                            //      else
-                            //          pick your hospital
-                        }
+                            int ogHospitalID = servePatient->getNearestHospitalID(); // ???
+                            int ogHospitalIndex = ogHospitalID - 1;
 
-                        if (hospitals[i].getHospitalID() == servePatient->getNearestHospitalID())
+                            // I will check if OG Hospital has any cars
+
+                            bool ogHospitalHasCars = (hospitals[ogHospitalIndex].getNumberOfCars(0) > 0 ||
+                                                      hospitals[ogHospitalIndex].getNumberOfCars(1) > 0);
+
+                            if (!ogHospitalHasCars)
+                            {
+                                // Simple arr to store EP counts for each Hospital
+
+                                int *EPcounts = new int[hospitalCount];
+                                for (int j = 0; j < hospitalCount; j++)
+                                {
+                                    EPcounts[j] = fetchCarsInHospital(j + 1, 2); // numerical 2 is for EP type patient
+                                }
+
+                                // Then find the Min EP count
+                                int minEPcount = getMinValue(EPcounts, hospitalCount);
+
+                                // The count of Hospitals that have the same Min
+                                int minCount = 0;
+                                for (int j = 0; j < hospitalCount; ++j)
+                                {
+                                    if (EPcounts[j] == minEPcount)
+                                    {
+                                        minCount++;
+                                    }
+                                }
+
+                                int targetHospitalID;
+                                /*The case that multiple Hospitals have same Min EP Count
+                                get the nearest one to the OG Hospital*/
+                                if (minCount > 1)
+                                {
+
+                                    // Matrix
+                                    int shortestDistance = 999999999;
+                                    int nearestHospitalID = -1;
+
+                                    for (int j = 0; j < hospitalCount; ++j)
+                                    {
+                                        if (EPcounts[j] == minEPcount)
+                                        {
+                                            int distance = matrix[ogHospitalIndex][j];
+                                            if (distance < shortestDistance)
+                                            {
+                                                shortestDistance = distance;
+                                                nearestHospitalID = j + 1;
+                                            }
+                                        }
+                                    }
+                                    targetHospitalID = nearestHospitalID;
+                                } // if only one Hospital has Min EP count
+                                else
+                                {
+                                    for (int j = 0; j < hospitalCount; j++)
+                                    {
+                                        if (EPcounts[j] == minEPcount)
+                                        {
+                                            targetHospitalID = j + 1;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                // THen update patient Hospital ID and add it to new Hospital
+                                servePatient->setNearestHospitalID(targetHospitalID); // ???
+                                hospitals[targetHospitalID - 1].addPatient(servePatient, servePatient->getSeverity());
+                                delete[] EPcounts;
+                            } // But if the OG Hospital has cars, continue proceeding normally
+                            else
+                            {
+                                hospitals[ogHospitalIndex].addPatient(servePatient, servePatient->getSeverity());
+                            }
+                            break; // The loop we started since we handled the patient
+                        }
+                        else if (hospitals[i].getHospitalID() == servePatient->getNearestHospitalID())
                         {
                             hospitals[i].addPatient(servePatient, servePatient->getSeverity());
                         }
@@ -520,14 +584,14 @@ void Organizer::simulate()
             double AT = 0.0, PT = 0.0, WT = 0.0, FT = 0.0, CBT = 0.0;
 
             int assignEPriority;
-            Patient* assignEPatient = new Patient();
+            Patient *assignEPatient = new Patient();
             while (hospitals[i].getHeadEP()->peek(assignEPatient, assignEPriority))
             {
                 if (hospitals[i].getNumberOfCars(1) > 0)
                 {
                     // assign logic here (normal car)
 
-                    Car* assignNCar = new Car();
+                    Car *assignNCar = new Car();
 
                     hospitals[i].getHeadEP()->dequeue(assignEPatient, assignEPriority);
                     hospitals[i].getHeadNC()->dequeue(assignNCar);
@@ -574,7 +638,7 @@ void Organizer::simulate()
                 {
                     // assign logic here (special car)
 
-                    Car* assignSCar = new Car();
+                    Car *assignSCar = new Car();
 
                     hospitals[i].getHeadEP()->dequeue(assignEPatient, assignEPriority);
                     hospitals[i].getHeadSC()->dequeue(assignSCar);
@@ -623,14 +687,14 @@ void Organizer::simulate()
                 }
             }
 
-            Patient* assignSPatient = new Patient();
+            Patient *assignSPatient = new Patient();
             while (hospitals[i].getHeadSP()->peek(assignSPatient))
             {
                 if (hospitals[i].getNumberOfCars(0) > 0)
                 {
                     // assign logic here (special car)
 
-                    Car* assignSCar = new Car();
+                    Car *assignSCar = new Car();
 
                     hospitals[i].getHeadSP()->dequeue(assignSPatient);
                     hospitals[i].getHeadSC()->dequeue(assignSCar);
@@ -679,14 +743,14 @@ void Organizer::simulate()
                 }
             }
 
-            Patient* assignNPatient = new Patient();
+            Patient *assignNPatient = new Patient();
             while (hospitals[i].getHeadNP()->peek(assignNPatient))
             {
                 if (hospitals[i].getNumberOfCars(1) > 0)
                 {
                     // assign logic here (normal car)
 
-                    Car* assignNCar = new Car();
+                    Car *assignNCar = new Car();
 
                     hospitals[i].getHeadNP()->dequeue(assignNPatient);
                     hospitals[i].getHeadNC()->dequeue(assignNCar);
@@ -766,7 +830,7 @@ void Organizer::simulate()
     if (mode == 2)
     {
         std::cout << "Current Timestep: " << currentTime << std::endl;
-        
+
         for (int i = 1; i <= hospitalCount; i++)
         {
             std::string currentEPatients = " ";
@@ -784,7 +848,6 @@ void Organizer::simulate()
             std::cout << "==============   HOSPITAL #" << i << " Data   ==============" << std::endl;
             // std::cout << fetchPatientsInHospital(i, 2) << " EP requests:" << EP
         }
-        
     }
 }
 
@@ -795,11 +858,11 @@ std::string Organizer::generateFileName()
 
     // Format: output_DD_MM_YYYY_HH_MM
     std::string fileName = "output_" +
-                            std::to_string(localTime->tm_mday) + "_" +
-                            std::to_string(localTime->tm_mon + 1) + "_" +
-                            std::to_string(localTime->tm_year + 1900) + "_" +
-                            std::to_string(localTime->tm_hour) + "_" +
-                            std::to_string(localTime->tm_min);
+                           std::to_string(localTime->tm_mday) + "_" +
+                           std::to_string(localTime->tm_mon + 1) + "_" +
+                           std::to_string(localTime->tm_year + 1900) + "_" +
+                           std::to_string(localTime->tm_hour) + "_" +
+                           std::to_string(localTime->tm_min);
 
     return fileName;
 }
@@ -842,14 +905,23 @@ void Organizer::generateOutput()
     }
 
     FinishedRequest tempFR;
-    Node<FinishedRequest>* FR = finishedPatients->getHead();
+    Node<FinishedRequest> *FR = finishedPatients->getHead();
 
     for (int i = 0; FR != nullptr; i++)
     {
         FRcount++;
-        if (tempFR.type == 2) { EPcount++; }
-        if (tempFR.type == 1) { SPcount++; }
-        if (tempFR.type == 0) { NPcount++; }
+        if (tempFR.type == 2)
+        {
+            EPcount++;
+        }
+        if (tempFR.type == 1)
+        {
+            SPcount++;
+        }
+        if (tempFR.type == 0)
+        {
+            NPcount++;
+        }
         tempFR = FR->getItem();
         outFile << tempFR.FT << " " << tempFR.PID << " " << tempFR.QT << " " << tempFR.WT << std::endl;
         FR = FR->getNext();
