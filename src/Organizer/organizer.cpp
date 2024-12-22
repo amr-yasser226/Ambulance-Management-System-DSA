@@ -925,30 +925,6 @@ void Organizer::simulate()
     //     temp.printDetails();
     //     std::cout << "\n-----------------------\n" << std::endl;
     // }
-
-    // UI Interactive Mode:
-    if (mode == 2)
-    {
-        std::cout << "Current Timestep: " << currentTime << std::endl;
-
-        for (int i = 1; i <= hospitalCount; i++)
-        {
-            std::string currentEPatients = " ";
-            std::string currentSPatients = " ";
-            std::string currentNPatients = " ";
-
-            // Queue<Patient*>* tempSP = hospitals[i].getHeadSP();
-            // Patient* patientSP;
-            // while (tempSP->peek(patientSP))
-            // {
-            //     tempSP->dequeue(patientSP);
-            //     std::cout << "Patient ID: " << patientSP->getPID() << std::endl;
-            // }
-
-            std::cout << "==============   HOSPITAL #" << i << " Data   ==============" << std::endl;
-            // std::cout << fetchPatientsInHospital(i, 2) << " EP requests:" << EP
-        }
-    }
 }
 
 std::string Organizer::generateFileName()
