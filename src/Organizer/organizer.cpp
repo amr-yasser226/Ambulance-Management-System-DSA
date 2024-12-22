@@ -773,10 +773,15 @@ void Organizer::simulate()
             std::string currentSPatients = " ";
             std::string currentNPatients = " ";
 
-
+            Queue<Patient*> tempSP = *headSP; // Copy to avoid modifying the original queue
+            Patient* patientSP;
+            while (!tempSP.isEmpty()) {
+                tempSP.dequeue(patientSP);
+                std::cout << "Patient ID: " << patientSP->getPID() << std::endl;
+            }
 
             std::cout << "==============   HOSPITAL #" << i << " Data   ==============" << std::endl;
-            // std::cout << fetchPatientsInHospital(i, 2) << " EP requests:" << EP
+            std::cout << fetchPatientsInHospital(i, 2) << " EP requests:" << EP
         }
         
     }
