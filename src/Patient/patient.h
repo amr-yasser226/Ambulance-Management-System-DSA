@@ -44,6 +44,7 @@ public:
     void setWT(double value);
     void setFT(double value);
     void setCarBusyTime(double value);
+    void setNearestHospitalID(int value);
     
     void printDetails();
 };

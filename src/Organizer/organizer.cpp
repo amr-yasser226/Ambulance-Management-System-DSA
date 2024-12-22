@@ -512,7 +512,6 @@ void Organizer::simulate()
                                 get the nearest one to the OG Hospital*/
                                 if (minCount > 1)
                                 {
-
                                     // Matrix
                                     int shortestDistance = 999999999;
                                     int nearestHospitalID = -1;
@@ -543,7 +542,7 @@ void Organizer::simulate()
                                     }
                                 }
 
-                                // THen update patient Hospital ID and add it to new Hospital
+                                // Then update patient Hospital ID and add it to new Hospital
                                 servePatient->setNearestHospitalID(targetHospitalID); // ???
                                 hospitals[targetHospitalID - 1].addPatient(servePatient, servePatient->getSeverity());
                                 delete[] EPcounts;

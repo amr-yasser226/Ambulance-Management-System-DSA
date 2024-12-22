@@ -48,6 +48,7 @@ void Patient::setPT(double value) { PT = value; }
 void Patient::setWT(double value) { WT = value; }
 void Patient::setFT(double value) { FT = value; }
 void Patient::setCarBusyTime(double value) { carBusytime = value; }
+void Patient::setNearestHospitalID(int value) { nearestHospitalID = value; }
 
 void Patient::printDetails()
 {
