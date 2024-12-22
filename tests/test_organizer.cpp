@@ -5,7 +5,7 @@
 #include "../src/Car/car.h"
 
 int main() {
-    Organizer organizer;
+    Organizer organizer(2);
     organizer.loadInputData();
     organizer.simulate();
     organizer.generateOutput();
