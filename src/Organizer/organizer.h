@@ -72,7 +72,7 @@ public:
 
     void handleCancellation(Car* outToBackCar, double outCompareTime);
 
-    void loadInputData();
+    void loadInputData(int);
     void simulate();
     void generateOutput();
 };

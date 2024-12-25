@@ -21,6 +21,7 @@ public:
 
     void displayLogoAnimation();
     int verifyInput();
+    int chooseFile();
 };
 
 #endif // UI_h
