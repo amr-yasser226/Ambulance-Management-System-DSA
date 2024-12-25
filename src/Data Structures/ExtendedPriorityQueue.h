@@ -209,7 +209,7 @@ void ExtendedPriorityQueue<T>::print(std::ostream &os) const
            << "_H" << item->getCurrentPatient()->getNearestHospitalID()
            << "_P" << item->getCurrentPatient()->getPID();
 
-        if (current->getNext() != nullptr) { os << ", "; }
+        if (current->getNext() != nullptr) { os << ", " };
         current = current->getNext();
     }
 }
