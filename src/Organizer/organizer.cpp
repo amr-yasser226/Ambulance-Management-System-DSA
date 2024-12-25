@@ -332,9 +332,37 @@ bool Organizer::isRequestCancelled(Car *checkCar)
     return false;
 }
 
-void Organizer::loadInputData()
+void Organizer::loadInputData(int inputFile)
 {
-    std::ifstream file("../data/input/input_1_1.txt");
+    std::ifstream file;
+
+    switch(inputFile){
+        case 1:
+            file.open("../data/input/input_1_1.txt");
+            break;
+
+        case 2:
+            file.open("../data/input/input_2.txt");
+            break;
+
+        case 3:
+            file.open("../data/input/input_3.txt");
+            break;
+
+        case 4:
+            file.open("../data/input/input_4.txt");
+            break;
+
+        case 5:
+            file.open("../data/input/input_5.txt");
+            break;
+
+        case 6:
+            file.open("../data/input/input_6.txt");
+            break;
+        default:
+            break;
+    }
 
     if (!file.is_open())
     {
@@ -728,7 +756,7 @@ void Organizer::simulate()
                 }
                 std::cout << std::endl;
 
-                std::cout << "\n\nPress any key to display the next hospital..";
+                std::cout << "\n\nPress enter to display the next hospital..";
                 std::cin.get();
                 std::cout << std::endl << std::endl;
             }
