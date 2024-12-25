@@ -160,5 +160,4 @@ T LinkedList<T>::peek() const
     return head->getItem(); // Return the value of the first node
 }
 
-
 #endif // LINKED_LIST_H

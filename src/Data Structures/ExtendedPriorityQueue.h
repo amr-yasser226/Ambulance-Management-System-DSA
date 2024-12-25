@@ -37,8 +37,9 @@ public:
     bool dequeue(T &frontEntry, double &priority);
     bool peek(T &frontEntry, double &priority) const;
     int size() const;
-    void display() const;
+    void display() const; // this one is just for debugging mostly
     extPriNode<T> *getHead() const;
+    void print(std::ostream &os) const; // operator overloadding function to print the *OUT or *BACK
 };
 
 template <typename T>
@@ -193,6 +194,31 @@ void ExtendedPriorityQueue<T>::display() const
                   << ", Priority: " << priority << std::endl;
         current = current->getNext();
     }
+}
+
+template <typename T>
+void ExtendedPriorityQueue<T>::print(std::ostream &os) const
+{
+    extPriNode<T> *current = head;
+    // os << size() << " ➜ Out cars: ";
+    double priority;
+    while (current)
+    {
+        T item = current->getItem(priority);
+        os << "S" << item->getUniqueID()
+           << "_H" << item->getCurrentPatient()->getNearestHospitalID()
+           << "_P" << item->getCurrentPatient()->getPID();
+
+        if (current->getNext() != nullptr) { os << ", " };
+        current = current->getNext();
+    }
+}
+
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const ExtendedPriorityQueue<T> &queue)
+{
+    queue.print(os);
+    return os;
 }
 
 #endif // EXTENDED_PRIORITY_QUEUE_H

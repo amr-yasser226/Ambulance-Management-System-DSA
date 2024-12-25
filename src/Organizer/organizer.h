@@ -61,6 +61,17 @@ public:
 
     std::string generateFileName();
 
+
+    bool assignEPToCar(Hospital &hospital);
+    bool assignSPToCar(Hospital &hospital);
+    bool assignNPToCar(Hospital &hospital);
+
+    void moveCarFromFreeToOut(Car* assignedCar, Patient* patient);
+    void moveCarFromOutToBack(Car* outToBackCar, double outCompareTime);
+    void moveCarFromBackToFree(Car* backToHospitalCar, double backCompareTime);
+
+    void handleCancellation(Car* outToBackCar, double outCompareTime);
+
     void loadInputData();
     void simulate();
     void generateOutput();
