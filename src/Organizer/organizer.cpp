@@ -51,6 +51,9 @@ Organizer::~Organizer()
     }
 }
 
+/* cars that come back with a patient get freed up then assigned to 'free' list 
+in its respective hospital */
+
 void Organizer::moveCarFromBackToFree(Car* backToHospitalCar, double backCompareTime)
 {
     BACK->dequeue(backToHospitalCar, backCompareTime);
@@ -430,7 +433,7 @@ void Organizer::loadInputData(int inputFile)
             }
             else
             {
-                std::cerr << "Error opening file (organizer.cpp / loadInputData [2])" << std::endl;
+                std::cerr << "Error opening file (organizer.cpp / loadInputData [)"<<inputFile<<"]" << std::endl;
                 inputTypeConverted = Patient::PatientType::NP;
             }
 
