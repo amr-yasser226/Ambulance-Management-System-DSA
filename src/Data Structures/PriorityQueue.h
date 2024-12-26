@@ -38,6 +38,7 @@ public:
     bool peek(T &frontEntry, int &priority) const;
     int size() const;
     void display() const;
+    void print(std::ostream &os) const;
     priNode<T> *getHead() const;
 };
 
@@ -189,6 +190,35 @@ void PriorityQueue<T>::display() const
         std::cout << "Item: " << current->getItem(current->getPriority()) << ", Priority: " << current->getPriority() << std::endl;
         current = current->getNext();
     }
+}
+
+template <typename T>
+void PriorityQueue<T>::print(std::ostream &os) const 
+{
+    priNode<T>* current = head;
+    int tempPri;
+
+    if (current != nullptr)
+    {
+        while (current != nullptr) 
+        {
+            std::cout << " " << current->getItem(tempPri)->getPID();
+            if (current->getNext() != nullptr) { std::cout << ","; }
+            
+            current = current->getNext();
+        }
+    }
+    else
+    {
+        std::cout << " 0";
+    }
+}
+
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const PriorityQueue<T> &queue)
+{
+    queue.print(os);
+    return os;
 }
 
 #endif // PRIORITY_QUEUE_H

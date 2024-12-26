@@ -19,6 +19,7 @@ public:
     bool dequeue(T &frntEntry);
     bool peek(T &frntEntry) const;
     int size() const; // Returns the current size of the queue
+    void print(std::ostream &os) const;
     ~Queue();
     Queue(const Queue<T> &LQ);
 };
@@ -92,6 +93,34 @@ Queue<T>::Queue(const Queue<T> &LQ) : backPtr(nullptr), frontPtr(nullptr), itemC
         enqueue(NodePtr->getItem());
         NodePtr = NodePtr->getNext();
     }
+}
+
+template <typename T>
+void Queue<T>::print(std::ostream &os) const 
+{
+    Node<T>* current = frontPtr;
+
+    if (current != nullptr)
+    {
+        while (current != nullptr) 
+        {
+            std::cout << " " << current->getItem()->getPID();
+            if (current->getNext() != nullptr) { std::cout << ","; }
+            
+            current = current->getNext();
+        }
+    }
+    else
+    {
+        std::cout << " 0";
+    }
+}
+
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const Queue<T> &queue)
+{
+    queue.print(os);
+    return os;
 }
 
 #endif // QUEUE_H

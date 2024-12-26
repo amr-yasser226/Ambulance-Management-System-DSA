@@ -19,6 +19,7 @@ public:
     bool dequeue(T &frntEntry);
     bool peek(T &frntEntry) const;
     int size() const; // Returns the current size of the queue
+    void print(std::ostream &os) const;
     ~DerivedQueue();
     DerivedQueue(const DerivedQueue<T> &LQ);
 };
@@ -92,6 +93,35 @@ DerivedQueue<T>::DerivedQueue(const DerivedQueue<T> &LQ) : backPtr(nullptr), fro
         enqueue(NodePtr->getItem());
         NodePtr = NodePtr->getNext();
     }
+}
+
+template <typename T>
+void DerivedQueue<T>::print(std::ostream &os) const 
+{
+    Node<T>* current = frontPtr;
+
+    if (current != nullptr)
+    {
+        while (current != nullptr) 
+        {
+            std::cout << " " << current->getItem()->getPID();
+            if (current->getNext() != nullptr) { std::cout << ","; }
+            
+            current = current->getNext();
+        }
+    }
+    else
+    {
+        std::cout << " 0";
+    }
+    std::cout << std::endl;
+}
+
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const DerivedQueue<T> &queue)
+{
+    queue.print(os);
+    return os;
 }
 
 #endif // DERIVED_QUEUE_H

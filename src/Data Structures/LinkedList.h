@@ -24,6 +24,7 @@ public:
     bool deleteNodeAtPosition(int position); // Deletes a node at the specified position (0-based index)
     Node<T> *getHead() const;
     T peek() const; // Returns the value at the head of the list
+    void print(std::ostream &os) const;
 };
 
 template <typename T>
@@ -158,6 +159,35 @@ T LinkedList<T>::peek() const
         throw std::runtime_error("List is empty. Cannot peek.");
     }
     return head->getItem(); // Return the value of the first node
+}
+
+template <typename T>
+void LinkedList<T>::print(std::ostream &os) const
+{
+    Node<T>* current = head;
+
+    if (current != nullptr)
+    {
+        while (current != nullptr) 
+        {
+            std::cout << " " << current->getItem().PID;
+            if (current->getNext() != nullptr) { std::cout << ","; }
+
+            current = current->getNext();
+        }
+    }
+    else
+    {
+        std::cout << " 0";
+    }
+    std::cout << std::endl;
+}
+
+template <typename T>
+std::ostream &operator<<(std::ostream &os, const LinkedList<T> &list)
+{
+    list.print(os);
+    return os;
 }
 
 #endif // LINKED_LIST_H

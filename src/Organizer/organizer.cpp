@@ -341,7 +341,7 @@ void Organizer::loadInputData(int inputFile)
 
     switch(inputFile){
         case 1:
-            file.open("../data/input/input_1_1.txt");
+            file.open("../data/input/input_1.txt");
             break;
 
         case 2:
@@ -677,87 +677,21 @@ void Organizer::simulate()
             {
                 std::cout << "Current Timestep: " << currentTime << std::endl;
 
-                std::string currentEPatients = " ";
-                std::string currentSPatients = " ";
-                std::string currentNPatients = " ";
-
-                int severity;
-                PriorityQueue<Patient*> epTempQueue(*(hospitals[i-1].getHeadEP()));
-                Patient* epTemp = new Patient();
-                while (epTempQueue.dequeue(epTemp, severity))
-                {
-                    currentEPatients += std::to_string(epTemp->getPID()) + " ";
-                }
-
-                Queue<Patient*> spTempQueue(*(hospitals[i-1].getHeadSP()));
-                Patient* spTemp = new Patient();
-                while (spTempQueue.dequeue(spTemp))
-                {
-                    currentSPatients += std::to_string(spTemp->getPID()) + " ";
-                }
-
-                DerivedQueue<Patient*> npTempQueue(*(hospitals[i-1].getHeadNP()));
-                Patient* npTemp = new Patient();
-                while (npTempQueue.dequeue(npTemp))
-                {
-                    currentNPatients += std::to_string(npTemp->getPID()) + " ";
-                }
-
                 std::cout << "==============    HOSPITAL #" << i << " Data    ==============" << std::endl;
-                std::cout << fetchPatientsInHospital(i, 2) << " EP requests:" << currentEPatients << std::endl;
-                std::cout << fetchPatientsInHospital(i, 1) << " SP requests:" << currentSPatients << std::endl;
-                std::cout << fetchPatientsInHospital(i, 0) << " NP requests:" << currentNPatients << std::endl;
+                std::cout << fetchPatientsInHospital(i, 2) << " EP requests:" << *(hospitals[i-1].getHeadEP()) << std::endl;
+                std::cout << fetchPatientsInHospital(i, 1) << " SP requests:" << *(hospitals[i-1].getHeadSP()) << std::endl;
+                std::cout << fetchPatientsInHospital(i, 0) << " NP requests:" << *(hospitals[i-1].getHeadNP()) << std::endl;
                 std::cout << "Free Cars: " << hospitals[i-1].getNumberOfCars(0) << " SCars, " << hospitals[i-1].getNumberOfCars(1) << " NCars" << std::endl;
                 std::cout << "==============   HOSPITAL #" << i << " Data End   ==============" << std::endl;
 
                 std::cout << "----------------------------------------------------------------" << std::endl;
 
-                std::cout << OUT->size() << " ➜ Out cars: " << *OUT << std::endl;
-                // extPriNode<Car*> *currentOUT = OUT->getHead();
-                // double priOUT;
-                // while (currentOUT)
-                // {
-                //     Patient* ptest = currentOUT->getItem(priOUT)->getCurrentPatient();
-                //     std::cout << " " << "S" << currentOUT->getItem(priOUT)->getUniqueID() << "_H" << ptest->getNearestHospitalID() << "_P" << ptest->getPID();
-                //     if (currentOUT->getNext() != nullptr) { std::cout << ","; }
-                //     currentOUT = currentOUT->getNext();
-                // }
-                // std::cout << std::endl;
-
-                std::cout << BACK->size() << " ➜ Back cars:" << *BACK << std::endl;
-                // extPriNode<Car*> *currentBACK = BACK->getHead();
-                // double priBACK;
-                // while (currentBACK)
-                // {
-                //     Patient* ptest = currentBACK->getItem(priBACK)->getCurrentPatient();
-                //     std::cout << " " << "S" << currentBACK->getItem(priBACK)->getUniqueID() << "_H" << ptest->getNearestHospitalID() << "_P" << ptest->getPID();
-                //     if (currentBACK->getNext() != nullptr) { std::cout << ","; }
-                //     currentBACK = currentBACK->getNext();
-                // }
-                // std::cout << std::endl;
+                std::cout << OUT->size() << " ➜ Out cars:  " << *OUT << std::endl;
+                std::cout << BACK->size() << " ➜ Back cars: " << *BACK << std::endl;
 
                 std::cout << "----------------------------------------------------------------" << std::endl;
                 
-                Node<FinishedRequest>* current = finishedPatients->getHead();
-
-                std::cout << finishedPatients->size() << " Finished Patients:";
-                if (current != nullptr)
-                {
-                    while (current != nullptr) 
-                    {
-                        FinishedRequest tempFR = current->getItem();
-                        
-                        std::cout << " " << tempFR.PID;
-                        if (current->getNext() != nullptr) { std::cout << ","; }
-
-                        current = current->getNext();
-                    }
-                }
-                else
-                {
-                    std::cout << " 0";
-                }
-                std::cout << std::endl;
+                std::cout << finishedPatients->size() << " Finished Patients:" << *finishedPatients;
 
                 std::cout << "\n\nPress enter to display the next hospital..";
                 std::cin.get();
