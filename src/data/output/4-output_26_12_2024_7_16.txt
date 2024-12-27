@@ -1,5 +1,0 @@
-FT  PID QT  WT
-
-Patients: 0 [NP: 0, SP: 0, EP: 0]
-Hospitals: 2
-Cars: 36 [SCars: 12, NCars: 24]

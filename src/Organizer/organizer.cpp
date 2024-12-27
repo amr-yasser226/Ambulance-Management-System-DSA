@@ -98,15 +98,15 @@ bool Organizer::assignEPToCar(Hospital &hospital)
     int assignEPriority;
     Patient *assignEPatient = new Patient();
 
-    if (!(hospital.getHeadEP()->peek(assignEPatient, assignEPriority)))
-    {
-        delete assignEPatient;
-        return false;
-    }
-
     if (hospital.getNumberOfCars(1) > 0)
     {
         // assign logic here (normal car)
+
+        if (!(hospital.getHeadEP()->peek(assignEPatient, assignEPriority)))
+        {
+            delete assignEPatient;
+            return false;
+        }
 
         Car *assignNCar = new Car();
 
@@ -120,6 +120,12 @@ bool Organizer::assignEPToCar(Hospital &hospital)
     else if (hospital.getNumberOfCars(0) > 0)
     {
         // assign logic here (special car)
+
+        if (!(hospital.getHeadEP()->peek(assignEPatient, assignEPriority)))
+        {
+            delete assignEPatient;
+            return false;
+        }
 
         Car *assignSCar = new Car();
 
@@ -474,7 +480,7 @@ void Organizer::loadInputData(int inputFile)
 
 void Organizer::simulate()
 {
-    for (currentTime = 1; currentTime <= 1500000; currentTime++)
+    for (currentTime = 1; currentTime <= 125; currentTime++)
     {
         // std::cout << "Timestep: " << currentTime << std::endl;
         // Beginning of each loop:
