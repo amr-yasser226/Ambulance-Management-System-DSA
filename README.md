@@ -1,7 +1,7 @@
 # Ambulance Management System
 
 ### Overview
-This project is developed as part of the **Data Structures and Algorithms** course at Zewail City of Science and Technology. The goal is to build a centralized system for managing ambulance services across multiple hospitals, simulating ambulance allocation based on real-time patient requests, and optimizing the system's overall performance.
+This project is developed as part of the **CSAI 201 - Data Structures and Algorithms** course at Zewail City of Science and Technology. The goal is to build a centralized system for managing ambulance services across multiple hospitals, simulating ambulance allocation based on real-time patient requests, and optimizing the system's overall performance.
 
 The project applies advanced data structures to handle patients, hospitals, and ambulance car management efficiently.
 
